@@ -42,5 +42,5 @@ class ExampleExtension(omni.ext.IExt):
                     omni.ui.Button("Add", clicked_fn=on_click)
                     omni.ui.Button("Reset", clicked_fn=on_reset)
 
-    def on_shutdown(self):
-        print("[bennett_rl] shutdown")
+    def on_shutdown(self):  # 定义一个名为on_shutdown的方法，接受self作为参数
+        print("[bennett_rl] shutdown")  # 打印一条关闭信息，包含标识符"[bennett_rl]"

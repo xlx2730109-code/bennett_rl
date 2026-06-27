@@ -1,0 +1,1207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="Urdf_Bennett_test3">
+  <link
+    name="base">
+    <inertial>
+      <origin
+        xyz="-0.21100029 -0.0682108 -0.01276312"
+        rpy="0 0 0" />
+      <mass
+        value="4.609949" />
+      <inertia
+        ixx="0.014343"
+        ixy="1.8e-05"
+        ixz="0.0"
+        iyy="0.130439"
+        iyz="0.0"
+        izz="0.141737" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/base.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/base.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="FL_thigh">
+    <inertial>
+      <origin
+        xyz="-0.00997784 0.04024716 0.00863366"
+        rpy="0 0 0" />
+      <mass
+        value="0.98919184" />
+      <inertia
+        ixx="0.00325133"
+        ixy="0.00076221"
+        ixz="-0.00042308"
+        iyy="0.00196164"
+        iyz="0.00129962"
+        izz="0.0030555" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_thigh.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_thigh.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FL_thigh"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base" />
+    <child
+      link="FL_thigh" />
+    <axis
+      xyz="0 0.707106781186551 0.707106781186544" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="FL_calf">
+    <inertial>
+      <origin
+        xyz="0.0306135207530854 0.0562527516265406 -0.0428254406796304"
+        rpy="0 0 0" />
+      <mass
+        value="0.30907565" />
+      <inertia
+        ixx="0.00136647"
+        ixy="-0.00034425"
+        ixz="0.00033964"
+        iyy="0.00090858"
+        iyz="0.00066647"
+        izz="0.00091267" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_calf.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_calf.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FL_calf"
+    type="revolute">
+    <origin
+      xyz="0 0.0357088924499221 0.0357088924499192"
+      rpy="0 0 0" />
+    <parent
+      link="FL_thigh" />
+    <child
+      link="FL_calf" />
+    <axis
+      xyz="0 0.707106781186551 0.707106781186544" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="FL_3">
+    <inertial>
+      <origin
+        xyz="-0.029093610646794 0.00219356964723713 -0.110086515616705"
+        rpy="0 0 0" />
+      <mass
+        value="0.1906784" />
+      <inertia
+        ixx="0.00068948"
+        ixy="-1.208e-05"
+        ixz="-0.00022942"
+        iyy="0.00076657"
+        iyz="-3.233e-05"
+        izz="0.00011274" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FL_3"
+    type="revolute">
+    <origin
+      xyz="0.0601103896864989 0.123095218921982 -0.117664998106235"
+      rpy="0 0 0" />
+    <parent
+      link="FL_calf" />
+    <child
+      link="FL_3" />
+    <axis
+      xyz="-0.836516303737812 0.512047039647154 0.19505974153939" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="FL_1">
+    <inertial>
+      <origin
+        xyz="-0.03061155 0.00080602 -0.1334702"
+        rpy="0 0 0" />
+      <mass
+        value="0.23360677" />
+      <inertia
+        ixx="0.00116343"
+        ixy="1.645e-05"
+        ixz="0.00029781"
+        iyy="0.00123867"
+        iyz="-5.957e-05"
+        izz="0.00011179" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FL_1"
+    type="revolute">
+    <origin
+      xyz="-0.0601103896864993 0.158804111371901 -0.0819561056563134"
+      rpy="0 0 0" />
+    <parent
+      link="FL_thigh" />
+    <child
+      link="FL_1" />
+    <axis
+      xyz="0.836516303737807 0.512047039647168 0.195059741539375" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="FL_2">
+    <inertial>
+      <origin
+        xyz="0.031016779039711 0.00332440369134371 0.0603730463506455"
+        rpy="0 0 0" />
+      <mass
+        value="0.190678698865573" />
+      <inertia
+        ixx="0.00068948"
+        ixy="-1.208e-05"
+        ixz="-0.00022942"
+        iyy="0.00076657"
+        iyz="-3.233e-05"
+        izz="0.00011274" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FL_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FL_2"
+    type="revolute">
+    <origin
+      xyz="0.0601103896864977 -0.00113083404410286 -0.170459561967354"
+      rpy="0 0 0" />
+    <parent
+      link="FL_1" />
+    <child
+      link="FL_2" />
+    <axis
+      xyz="0 -0.998349626939264 0.0574284110021552" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="FR_thigh">
+    <inertial>
+      <origin
+        xyz="-0.00997784 -0.04024716 0.00863366"
+        rpy="0 0 0" />
+      <mass
+        value="0.98919184" />
+      <inertia
+        ixx="0.00328407"
+        ixy="-0.00085326"
+        ixz="-0.00051398"
+        iyy="0.00194441"
+        iyz="-0.00131599"
+        izz="0.00303658" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_thigh.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_thigh.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FR_thigh"
+    type="revolute">
+    <origin
+      xyz="0 -0.136475945135393 0"
+      rpy="0 0 0" />
+    <parent
+      link="base" />
+    <child
+      link="FR_thigh" />
+    <axis
+      xyz="0 -0.707106781186547 0.707106781186548" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="FR_calf">
+    <inertial>
+      <origin
+        xyz="0.0306134784411627 -0.0562527012486178 -0.0428255297740321"
+        rpy="0 0 0" />
+      <mass
+        value="0.30907565" />
+      <inertia
+        ixx="0.00136647"
+        ixy="0.00034425"
+        ixz="0.00033965"
+        iyy="0.00090858"
+        iyz="-0.00066647"
+        izz="0.00091267" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_calf.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_calf.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FR_calf"
+    type="revolute">
+    <origin
+      xyz="0 -0.0357088924499185 0.0357088924499228"
+      rpy="0 0 0" />
+    <parent
+      link="FR_thigh" />
+    <child
+      link="FR_calf" />
+    <axis
+      xyz="0 0.707106781186547 -0.707106781186548" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="FR_3">
+    <inertial>
+      <origin
+        xyz="-0.0290933396631616 -0.00202326307904724 -0.110076661108636"
+        rpy="0 0 0" />
+      <mass
+        value="0.1906784" />
+      <inertia
+        ixx="0.00068947"
+        ixy="1.308e-05"
+        ixz="-0.00022936"
+        iyy="0.00076634"
+        iyz="3.428e-05"
+        izz="0.00011295" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FR_3"
+    type="revolute">
+    <origin
+      xyz="0.0601103896865005 -0.123095218921982 -0.117664998106235"
+      rpy="0 0 0" />
+    <parent
+      link="FR_calf" />
+    <child
+      link="FR_3" />
+    <axis
+      xyz="-0.83651630373781 -0.512047039647161 0.195059741539382" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="FR_1">
+    <inertial>
+      <origin
+        xyz="0.03061155 -0.00080602 -0.1334702"
+        rpy="0 0 0" />
+      <mass
+        value="0.23360677" />
+      <inertia
+        ixx="0.00116343"
+        ixy="-1.645e-05"
+        ixz="0.00029781"
+        iyy="0.00123867"
+        iyz="5.957e-05"
+        izz="0.00011179" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FR_1"
+    type="revolute">
+    <origin
+      xyz="-0.0601103896864964 -0.158804111371901 -0.0819561056563115"
+      rpy="0 0 0" />
+    <parent
+      link="FR_thigh" />
+    <child
+      link="FR_1" />
+    <axis
+      xyz="0.836516303737809 -0.512047039647162 0.195059741539384" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="FR_2">
+    <inertial>
+      <origin
+        xyz="0.031017050023341 -0.00315409712315018 0.0603829008587162"
+        rpy="0 0 0" />
+      <mass
+        value="0.1906784" />
+      <inertia
+        ixx="0.00068947"
+        ixy="1.308e-05"
+        ixz="-0.00022936"
+        iyy="0.00076634"
+        iyz="3.428e-05"
+        izz="0.00011295" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/FR_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="FR_2"
+    type="revolute">
+    <origin
+      xyz="0.0601103896864986 0.0011308340441035 -0.170459561967353"
+      rpy="0 0 0" />
+    <parent
+      link="FR_1" />
+    <child
+      link="FR_2" />
+    <axis
+      xyz="0 -0.998349626939264 -0.0574284110021499" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RL_thigh">
+    <inertial>
+      <origin
+        xyz="-0.00997784 0.04024716 0.00863366"
+        rpy="0 0 0" />
+      <mass
+        value="0.98919184" />
+      <inertia
+        ixx="0.00325134"
+        ixy="0.00076221"
+        ixz="-0.00042309"
+        iyy="0.00196165"
+        iyz="0.00129963"
+        izz="0.0030555" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_thigh.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_thigh.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RL_thigh"
+    type="revolute">
+    <origin
+      xyz="-0.422 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="base" />
+    <child
+      link="RL_thigh" />
+    <axis
+      xyz="0 0.707106781186547 0.707106781186549" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RL_calf">
+    <inertial>
+      <origin
+        xyz="0.0306134965442534 0.0562527895859488 -0.0428256461790004"
+        rpy="0 0 0" />
+      <mass
+        value="0.30907565" />
+      <inertia
+        ixx="0.00136648"
+        ixy="-0.00034425"
+        ixz="0.00033965"
+        iyy="0.00090859"
+        iyz="0.00066647"
+        izz="0.00091267" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_calf.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_calf.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RL_calf"
+    type="revolute">
+    <origin
+      xyz="0 0.0357088924499255 0.0357088924499157"
+      rpy="0 0 0" />
+    <parent
+      link="RL_thigh" />
+    <child
+      link="RL_calf" />
+    <axis
+      xyz="0 0.707106781186546 0.707106781186549" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RL_3">
+    <inertial>
+      <origin
+        xyz="-0.0290934291303198 0.00219353776732281 -0.110086866049337"
+        rpy="0 0 0" />
+      <mass
+        value="0.1906784" />
+      <inertia
+        ixx="0.00068949"
+        ixy="-1.208e-05"
+        ixz="-0.00022942"
+        iyy="0.00076658"
+        iyz="-3.233e-05"
+        izz="0.00011274" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RL_3"
+    type="revolute">
+    <origin
+      xyz="0.0601103896865007 0.123095218921983 -0.117664998106234"
+      rpy="0 0 0" />
+    <parent
+      link="RL_calf" />
+    <child
+      link="RL_3" />
+    <axis
+      xyz="-0.836516303737822 0.512047039647145 0.195059741539374" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RL_1">
+    <inertial>
+      <origin
+        xyz="-0.03061155 0.00080602 -0.1334702"
+        rpy="0 0 0" />
+      <mass
+        value="0.23360677" />
+      <inertia
+        ixx="0.00116343"
+        ixy="1.645e-05"
+        ixz="0.00029781"
+        iyy="0.00123867"
+        iyz="-5.957e-05"
+        izz="0.00011179" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RL_1"
+    type="revolute">
+    <origin
+      xyz="-0.0601103896865026 0.158804111371908 -0.0819561056563185"
+      rpy="0 0 0" />
+    <parent
+      link="RL_thigh" />
+    <child
+      link="RL_1" />
+    <axis
+      xyz="0.836516303737811 0.512047039647158 0.195059741539385" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RL_2">
+    <inertial>
+      <origin
+        xyz="0.031016960556179 0.00332437181142839 0.0603726959180158"
+        rpy="0 0 0" />
+      <mass
+        value="0.1906784" />
+      <inertia
+        ixx="0.00068949"
+        ixy="-1.208e-05"
+        ixz="-0.00022942"
+        iyy="0.00076658"
+        iyz="-3.233e-05"
+        izz="0.00011274" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RL_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RL_2"
+    type="revolute">
+    <origin
+      xyz="0.0601103896864999 -0.00113083404410538 -0.170459561967353"
+      rpy="0 0 0" />
+    <parent
+      link="RL_1" />
+    <child
+      link="RL_2" />
+    <axis
+      xyz="0 -0.998349626939264 0.0574284110021534" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RR_thigh">
+    <inertial>
+      <origin
+        xyz="-0.00997784 -0.04024716 0.00863366"
+        rpy="0 0 0" />
+      <mass
+        value="0.98919184" />
+      <inertia
+        ixx="0.00328408"
+        ixy="-0.00085326"
+        ixz="-0.00051398"
+        iyy="0.00194441"
+        iyz="-0.001316"
+        izz="0.0030366" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_thigh.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_thigh.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RR_thigh"
+    type="revolute">
+    <origin
+      xyz="-0.422 -0.136475945135384 0"
+      rpy="0 0 0" />
+    <parent
+      link="base" />
+    <child
+      link="RR_thigh" />
+    <axis
+      xyz="0 -0.707106781186552 0.707106781186543" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RR_calf">
+    <inertial>
+      <origin
+        xyz="0.0306135894955274 -0.0562528717647755 -0.0428254297418166"
+        rpy="0 0 0" />
+      <mass
+        value="0.30907565" />
+      <inertia
+        ixx="0.00136647"
+        ixy="0.00034425"
+        ixz="0.00033965"
+        iyy="0.00090858"
+        iyz="-0.00066647"
+        izz="0.00091268" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_calf.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_calf.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RR_calf"
+    type="revolute">
+    <origin
+      xyz="0 -0.0357088924499228 0.0357088924499181"
+      rpy="0 0 0" />
+    <parent
+      link="RR_thigh" />
+    <child
+      link="RR_calf" />
+    <axis
+      xyz="0 0.707106781186551 -0.707106781186544" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RR_3">
+    <inertial>
+      <origin
+        xyz="-0.0290932603647231 -0.00202325130715023 -0.11007690207997"
+        rpy="0 0 0" />
+      <mass
+        value="0.1906784" />
+      <inertia
+        ixx="0.00068947"
+        ixy="1.308e-05"
+        ixz="-0.00022936"
+        iyy="0.00076635"
+        iyz="3.429e-05"
+        izz="0.00011295" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RR_3"
+    type="revolute">
+    <origin
+      xyz="0.0601103896865009 -0.123095218921982 -0.117664998106235"
+      rpy="0 0 0" />
+    <parent
+      link="RR_calf" />
+    <child
+      link="RR_3" />
+    <axis
+      xyz="-0.836516303737812 -0.512047039647161 0.195059741539373" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RR_1">
+    <inertial>
+      <origin
+        xyz="0.03061155 -0.00080602 -0.1334702"
+        rpy="0 0 0" />
+      <mass
+        value="0.23360677" />
+      <inertia
+        ixx="0.00116343"
+        ixy="-1.645e-05"
+        ixz="0.00029781"
+        iyy="0.00123867"
+        iyz="5.957e-05"
+        izz="0.00011179" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RR_1"
+    type="revolute">
+    <origin
+      xyz="-0.0601103896865072 -0.158804111371903 -0.0819561056563178"
+      rpy="0 0 0" />
+    <parent
+      link="RR_thigh" />
+    <child
+      link="RR_1" />
+    <axis
+      xyz="0.836516303737808 -0.512047039647163 0.195059741539385" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="RR_2">
+    <inertial>
+      <origin
+        xyz="0.0310171293217777 -0.00315408535125578 0.0603826598873825"
+        rpy="0 0 0" />
+      <mass
+        value="0.1906784" />
+      <inertia
+        ixx="0.00068947"
+        ixy="1.308e-05"
+        ixz="-0.00022936"
+        iyy="0.00076635"
+        iyz="3.429e-05"
+        izz="0.00011295" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.866666666666667 0.909803921568627 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://Urdf_Bennett_test3/meshes/RR_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RR_2"
+    type="revolute">
+    <origin
+      xyz="0.0601103896865035 0.00113083404410397 -0.170459561967352"
+      rpy="0 0 0" />
+    <parent
+      link="RR_1" />
+    <child
+      link="RR_2" />
+    <axis
+      xyz="0 -0.998349626939264 -0.0574284110021554" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>
