@@ -11,8 +11,8 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
 @configclass
 class BennettSingleLegTracePPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 24
-    max_iterations = 800
-    save_interval = 50
+    max_iterations = 1500
+    save_interval = 100
     experiment_name = "single_leg_rr_trace"
     policy = RslRlPpoActorCriticCfg(
         init_noise_std=0.5,
@@ -42,7 +42,7 @@ class BennettSingleLegTracePPORunnerCfg(RslRlOnPolicyRunnerCfg):
 class BennettSingleLegTrace50HzPPORunnerCfg(BennettSingleLegTracePPORunnerCfg):
     """PPO config for the 50 Hz single-leg trace task."""
 
-    experiment_name = "single_leg_rr_trace_50hz"   
+    experiment_name = "single_leg_rr_trace"   
 
 
 @configclass
@@ -54,7 +54,8 @@ class BennettSingleLegTrace250HzPPORunnerCfg(BennettSingleLegTracePPORunnerCfg):
     """
 
     num_steps_per_env = 120
-    experiment_name = "single_leg_rr_trace_250hz"
+    # experiment_name = "single_leg_rr_trace_250hz"
+    experiment_name = "single_leg_rr_trace"
 
 
 PPORunnerCfg = BennettSingleLegTrace50HzPPORunnerCfg

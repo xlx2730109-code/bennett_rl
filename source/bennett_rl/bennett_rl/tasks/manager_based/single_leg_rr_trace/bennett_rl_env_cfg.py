@@ -81,7 +81,7 @@ class ActionsCfg: # RR_thigh/RR_calf 两个动作，带限速
         controlled_joint_names=RR_TRACE_JOINTS,
         hold_joint_names=ACTIVE_LEG_JOINTS,
         scale=math.radians(20.0),
-        max_joint_speed=math.radians(35.0),
+        max_joint_speed=math.radians(60.0),
     )
 
 
@@ -133,7 +133,7 @@ class EventCfg: # reset 腿关节
 class RewardsCfg:   #作用：生成Bennett机器人的奖励配置：tracking、速度、action_rate、torque
     """Rewards for smooth RR single-leg reference tracking."""
 
-    alive = RewTerm(func=mdp.is_alive, weight=0.1)
+    alive = RewTerm(func=mdp.is_alive, weight=0.1)  #
     track_reference = RewTerm(
         func=mdp.single_leg_track_reference_exp,
         weight=5.0,
@@ -158,9 +158,8 @@ class TerminationsCfg: # 只按时间结束
 
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
 
-
 @configclass
-class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 默认 50Hz，老入口
+class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 默认 50Hz，老入口，作用是生成Bennett机器人的环境配置
     scene: SingleLegTraceSceneCfg = SingleLegTraceSceneCfg(num_envs=4096, env_spacing=1.5, clone_in_fabric=False)  
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()
@@ -170,11 +169,27 @@ class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 默认 50Hz，老入�
     terminations: TerminationsCfg = TerminationsCfg()
 
     def __post_init__(self) -> None:
-        self.decimation = 4
+        # self.decimation = 6 #50Hz
+        # self.sim.dt = 1.0 / 300 #50Hz
+
+        # self.decimation = 5 #100Hz
+        # self.sim.dt = 1.0 / 500 #100Hz
+
+        # self.decimation = 4 #150Hz
+        # self.sim.dt = 1.0 / 600 #150Hz
+
+        # self.decimation = 3 #200Hz
+        # self.sim.dt = 1.0 / 600 #200Hz
+
+        # self.decimation = 4 #250Hz
+        # self.sim.dt = 1.0 / 1000 #250Hz
+
+        self.decimation = 4 #500Hz
+        self.sim.dt = 1.0 / 2000 #500Hz
+
         self.episode_length_s = 8.0
         self.viewer.eye = (1.8, -2.4, 1.2)
         self.viewer.lookat = (0.0, 0.0, 0.2)
-        self.sim.dt = 1.0 / 200.0
         self.sim.render_interval = self.decimation
 
 
@@ -198,7 +213,7 @@ class BennettSingleLegTrace250HzEnvCfg(BennettSingleLegTraceEnvCfg):  # 明确 2
 class BennettSingleLegTraceEnvCfg_PLAY(BennettSingleLegTrace50HzEnvCfg):
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.scene.num_envs = 16
+        self.scene.num_envs = 1
         self.scene.env_spacing = 1.5
 
 
@@ -212,14 +227,15 @@ class BennettSingleLegTrace50HzEnvCfg_PLAY(BennettSingleLegTraceEnvCfg_PLAY):
 class BennettSingleLegTrace250HzEnvCfg_PLAY(BennettSingleLegTrace250HzEnvCfg):
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.scene.num_envs = 16
+        self.scene.num_envs = 1
         self.scene.env_spacing = 1.5
 
 
 
 # python .\scripts\zero_agent.py --task=Isaac-Bennett-SingleLeg-RR-Trace-50Hz-v0 --num_envs=8
-
-
+# python .\scripts\rsl_rl\train.py --task=Isaac-Bennett-SingleLeg-RR-Trace-50Hz-v0 --headless
+# python .\scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-Play-v0 --video --checkpoint
+# tensorboard --logdir
 
 
 
