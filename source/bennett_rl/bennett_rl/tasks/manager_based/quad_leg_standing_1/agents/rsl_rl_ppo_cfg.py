@@ -1,21 +1,20 @@
-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
-# All rights reserved.
-#
-# SPDX-License-Identifier: BSD-3-Clause
-
 from isaaclab.utils import configclass
 
 from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, RslRlPpoAlgorithmCfg
 
 
 @configclass
-class BennettSingleLegTracePPORunnerCfg(RslRlOnPolicyRunnerCfg):
-    num_steps_per_env = 24
-    max_iterations = 1500
+class BennettQuadLegStandingPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+    num_steps_per_env = 32
+    max_iterations = 2000
     save_interval = 100
-    experiment_name = "single_leg_rr_trace"
+    experiment_name = "quad_leg_standing_1"
+    obs_groups = {"policy": ["policy"], "critic": ["policy"]}
+    empirical_normalization = False
+    clip_actions = 1.0
     policy = RslRlPpoActorCriticCfg(
-        init_noise_std=0.5,
+        init_noise_std=0.10,
+        noise_std_type="log",
         actor_obs_normalization=False,
         critic_obs_normalization=False,
         actor_hidden_dims=[128, 128, 64],
@@ -26,16 +25,16 @@ class BennettSingleLegTracePPORunnerCfg(RslRlOnPolicyRunnerCfg):
         value_loss_coef=1.0,
         use_clipped_value_loss=True,
         clip_param=0.2,
-        entropy_coef=0.005,
-        num_learning_epochs=5,
-        num_mini_batches=4,
-        learning_rate=5.0e-4,
-        schedule="adaptive",
+        entropy_coef=0.001,
+        num_learning_epochs=3,
+        num_mini_batches=8,
+        learning_rate=5.0e-5,
+        schedule="fixed",
         gamma=0.99,
         lam=0.95,
-        desired_kl=0.01,
+        desired_kl=0.005,
         max_grad_norm=1.0,
     )
 
 
-PPORunnerCfg = BennettSingleLegTracePPORunnerCfg
+PPORunnerCfg = BennettQuadLegStandingPPORunnerCfg

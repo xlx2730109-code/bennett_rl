@@ -3,7 +3,7 @@ from isaaclab.utils import configclass
 
 from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import LocomotionVelocityRoughEnvCfg
 
-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V3
+from bennett_rl.assets.robots.bennett import BENNETT_CFG_V1
 
 
 ACTIVE_JOINTS = [
@@ -33,7 +33,7 @@ class BennettQuadVelocityRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.decimation = 4
         self.sim.dt = 1.0 / 200.0
 
-        self.scene.robot = BENNETT_CFG_V3.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot = BENNETT_CFG_V1.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.scene.height_scanner.prim_path = "{ENV_REGEX_NS}/Robot/base"
 
         self.actions.joint_pos.joint_names = ACTIVE_JOINTS

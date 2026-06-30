@@ -27,7 +27,8 @@ parser.add_argument("--video", action="store_true", default=False, help="Record 
 # step_dt = 0.005 * 4 = 0.02 s
 # 策略频率 = 50 Hz
 parser.add_argument("--video_length", type=int, default=500, help="Length of the recorded video (in steps).")
-parser.add_argument("--video_interval", type=int, default=24000, help="Interval between video recordings (in steps).")
+parser.add_argument("--video_interval", type=int, default=12000, help="Interval between video recordings (in steps).")
+# parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
 parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
 parser.add_argument("--task", type=str, default=None, help="Name of the task.")
 parser.add_argument(

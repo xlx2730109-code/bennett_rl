@@ -25,7 +25,7 @@ class BennettQuadVelocityFlatEnvCfg_PLAY(BennettQuadVelocityFlatEnvCfg):
     def __post_init__(self) -> None:
         super().__post_init__()
 
-        self.scene.num_envs = 50
+        self.scene.num_envs = 1
         self.scene.env_spacing = 2.5
         self.observations.policy.enable_corruption = False
         self.events.base_external_force_torque = None

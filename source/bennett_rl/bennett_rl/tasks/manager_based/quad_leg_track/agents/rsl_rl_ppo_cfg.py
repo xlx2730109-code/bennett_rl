@@ -1,19 +1,14 @@
-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
-# All rights reserved.
-#
-# SPDX-License-Identifier: BSD-3-Clause
-
 from isaaclab.utils import configclass
 
 from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, RslRlPpoAlgorithmCfg
 
 
 @configclass
-class BennettSingleLegTracePPORunnerCfg(RslRlOnPolicyRunnerCfg):
+class BennettQuadLegTrackPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 24
     max_iterations = 1500
     save_interval = 100
-    experiment_name = "single_leg_rr_trace"
+    experiment_name = "quad_leg_track"
     policy = RslRlPpoActorCriticCfg(
         init_noise_std=0.5,
         actor_obs_normalization=False,
@@ -38,4 +33,4 @@ class BennettSingleLegTracePPORunnerCfg(RslRlOnPolicyRunnerCfg):
     )
 
 
-PPORunnerCfg = BennettSingleLegTracePPORunnerCfg
+PPORunnerCfg = BennettQuadLegTrackPPORunnerCfg  #作用于兼容性。可以删除
