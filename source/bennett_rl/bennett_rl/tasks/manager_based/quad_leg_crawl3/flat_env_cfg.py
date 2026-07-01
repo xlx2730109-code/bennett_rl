@@ -1,5 +1,5 @@
 """Flat-ground Bennett crawl environment with gait-scheduler observations."""
-
+# 加键盘控制，真机部署可以实现静止速度控制
 
 # 开头导入 Isaac Lab 的配置类、传感器、terrain、robot asset，以及本任务自己的 mdp。
 import isaaclab.sim as sim_utils
