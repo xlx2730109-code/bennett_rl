@@ -6,7 +6,7 @@ from . import agents
 
 
 gym.register(
-    id="Isaac-BennettRL-QuadCrawl1-Flat-v0",
+    id="Isaac-BennettRL-QuadCrawl5-Flat-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
@@ -16,7 +16,7 @@ gym.register(
 )
 
 gym.register(
-    id="Isaac-BennettRL-QuadCrawl1-Flat-Play-v0",
+    id="Isaac-BennettRL-QuadCrawl5-Flat-Play-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={

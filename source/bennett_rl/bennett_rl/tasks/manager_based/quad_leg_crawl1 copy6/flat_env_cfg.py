@@ -56,9 +56,9 @@ BASE_BODY = ["base"]    #定义 base body
 
 #影响 policy 能让关节偏离默认姿态的幅度，间接影响腿的摆动幅度。
 # policy 输出一般在 [-1, 1]，所以当前：ACTION_SCALE = 0.20 rad ≈ 11.46 deg。 1 rad ≈ 57°17'45''
-ACTION_SCALE = 0.25 #定义动作幅度（略增，让腿有更多活动范围）
+ACTION_SCALE = 0.30 #定义动作幅度（增大，让腿有更大活动范围）
 CRAWL_FREQUENCY_HZ = 0.50   #crawl 步态频率
-CRAWL_DUTY_FACTOR = 0.85    #支撑占空比
+CRAWL_DUTY_FACTOR = 0.80    #支撑占空比（降低，给摆腿留更多时间）
 CRAWL_SWING_HEIGHT = 0.025  #定义摆腿高度
 CRAWL_VX = 0.10 #定义前进速度目标
 TARGET_BASE_HEIGHT = 0.32 #约束 base 高度，防止趴低后用撑杆式步态取巧
@@ -78,8 +78,8 @@ def _make_crawl_bennett_cfg() -> ArticulationCfg:
     robot_cfg.spawn.articulation_props.solver_velocity_iteration_count = 1
     robot_cfg.actuators["base_legs"].effort_limit = 8.0
     robot_cfg.actuators["base_legs"].saturation_effort = 20.0
-    robot_cfg.actuators["base_legs"].stiffness = 40.0
-    robot_cfg.actuators["base_legs"].damping = 2
+    robot_cfg.actuators["base_legs"].stiffness = 40.0   #提高刚度，让 stance 腿更能抵抗倾斜力矩
+    robot_cfg.actuators["base_legs"].damping = 2        #增大阻尼，减少抖动
     return robot_cfg
 
 # Scene 场景配置，这块定义仿真世界里有什么，即这块负责“环境里摆什么东西”。
@@ -116,11 +116,23 @@ class BennettQuadCrawlFlatSceneCfg(InteractiveSceneCfg):
 
 
 @configclass
-class CommandsCfg:  #空的，因为现在没有用 Isaac Lab 的 command manager 随机采样速度命令。
-                    # 当前速度是固定的：CRAWL_VX=0.~ ，即任务目标固定为向前慢爬。
-    """No command manager yet; Stage-1 fixed crawl command is an observation term."""
+class CommandsCfg:
+    """Low-speed forward velocity command for training keyboard-controllable crawl."""
 
-    pass
+    base_velocity = mdp.UniformVelocityCommandCfg(
+        asset_name="robot",
+        resampling_time_range=(8.0, 12.0),
+        rel_standing_envs=0.0,
+        rel_heading_envs=0.0,
+        heading_command=False,
+        debug_vis=True,
+        ranges=mdp.UniformVelocityCommandCfg.Ranges(
+            lin_vel_x=(0.04, 0.16),
+            lin_vel_y=(0.0, 0.0),
+            ang_vel_z=(0.0, 0.0),
+            heading=None,
+        ),
+    )
 
 
 @configclass
@@ -157,10 +169,7 @@ class ObservationsCfg:  #观测配置，当前总维度是 50
     class PolicyCfg(ObsGroup):
         base_ang_vel = ObsTerm(func=mdp.base_ang_vel, clip=(-10.0, 10.0), scale=0.2)
         projected_gravity = ObsTerm(func=mdp.projected_gravity, clip=(-1.0, 1.0))   
-        velocity_commands = ObsTerm(
-            func=mdp.fixed_velocity_command,
-            params={"lin_vel_x": CRAWL_VX, "lin_vel_y": 0.0, "ang_vel_z": 0.0},
-        )
+        velocity_commands = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
         joint_pos = ObsTerm(
             func=mdp.joint_pos_rel,
             params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True)},
@@ -243,10 +252,10 @@ class EventCfg: #重置配置
 class RewardsCfg:   #奖励配置
     """Flat crawl rewards conditioned on the scheduler."""
     alive = RewTerm(func=mdp.is_alive, weight=0.1)
-    track_forward = RewTerm(    #向前速度接近 CRAWL_VX (提高权重，让行走>站立)
-        func=mdp.track_fixed_lin_vel_x_exp,
+    track_forward = RewTerm(    #向前速度跟踪 command manager 采样的低速命令
+        func=mdp.track_lin_vel_xy_exp,
         weight=2.0,
-        params={"target": CRAWL_VX, "sigma": 0.08},
+        params={"command_name": "base_velocity", "std": 0.10},
     )
     base_height = RewTerm(  #保持 base 高度，防止趴低拖拽
         func=mdp.base_height_exp,
@@ -291,7 +300,7 @@ class RewardsCfg:   #奖励配置
             "threshold": 1.0,
         },
     )
-    swing_foot_clearance = RewTerm( #摆动脚抬起来（提高权重，鼓励摆腿）
+    swing_foot_clearance = RewTerm( #摆动脚抬起来
         func=mdp.crawl_swing_foot_clearance,
         weight=1.5,
         params={
@@ -313,11 +322,17 @@ class RewardsCfg:   #奖励配置
             "max_value": 2.0,
         },
     )
-    flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-0.5)   #允许行走时轻微侧倾
+    flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-2.5)   #保持 base 水平（加重惩罚）
+    pitch_l1 = RewTerm(func=mdp.pitch_l1, weight=-5.0)   #俯仰重锤！10°→-0.87/步，15°→-1.29/步
     base_ang_vel_xy = RewTerm(func=mdp.base_ang_vel_xy_l2, weight=-0.3)    #允许行走时轻微晃动
     lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)     #不要上下乱跳
     lateral_yaw_vel = RewTerm(func=mdp.lateral_yaw_vel_l2, weight=-0.5)    #别横移/乱转
-    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.05)   #动作更平滑
+    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.02)  #适度平滑（太大会让腿不敢抬）
+    joint_vel = RewTerm(   #关节速度惩罚（减轻，不压制必要的快速摆腿）
+        func=mdp.joint_vel_l2,
+        weight=-1.0e-3,
+        params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True)},
+    )
     torques = RewTerm(  #别用太大力矩
         func=mdp.joint_torques_l2,
         weight=-2.5e-5,
@@ -333,6 +348,10 @@ class TerminationsCfg:
     base_contact = DoneTerm(
         func=mdp.illegal_contact,
         params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=BASE_BODY), "threshold": 1.0},
+    )
+    bad_orientation = DoneTerm(    #倾斜过大直接终止
+        func=mdp.bad_orientation,
+        params={"limit_angle": 0.3},  #约 17°（原来28°太松了）
     )
 
 

@@ -116,23 +116,11 @@ class BennettQuadCrawlFlatSceneCfg(InteractiveSceneCfg):
 
 
 @configclass
-class CommandsCfg:
-    """Low-speed forward velocity command for training keyboard-controllable crawl."""
+class CommandsCfg:  #空的，因为现在没有用 Isaac Lab 的 command manager 随机采样速度命令。
+                    # 当前速度是固定的：CRAWL_VX=0.~ ，即任务目标固定为向前慢爬。
+    """No command manager yet; Stage-1 fixed crawl command is an observation term."""
 
-    base_velocity = mdp.UniformVelocityCommandCfg(
-        asset_name="robot",
-        resampling_time_range=(8.0, 12.0),
-        rel_standing_envs=0.0,
-        rel_heading_envs=0.0,
-        heading_command=False,
-        debug_vis=True,
-        ranges=mdp.UniformVelocityCommandCfg.Ranges(
-            lin_vel_x=(-0.16, 0.16),
-            lin_vel_y=(0.0, 0.0),
-            ang_vel_z=(0.0, 0.0),
-            heading=None,
-        ),
-    )
+    pass
 
 
 @configclass
@@ -169,7 +157,10 @@ class ObservationsCfg:  #观测配置，当前总维度是 50
     class PolicyCfg(ObsGroup):
         base_ang_vel = ObsTerm(func=mdp.base_ang_vel, clip=(-10.0, 10.0), scale=0.2)
         projected_gravity = ObsTerm(func=mdp.projected_gravity, clip=(-1.0, 1.0))   
-        velocity_commands = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
+        velocity_commands = ObsTerm(
+            func=mdp.fixed_velocity_command,
+            params={"lin_vel_x": CRAWL_VX, "lin_vel_y": 0.0, "ang_vel_z": 0.0},
+        )
         joint_pos = ObsTerm(
             func=mdp.joint_pos_rel,
             params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True)},
@@ -252,10 +243,10 @@ class EventCfg: #重置配置
 class RewardsCfg:   #奖励配置
     """Flat crawl rewards conditioned on the scheduler."""
     alive = RewTerm(func=mdp.is_alive, weight=0.1)
-    track_forward = RewTerm(    #向前速度跟踪 command manager 采样的低速命令
-        func=mdp.track_lin_vel_xy_exp,
+    track_forward = RewTerm(    #向前速度接近 CRAWL_VX (提高权重，让行走>站立)
+        func=mdp.track_fixed_lin_vel_x_exp,
         weight=2.0,
-        params={"command_name": "base_velocity", "std": 0.10},
+        params={"target": CRAWL_VX, "sigma": 0.08},
     )
     base_height = RewTerm(  #保持 base 高度，防止趴低拖拽
         func=mdp.base_height_exp,

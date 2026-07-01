@@ -62,6 +62,8 @@ CRAWL_DUTY_FACTOR = 0.80    #支撑占空比（降低，给摆腿留更多时间
 CRAWL_SWING_HEIGHT = 0.025  #定义摆腿高度
 CRAWL_VX = 0.10 #定义前进速度目标
 TARGET_BASE_HEIGHT = 0.32 #约束 base 高度，防止趴低后用撑杆式步态取巧
+COMMAND_DEADBAND = 0.025  #速度绝对值小于该阈值时，训练成四脚站立不摆腿
+STANDING_COMMAND_PROB = 0.35  #显式零速度采样比例：让 policy 学会“不按键=不动”
 
 
 # Robot 配置
@@ -121,8 +123,8 @@ class CommandsCfg:
 
     base_velocity = mdp.UniformVelocityCommandCfg(
         asset_name="robot",
-        resampling_time_range=(8.0, 12.0),
-        rel_standing_envs=0.0,
+        resampling_time_range=(5.0, 8.0),
+        rel_standing_envs=STANDING_COMMAND_PROB,
         rel_heading_envs=0.0,
         heading_command=False,
         debug_vis=True,
@@ -183,23 +185,39 @@ class ObservationsCfg:  #观测配置，当前总维度是 50
         )
         actions = ObsTerm(func=mdp.last_action, clip=(-1.0, 1.0))
         crawl_phase = ObsTerm(  #当前 crawl 周期走到哪了
-            func=mdp.crawl_global_phase_sin_cos,
-            params={"frequency_hz": CRAWL_FREQUENCY_HZ},
+            func=mdp.commanded_crawl_global_phase_sin_cos,
+            params={
+                "frequency_hz": CRAWL_FREQUENCY_HZ,
+                "command_name": "base_velocity",
+                "command_deadband": COMMAND_DEADBAND,
+            },
         )
         crawl_leg_phase = ObsTerm(  #每条腿处于什么相位
-            func=mdp.crawl_leg_phase_sin_cos,
-            params={"frequency_hz": CRAWL_FREQUENCY_HZ, "duty_factor": CRAWL_DUTY_FACTOR},
+            func=mdp.commanded_crawl_leg_phase_sin_cos,
+            params={
+                "frequency_hz": CRAWL_FREQUENCY_HZ,
+                "duty_factor": CRAWL_DUTY_FACTOR,
+                "command_name": "base_velocity",
+                "command_deadband": COMMAND_DEADBAND,
+            },
         )
         desired_contacts = ObsTerm( #哪条腿当前应该支撑，哪条腿当前应该摆动
-            func=mdp.crawl_desired_contacts,
-            params={"frequency_hz": CRAWL_FREQUENCY_HZ, "duty_factor": CRAWL_DUTY_FACTOR},
+            func=mdp.commanded_crawl_desired_contacts,
+            params={
+                "frequency_hz": CRAWL_FREQUENCY_HZ,
+                "duty_factor": CRAWL_DUTY_FACTOR,
+                "command_name": "base_velocity",
+                "command_deadband": COMMAND_DEADBAND,
+            },
         )
         gait_params = ObsTerm(  #当前步态频率、占空比、摆腿高度是多少
-            func=mdp.crawl_gait_params,
+            func=mdp.commanded_crawl_gait_params,
             params={
                 "frequency_hz": CRAWL_FREQUENCY_HZ,
                 "duty_factor": CRAWL_DUTY_FACTOR,
                 "swing_height": CRAWL_SWING_HEIGHT,
+                "command_name": "base_velocity",
+                "command_deadband": COMMAND_DEADBAND,
             },
         )
 
@@ -278,6 +296,8 @@ class RewardsCfg:   #奖励配置
             "frequency_hz": CRAWL_FREQUENCY_HZ,
             "duty_factor": CRAWL_DUTY_FACTOR,
             "threshold": 1.0,
+            "command_name": "base_velocity",
+            "command_deadband": COMMAND_DEADBAND,
         },
     )
     missing_stance_contacts = RewTerm(  #惩罚错误步态，该支撑的脚没落地
@@ -288,6 +308,8 @@ class RewardsCfg:   #奖励配置
             "frequency_hz": CRAWL_FREQUENCY_HZ,
             "duty_factor": CRAWL_DUTY_FACTOR,
             "threshold": 1.0,
+            "command_name": "base_velocity",
+            "command_deadband": COMMAND_DEADBAND,
         },
     )
     extra_swing_contacts = RewTerm( #严重惩罚错误步态——该摆动的脚还拖地（站立时此惩罚使不动≈不划算）
@@ -298,6 +320,8 @@ class RewardsCfg:   #奖励配置
             "frequency_hz": CRAWL_FREQUENCY_HZ,
             "duty_factor": CRAWL_DUTY_FACTOR,
             "threshold": 1.0,
+            "command_name": "base_velocity",
+            "command_deadband": COMMAND_DEADBAND,
         },
     )
     swing_foot_clearance = RewTerm( #摆动脚抬起来
@@ -308,6 +332,8 @@ class RewardsCfg:   #奖励配置
             "frequency_hz": CRAWL_FREQUENCY_HZ,
             "duty_factor": CRAWL_DUTY_FACTOR,
             "target_height": CRAWL_SWING_HEIGHT,
+            "command_name": "base_velocity",
+            "command_deadband": COMMAND_DEADBAND,
         },
     )
     stance_feet_slide = RewTerm(    #惩罚错误步态，支撑脚在地上滑
@@ -320,6 +346,32 @@ class RewardsCfg:   #奖励配置
             "duty_factor": CRAWL_DUTY_FACTOR,
             "threshold": 1.0,
             "max_value": 2.0,
+            "command_name": "base_velocity",
+            "command_deadband": COMMAND_DEADBAND,
+        },
+    )
+    stand_base_still = RewTerm(  #零速度命令时 base 不应平移
+        func=mdp.stand_still_base_vel_l2,
+        weight=-1.5,
+        params={"command_name": "base_velocity", "command_deadband": COMMAND_DEADBAND},
+    )
+    stand_joint_still = RewTerm(  #零速度命令时关节不要持续摆动
+        func=mdp.stand_still_joint_vel_l2,
+        weight=-0.05,
+        params={
+            "command_name": "base_velocity",
+            "command_deadband": COMMAND_DEADBAND,
+            "asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True),
+        },
+    )
+    stand_default_pose = RewTerm(  #零速度命令时回到默认站姿附近
+        func=mdp.stand_still_joint_pose_exp,
+        weight=0.8,
+        params={
+            "command_name": "base_velocity",
+            "command_deadband": COMMAND_DEADBAND,
+            "sigma": 0.12,
+            "asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True),
         },
     )
     flat_orientation = RewTerm(func=mdp.flat_orientation_l2, weight=-2.5)   #保持 base 水平（加重惩罚）
