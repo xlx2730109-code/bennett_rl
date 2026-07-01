@@ -60,15 +60,17 @@ BASE_BODY = ["base"]    #定义 base body
 ACTION_SCALE = 0.30 #定义动作幅度（增大，让腿有更大活动范围）
 CRAWL_FREQUENCY_HZ = 0.50   #crawl 步态频率
 CRAWL_DUTY_FACTOR = 0.80    #支撑占空比（降低，给摆腿留更多时间）
-CRAWL_SWING_HEIGHT = 0.06  #定义摆腿高度
+CRAWL_SWING_HEIGHT = 0.08  #定义摆腿高度
 CRAWL_VX = 0.10 #定义前进速度目标
 TARGET_BASE_HEIGHT = 0.32 #约束 base 高度，防止趴低后用撑杆式步态取巧
 COMMAND_DEADBAND = 0.025  #速度绝对值小于该阈值时，训练成四脚站立不摆腿
 STANDING_COMMAND_PROB = 0.35  #显式零速度采样比例：让 policy 学会“不按键=不动”
-FRICTION_STATIC_RANGE = (0.6, 1.3)
+FRICTION_STATIC_RANGE = (0.6, 1.3)  #随机摩擦
 FRICTION_DYNAMIC_RANGE = (0.5, 1.1)
-BASE_MASS_SCALE_RANGE = (0.90, 1.10)
+BASE_MASS_SCALE_RANGE = (0.90, 1.10)    #随机 base 质量
+# BASE_MASS_SCALE_RANGE = (1.60, 1.60)
 BASE_COM_RANGE = {"x": (-0.02, 0.02), "y": (-0.02, 0.02), "z": (-0.01, 0.01)}
+# BASE_COM_RANGE = {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "z": (-0.02, 0.02)}
 ACTUATOR_STIFFNESS_SCALE_RANGE = (0.80, 1.20)
 ACTUATOR_DAMPING_SCALE_RANGE = (0.70, 1.30)
 
@@ -125,7 +127,7 @@ class BennettQuadCrawlFlatSceneCfg(InteractiveSceneCfg):
 
 
 @configclass
-class CommandsCfg:
+class CommandsCfg:  #命令随机化
     """Low-speed forward velocity command for training keyboard-controllable crawl."""
 
     base_velocity = mdp.UniformVelocityCommandCfg(
@@ -136,7 +138,7 @@ class CommandsCfg:
         heading_command=False,
         debug_vis=True,
         ranges=mdp.UniformVelocityCommandCfg.Ranges(
-            lin_vel_x=(-0.16, 0.16),
+            lin_vel_x=(-0.16, 0.16),    #随机采样速度命令，范围 ±0.16 m/s
             lin_vel_y=(0.0, 0.0),
             ang_vel_z=(0.0, 0.0),
             heading=None,
@@ -175,7 +177,7 @@ class ObservationsCfg:  #观测配置，当前总维度是 50
     """
 
     @configclass
-    class PolicyCfg(ObsGroup):
+    class PolicyCfg(ObsGroup):  #观测噪声
         base_ang_vel = ObsTerm(
             func=mdp.base_ang_vel,
             noise=Unoise(n_min=-0.10, n_max=0.10),
@@ -185,7 +187,7 @@ class ObservationsCfg:  #观测配置，当前总维度是 50
         projected_gravity = ObsTerm(
             func=mdp.projected_gravity,
             noise=Unoise(n_min=-0.03, n_max=0.03),
-            clip=(-1.0, 1.0),
+            clip=(-1.0, 1.0),   
         )
         velocity_commands = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
         joint_pos = ObsTerm(

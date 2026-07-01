@@ -10,6 +10,7 @@ from isaaclab.assets.articulation import ArticulationCfg
 # .parent：获取该文件所在的父级目录路径（即文件夹）。
 # / "..."：使用 / 运算符（Python 路径拼接语法）将父目录与目标子文件/夹 ... 组合。
 BENNETT_USD_PATH = str(Path(__file__).resolve().parent / "Urdf_Bennett_1" / "urdf" / "Urdf_Bennett_1.usd")
+# BENNETT_USD_PATH = str(Path(__file__).resolve().parent / "Urdf_Bennett_2" / "urdf" / "Urdf_Bennett_2.usd")
 
 
 def _make_bennett_cfg(usd_path: str, actuator_cfg: dict, joint_pos: dict) -> ArticulationCfg:
