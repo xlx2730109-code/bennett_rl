@@ -13,7 +13,7 @@ class BennettQuadVelocityRoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 24
     max_iterations = 1500
     save_interval = 50
-    experiment_name = "Bennett_quad_velocity_rough"
+    experiment_name = "Bennett_quad_velocity1_rough"
     policy = RslRlPpoActorCriticCfg(
         init_noise_std=1.0,
         actor_obs_normalization=False,
@@ -44,9 +44,10 @@ class BennettQuadVelocityFlatPPORunnerCfg(BennettQuadVelocityRoughPPORunnerCfg):
         super().__post_init__()
 
         self.max_iterations = 1000
-        self.experiment_name = "Bennett_quad_velocity_flat"
-        self.policy.actor_hidden_dims = [128, 128, 128]
-        self.policy.critic_hidden_dims = [128, 128, 128]
+        self.save_interval = 100
+        self.experiment_name = "Bennett_quad_velocity1_flat"
+        self.policy.actor_hidden_dims = [256, 256, 128]
+        self.policy.critic_hidden_dims = [256, 256, 128]
 
 
 PPORunnerCfg = BennettQuadVelocityFlatPPORunnerCfg

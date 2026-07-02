@@ -17,7 +17,7 @@ from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils import configclass
 from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
 
-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V1
+from bennett_rl.assets.robots.bennett311 import BENNETT_CFG_V1
 
 from . import mdp
 
@@ -61,7 +61,7 @@ ACTION_SCALE = 0.30 #定义动作幅度（增大，让腿有更大活动范围�
 CRAWL_FREQUENCY_HZ = 0.50   #crawl 步态频率
 CRAWL_DUTY_FACTOR = 0.80    #支撑占空比（降低，给摆腿留更多时间）
 # CRAWL_SWING_HEIGHT = 0.08  #定义摆腿高度
-CRAWL_SWING_HEIGHT = 0.1  #定义摆腿高度
+CRAWL_SWING_HEIGHT = 0.2  #定义摆腿高度
 CRAWL_VX = 0.10 #定义前进速度目标
 TARGET_BASE_HEIGHT = 0.32 #约束 base 高度，防止趴低后用撑杆式步态取巧
 COMMAND_DEADBAND = 0.025  #速度绝对值小于该阈值时，训练成四脚站立不摆腿
@@ -521,4 +521,4 @@ class BennettQuadCrawlFlatEnvCfg_PLAY(BennettQuadCrawlFlatEnvCfg):
 
 
 
-#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-QuadCrawl31-Flat-Play-v0 --video --keyboard --checkpoint
+#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-QuadCrawl311-Flat-Play-v0 --video --keyboard --checkpoint

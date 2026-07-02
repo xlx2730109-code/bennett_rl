@@ -111,7 +111,6 @@ from isaaclab.envs import (
     ManagerBasedRLEnvCfg,
     multi_agent_to_single_agent,
 )
-from isaaclab.managers import ObservationTermCfg as ObsTerm
 from isaaclab.utils.assets import retrieve_file_path
 from isaaclab.utils.dict import print_dict
 
@@ -181,11 +180,24 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
                 omega_z_sensitivity=yaw_sensitivity,
             )
         )
-        env_cfg.observations.policy.velocity_commands = ObsTerm(
-            func=lambda env: keyboard_controller.advance().unsqueeze(0).to(env.device),
-        )
-        print("[INFO] Enabled keyboard command control for policy velocity_commands:")
+        # Keep all command-conditioned observations consistent.  Crawl policies use not only
+        # velocity_commands, but also phase/contact/gait observations that read commands.base_velocity.
+        # The actual command tensor is synchronized into the command manager inside the play loop.
+        for key_name in ("PAGE_UP", "PAGEUP", "PGUP"):
+            keyboard_controller._INPUT_KEY_MAPPING[key_name] = torch.tensor(
+                [1.0, 0.0, 0.0], dtype=torch.float32
+            ).numpy() * x_sensitivity
+        for key_name in ("PAGE_DOWN", "PAGEDOWN", "PGDN"):
+            keyboard_controller._INPUT_KEY_MAPPING[key_name] = torch.tensor(
+                [-1.0, 0.0, 0.0], dtype=torch.float32
+            ).numpy() * x_sensitivity
+        env_cfg.commands.base_velocity.rel_standing_envs = 0.0
+        env_cfg.commands.base_velocity.rel_heading_envs = 0.0
+        env_cfg.commands.base_velocity.heading_command = False
+        env_cfg.commands.base_velocity.resampling_time_range = (1.0e9, 1.0e9)
+        print("[INFO] Enabled keyboard command control for commands.base_velocity:")
         print(f"       x={x_sensitivity:.3f} m/s, y={y_sensitivity:.3f} m/s, yaw={yaw_sensitivity:.3f} rad/s")
+        print("       forward/backward: PgUp/PgDn, Up/Down, or Numpad 8/2")
         print(keyboard_controller)
 
     # set the environment seed
@@ -235,6 +247,8 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     # fetch simulation step dt for video FPS calculation and real-time throttling
     dt = env.unwrapped.step_dt
 
+    raw_env = env.unwrapped
+
     # wrap for video recording
     if args_cli.video:
         if args_cli.video_length is None:
@@ -256,6 +270,21 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
 
     # wrap around environment for rsl-rl
     env = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions)
+
+    def _sync_keyboard_base_velocity_command():
+        if keyboard_controller is None:
+            return
+        command_term = raw_env.command_manager.get_term("base_velocity")
+        command = keyboard_controller.advance().to(command_term.command.device).unsqueeze(0)
+        if command_term.command.shape[0] != 1:
+            raise RuntimeError("--keyboard play expects exactly one environment.")
+        command_term.vel_command_b[:] = command
+        moving = torch.linalg.norm(command[:, :2], dim=1) > 1.0e-6
+        moving = torch.logical_or(moving, torch.abs(command[:, 2]) > 1.0e-6)
+        if hasattr(command_term, "is_standing_env"):
+            command_term.is_standing_env[:] = torch.logical_not(moving)
+        if hasattr(command_term, "is_heading_env"):
+            command_term.is_heading_env[:] = False
 
     print(f"[INFO]: Loading model checkpoint from: {resume_path}")
     # load previously trained model
@@ -293,6 +322,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     export_policy_as_onnx(policy_nn, normalizer=normalizer, path=export_model_dir, filename="policy.onnx")
 
     # reset environment
+    _sync_keyboard_base_velocity_command()
     obs = env.get_observations()
     timestep = 0
     # simulate environment
@@ -300,6 +330,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         start_time = time.time()
         # run everything in inference mode
         with torch.inference_mode():
+            _sync_keyboard_base_velocity_command()
             # agent stepping
             actions = policy(obs)
             # env stepping

@@ -17,7 +17,7 @@ from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils import configclass
 from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
 
-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V1
+from bennett_rl.assets.robots.bennett311 import BENNETT_CFG_V1
 
 from . import mdp
 
@@ -61,19 +61,19 @@ ACTION_SCALE = 0.30 #定义动作幅度（增大，让腿有更大活动范围�
 CRAWL_FREQUENCY_HZ = 0.50   #crawl 步态频率
 CRAWL_DUTY_FACTOR = 0.80    #支撑占空比（降低，给摆腿留更多时间）
 # CRAWL_SWING_HEIGHT = 0.08  #定义摆腿高度
-CRAWL_SWING_HEIGHT = 0.1  #定义摆腿高度
+CRAWL_SWING_HEIGHT = 0.12  #定义摆腿高度；0.20 过高，0.10 又让摆腿偏弱
 CRAWL_VX = 0.10 #定义前进速度目标
-TARGET_BASE_HEIGHT = 0.32 #约束 base 高度，防止趴低后用撑杆式步态取巧
+TARGET_BASE_HEIGHT = 0.33 #约束 base 高度，防止趴低后用撑杆式步态取巧
 COMMAND_DEADBAND = 0.025  #速度绝对值小于该阈值时，训练成四脚站立不摆腿
 STANDING_COMMAND_PROB = 0.35  #显式零速度采样比例：让 policy 学会“不按键=不动”
-FRICTION_STATIC_RANGE = (0.6, 1.3)  #随机摩擦
-FRICTION_DYNAMIC_RANGE = (0.5, 1.1)
+FRICTION_STATIC_RANGE = (0.6, 1.3)  #随机静态摩擦
+FRICTION_DYNAMIC_RANGE = (0.5, 1.1)     #随机动态摩擦
 # BASE_MASS_SCALE_RANGE = (0.90, 1.10)    #随机 base 质量
-BASE_MASS_SCALE_RANGE = (1.60, 1.60)
-BASE_COM_RANGE = {"x": (-0.02, 0.02), "y": (-0.02, 0.02), "z": (-0.01, 0.01)}
+BASE_MASS_SCALE_RANGE = (1.20, 1.60)
+BASE_COM_RANGE = {"x": (-0.02, 0.02), "y": (-0.02, 0.02), "z": (-0.01, 0.01)}   #随机 base 重心偏移
 # BASE_COM_RANGE = {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "z": (-0.02, 0.02)}
-ACTUATOR_STIFFNESS_SCALE_RANGE = (0.80, 1.20)
-ACTUATOR_DAMPING_SCALE_RANGE = (0.70, 1.30)
+ACTUATOR_STIFFNESS_SCALE_RANGE = (0.70, 1.10)   #随机电机刚度
+ACTUATOR_DAMPING_SCALE_RANGE = (0.80, 1.40) #随机电机阻尼
 
 
 # Robot 配置
@@ -88,10 +88,10 @@ def _make_crawl_bennett_cfg() -> ArticulationCfg:
     robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
     robot_cfg.spawn.articulation_props.fix_root_link = False
     robot_cfg.spawn.articulation_props.solver_velocity_iteration_count = 1
-    robot_cfg.actuators["base_legs"].effort_limit = 8.0
-    robot_cfg.actuators["base_legs"].saturation_effort = 20.0
-    robot_cfg.actuators["base_legs"].stiffness = 40.0   #提高刚度，让 stance 腿更能抵抗倾斜力矩
-    robot_cfg.actuators["base_legs"].damping = 2        #增大阻尼，减少抖动
+    robot_cfg.actuators["base_legs"].effort_limit = 10.0
+    robot_cfg.actuators["base_legs"].saturation_effort = 12.0
+    robot_cfg.actuators["base_legs"].stiffness = 45.0   #提高刚度，让 stance 腿更能抵抗倾斜力矩
+    robot_cfg.actuators["base_legs"].damping = 2.5      #增大阻尼，减少抖动
     return robot_cfg
 
 # Scene 场景配置，这块定义仿真世界里有什么，即这块负责“环境里摆什么东西”。
@@ -352,12 +352,12 @@ class RewardsCfg:   #奖励配置
     )
     base_height = RewTerm(  #保持 base 高度，防止趴低拖拽
         func=mdp.base_height_exp,
-        weight=1.5,
-        params={"target_height": TARGET_BASE_HEIGHT, "sigma": 0.04},
+        weight=2.2,
+        params={"target_height": TARGET_BASE_HEIGHT, "sigma": 0.035},
     )
     default_joint_pose = RewTerm(   #防止腿大幅偏离默认姿态，抑制撑杆式伸腿
         func=mdp.default_joint_pose_exp,
-        weight=0.8,
+        weight=0.7,
         params={
             "sigma": 0.18,
             "asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True),
@@ -365,7 +365,7 @@ class RewardsCfg:   #奖励配置
     )
     crawl_contact_match = RewTerm(  #脚接触状态匹配 scheduler (降低权重，与下面两项有重叠)
         func=mdp.crawl_contact_match,
-        weight=0.5,
+        weight=0.8,
         params={
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True),
             "frequency_hz": CRAWL_FREQUENCY_HZ,
@@ -377,7 +377,7 @@ class RewardsCfg:   #奖励配置
     )
     missing_stance_contacts = RewTerm(  #惩罚错误步态，该支撑的脚没落地
         func=mdp.crawl_missing_stance_contacts,
-        weight=-1.0,
+        weight=-1.8,
         params={
             "sensor_cfg": SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True),
             "frequency_hz": CRAWL_FREQUENCY_HZ,
@@ -401,7 +401,7 @@ class RewardsCfg:   #奖励配置
     )
     swing_foot_clearance = RewTerm( #摆动脚抬起来
         func=mdp.crawl_swing_foot_clearance,
-        weight=1.5,
+        weight=1.3,
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names=FOOT_BODIES, preserve_order=True),
             "frequency_hz": CRAWL_FREQUENCY_HZ,
@@ -462,7 +462,7 @@ class RewardsCfg:   #奖励配置
     )
     torques = RewTerm(  #别用太大力矩
         func=mdp.joint_torques_l2,
-        weight=-2.5e-5,
+        weight=-1.0e-5,
         params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True)},
     )
 
@@ -521,4 +521,4 @@ class BennettQuadCrawlFlatEnvCfg_PLAY(BennettQuadCrawlFlatEnvCfg):
 
 
 
-#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-QuadCrawl31-Flat-Play-v0 --video --keyboard --checkpoint
+#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-QuadCrawl311-Flat-Play-v0 --video --keyboard --checkpoint
