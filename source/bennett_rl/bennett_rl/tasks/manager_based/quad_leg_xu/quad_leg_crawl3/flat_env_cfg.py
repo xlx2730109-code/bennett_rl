@@ -1,5 +1,5 @@
-"""Flat-ground Bennett crawl environment with gait-scheduler observations."""
-# 加键盘控制，真机部署可以实现静止速度控制,加大了扰动
+"""Flat-ground Bennett crawl1 environment copied from the last known walking crawl baseline."""
+# 基线来源：logs/rsl_rl/Bennett_quad_crawl_flat31/2026-07-01_13-38-58
 
 # 开头导入 Isaac Lab 的配置类、传感器、terrain、robot asset，以及本任务自己的 mdp。
 import isaaclab.sim as sim_utils
@@ -17,7 +17,7 @@ from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils import configclass
 from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
 
-from bennett_rl.assets.robots.bennett311 import BENNETT_CFG_V1
+from bennett_rl.assets.robots.bennett import BENNETT_CFG_V1
 
 from . import mdp
 
@@ -56,22 +56,23 @@ FOOT_BODIES = ["FL_1", "FR_1", "RL_1", "RR_1"]  #定义哪些 body 是脚
 BASE_BODY = ["base"]    #定义 base body
 
 #影响 policy 能让关节偏离默认姿态的幅度，间接影响腿的摆动幅度。
-# policy 输出一般在 [-1, 1]，所以当前：ACTION_SCALE = 0.20 rad ≈ 11.46 deg。 1 rad ≈ 57°17'45''
+# policy 输出一般在 [-1, 1]，所以当前：ACTION_SCALE = 0.30 rad ≈ 17.19 deg。 1 rad ≈ 57°17'45''
 ACTION_SCALE = 0.30 #定义动作幅度（增大，让腿有更大活动范围）
 CRAWL_FREQUENCY_HZ = 0.50   #crawl 步态频率
 CRAWL_DUTY_FACTOR = 0.80    #支撑占空比（降低，给摆腿留更多时间）
 # CRAWL_SWING_HEIGHT = 0.08  #定义摆腿高度
-CRAWL_SWING_HEIGHT = 0.06  #参考 Bennett_quad_crawl_flat31 成功 run；过高会让 311 直接破坏拖步稳定性
+CRAWL_SWING_HEIGHT = 0.06  #成功 run 的摆腿高度；先保证能走起来，不再盲目抬高
 CRAWL_VX = 0.10 #定义前进速度目标
 TARGET_BASE_HEIGHT = 0.32 #约束 base 高度，防止趴低后用撑杆式步态取巧
 COMMAND_DEADBAND = 0.025  #速度绝对值小于该阈值时，训练成四脚站立不摆腿
 STANDING_COMMAND_PROB = 0.35  #显式零速度采样比例：让 policy 学会“不按键=不动”
-FRICTION_STATIC_RANGE = (0.55, 1.35)  #比成功 run 略宽，但不过分破坏接触
-FRICTION_DYNAMIC_RANGE = (0.45, 1.15)
-BASE_MASS_SCALE_RANGE = (0.85, 1.25)  #扰动加大，但不再固定变成 1.2~1.6 倍重机身
-BASE_COM_RANGE = {"x": (-0.03, 0.03), "y": (-0.03, 0.03), "z": (-0.015, 0.015)}
-ACTUATOR_STIFFNESS_SCALE_RANGE = (0.70, 1.25)
-ACTUATOR_DAMPING_SCALE_RANGE = (0.65, 1.45)
+FRICTION_STATIC_RANGE = (0.6, 1.3)  #随机摩擦
+FRICTION_DYNAMIC_RANGE = (0.5, 1.1)
+BASE_MASS_SCALE_RANGE = (0.90, 1.10)    #成功 run 的随机 base 质量范围
+BASE_COM_RANGE = {"x": (-0.02, 0.02), "y": (-0.02, 0.02), "z": (-0.01, 0.01)}
+# BASE_COM_RANGE = {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "z": (-0.02, 0.02)}
+ACTUATOR_STIFFNESS_SCALE_RANGE = (0.80, 1.20)
+ACTUATOR_DAMPING_SCALE_RANGE = (0.70, 1.30)
 
 
 # Robot 配置
@@ -88,8 +89,8 @@ def _make_crawl_bennett_cfg() -> ArticulationCfg:
     robot_cfg.spawn.articulation_props.solver_velocity_iteration_count = 1
     robot_cfg.actuators["base_legs"].effort_limit = 8.0
     robot_cfg.actuators["base_legs"].saturation_effort = 20.0
-    robot_cfg.actuators["base_legs"].stiffness = 40.0   #回到成功 crawl31 的 actuator 骨架
-    robot_cfg.actuators["base_legs"].damping = 2.0
+    robot_cfg.actuators["base_legs"].stiffness = 40.0   #提高刚度，让 stance 腿更能抵抗倾斜力矩
+    robot_cfg.actuators["base_legs"].damping = 2        #增大阻尼，减少抖动
     return robot_cfg
 
 # Scene 场景配置，这块定义仿真世界里有什么，即这块负责“环境里摆什么东西”。
@@ -300,8 +301,8 @@ class EventCfg: #重置配置
         mode="reset",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names=BASE_BODY),
-            "force_range": (-4.0, 4.0),
-            "torque_range": (-0.7, 0.7),
+            "force_range": (-3.0, 3.0),
+            "torque_range": (-0.5, 0.5),
         },
     )
 
@@ -309,14 +310,14 @@ class EventCfg: #重置配置
         func=mdp.reset_root_state_uniform,
         mode="reset",
         params={
-            "pose_range": {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "yaw": (-0.12, 0.12)},
+            "pose_range": {"x": (-0.03, 0.03), "y": (-0.03, 0.03), "yaw": (-0.10, 0.10)},
             "velocity_range": {
-                "x": (-0.06, 0.06),
-                "y": (-0.06, 0.06),
+                "x": (-0.05, 0.05),
+                "y": (-0.05, 0.05),
                 "z": (0.0, 0.0),
-                "roll": (-0.06, 0.06),
-                "pitch": (-0.06, 0.06),
-                "yaw": (-0.06, 0.06),
+                "roll": (-0.05, 0.05),
+                "pitch": (-0.05, 0.05),
+                "yaw": (-0.05, 0.05),
             },
         },
     )
@@ -326,7 +327,7 @@ class EventCfg: #重置配置
         mode="reset",
         params={
             "asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True),
-            "position_range": (-0.06, 0.06),  #比成功 run 略大，避免过拟合单一初始姿态
+            "position_range": (-0.05, 0.05),  #小范围随机初始关节偏移，防止完全对称过拟合
             "velocity_range": (0.0, 0.0),
         },
     )
@@ -334,8 +335,8 @@ class EventCfg: #重置配置
     push_robot = EventTerm( #训练中随机轻推，增加鲁棒性
         func=mdp.push_by_setting_velocity,
         mode="interval",
-        params={"velocity_range": {"x": (-0.50, 0.50), "y": (-0.40, 0.40), "yaw": (-0.30, 0.30)}},
-        interval_range_s=(5.0, 10.0),
+        params={"velocity_range": {"x": (-0.45, 0.45), "y": (-0.35, 0.35), "yaw": (-0.25, 0.25)}},
+        interval_range_s=(6.0, 12.0),
     )
 
 
@@ -481,7 +482,7 @@ class TerminationsCfg:
 
 
 @configclass
-class BennettQuadCrawlFlatEnvCfg(ManagerBasedRLEnvCfg):
+class BennettCrawl1FlatEnvCfg(ManagerBasedRLEnvCfg):
     """Flat crawl environment with scheduler-conditioned observations."""
 
     scene: BennettQuadCrawlFlatSceneCfg = BennettQuadCrawlFlatSceneCfg(
@@ -509,14 +510,15 @@ class BennettQuadCrawlFlatEnvCfg(ManagerBasedRLEnvCfg):
 
 
 @configclass
-class BennettQuadCrawlFlatEnvCfg_PLAY(BennettQuadCrawlFlatEnvCfg):
+class BennettCrawl1FlatEnvCfg_PLAY(BennettCrawl1FlatEnvCfg):
     def __post_init__(self) -> None:
         super().__post_init__()
-        self.scene.num_envs = 1
+        self.scene.num_envs = 5
         self.scene.env_spacing = 1.5
         self.observations.policy.enable_corruption = False
 
 
 
 
-#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-QuadCrawl311-Flat-Play-v0 --video --keyboard --checkpoint
+#  python .\scripts\rsl_rl\train.py --task Isaac-BennettRL-Flat-Crawl1-v0 --headless
+#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-Flat-Crawl1-Play-v0 --video --keyboard --checkpoint
