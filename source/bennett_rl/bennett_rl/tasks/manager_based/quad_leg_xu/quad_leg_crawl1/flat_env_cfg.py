@@ -1,5 +1,7 @@
-"""Flat-ground Bennett crawl1 environment copied from the last known walking crawl baseline."""
-# 基线来源：logs/rsl_rl/Bennett_quad_crawl_flat31/2026-07-01_13-38-58
+# 保留
+# 训练的还可以，真机迁移后，走的比较笨重，晃动比较大，需要进一步调参。
+
+
 
 # 开头导入 Isaac Lab 的配置类、传感器、terrain、robot asset，以及本任务自己的 mdp。
 import isaaclab.sim as sim_utils

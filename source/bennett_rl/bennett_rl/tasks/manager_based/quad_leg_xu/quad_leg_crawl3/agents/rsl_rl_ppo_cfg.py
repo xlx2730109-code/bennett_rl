@@ -1,4 +1,4 @@
-"""RSL-RL PPO configuration for Bennett crawl1."""
+"""RSL-RL PPO configuration for Bennett crawl3."""
 
 from isaaclab.utils import configclass
 
@@ -6,11 +6,11 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
 
 
 @configclass
-class BennettCrawl1FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
-    num_steps_per_env = 100          # 0.02s * 100 = 2.0s = 一个完整步态周期（0.5Hz）
+class BennettCrawl3FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+    num_steps_per_env = 300          # 150Hz 下 300 step = 2.0s = 一个完整步态周期（0.5Hz）
     max_iterations = 2000
     save_interval = 50
-    experiment_name = "quad_leg_xu/quad_leg_crawl1"
+    experiment_name = "quad_leg_xu/quad_leg_crawl3"
     policy = RslRlPpoActorCriticCfg(
         init_noise_std=1.0,          # 更高的初始探索噪声
         actor_obs_normalization=False, # 观测已通过 clip/scale 归一化，不需要网络内再归一化
@@ -35,4 +35,4 @@ class BennettCrawl1FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     )
 
 
-PPORunnerCfg = BennettCrawl1FlatPPORunnerCfg
+PPORunnerCfg = BennettCrawl3FlatPPORunnerCfg

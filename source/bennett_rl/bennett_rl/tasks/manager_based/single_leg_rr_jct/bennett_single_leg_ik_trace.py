@@ -126,12 +126,12 @@ for parent in THIS_DIR.parents:
             sys.path.insert(0, str(parent))
         break
 
-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V3  # noqa: E402
+from bennett_rl.assets.robots.bennett import BENNETT_CFG_V5  # noqa: E402
 
 
 def make_robot() -> Articulation:
     """Spawn Bennett with a fixed root link."""
-    robot_cfg = BENNETT_CFG_V3.copy()
+    robot_cfg = BENNETT_CFG_V5.copy()
     robot_cfg.prim_path = "/World/Robot"
     robot_cfg.spawn.articulation_props.fix_root_link = True
     return Articulation(cfg=robot_cfg)

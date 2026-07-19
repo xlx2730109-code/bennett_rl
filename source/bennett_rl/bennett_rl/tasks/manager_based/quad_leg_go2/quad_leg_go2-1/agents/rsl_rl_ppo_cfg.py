@@ -9,11 +9,11 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
 
 
 @configclass
-class UnitreeGo2RoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+class QuadLegGo21RoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 24
-    max_iterations = 20000
+    max_iterations = 1500
     save_interval = 50
-    experiment_name = "quad_leg_go2/quad_leg_go2-1_rough"
+    experiment_name = "quad_leg_go2/quad_leg_go2-1/rough"
     policy = RslRlPpoActorCriticCfg(
         init_noise_std=1.0,
         actor_obs_normalization=False,
@@ -39,11 +39,11 @@ class UnitreeGo2RoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
 
 
 @configclass
-class UnitreeGo2FlatPPORunnerCfg(UnitreeGo2RoughPPORunnerCfg):
+class QuadLegGo21FlatPPORunnerCfg(QuadLegGo21RoughPPORunnerCfg):
     def __post_init__(self):
         super().__post_init__()
 
-        self.max_iterations = 20000
-        self.experiment_name = "quad_leg_go2/quad_leg_go2-1"
-        self.policy.actor_hidden_dims = [512, 256, 128]
-        self.policy.critic_hidden_dims = [512, 256, 128]
+        self.max_iterations = 300
+        self.experiment_name = "quad_leg_go2/quad_leg_go2-1/flat"
+        self.policy.actor_hidden_dims = [128, 128, 128]
+        self.policy.critic_hidden_dims = [128, 128, 128]

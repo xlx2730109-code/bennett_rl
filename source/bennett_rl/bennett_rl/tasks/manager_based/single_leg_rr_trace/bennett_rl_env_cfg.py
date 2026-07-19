@@ -16,7 +16,7 @@ from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils import configclass
 
-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V3
+from bennett_rl.assets.robots.bennett import BENNETT_CFG_V5
 
 from . import mdp
 
@@ -35,7 +35,7 @@ ACTIVE_LEG_JOINTS = [
 
 
 def _make_fixed_bennett_cfg() -> ArticulationCfg:   #作用：生成固定基座Bennett机器人的配置
-    robot_cfg = BENNETT_CFG_V3.copy()
+    robot_cfg = BENNETT_CFG_V5.copy()
     robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
     robot_cfg.spawn.articulation_props.fix_root_link = True
     return robot_cfg

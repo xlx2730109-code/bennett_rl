@@ -76,6 +76,16 @@ def lateral_yaw_vel_l2(
     return torch.square(asset.data.root_lin_vel_b[:, 1]) + torch.square(asset.data.root_ang_vel_b[:, 2])
 
 
+def root_y_position_l2(
+    env: ManagerBasedRLEnv,
+    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+) -> torch.Tensor:
+    """Penalize lateral world-position drift away from each env origin."""
+    asset: Articulation = env.scene[asset_cfg.name]
+    y_offset = asset.data.root_pos_w[:, 1] - env.scene.env_origins[:, 1]
+    return torch.square(y_offset)
+
+
 def base_ang_vel_xy_l2(
     env: ManagerBasedRLEnv,
     asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),

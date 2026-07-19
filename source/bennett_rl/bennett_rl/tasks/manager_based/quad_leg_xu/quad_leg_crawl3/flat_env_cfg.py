@@ -1,5 +1,4 @@
-"""Flat-ground Bennett crawl1 environment copied from the last known walking crawl baseline."""
-# 基线来源：logs/rsl_rl/Bennett_quad_crawl_flat31/2026-07-01_13-38-58
+# 相较于2，只把频率改成了150Hz，完全不行
 
 # 开头导入 Isaac Lab 的配置类、传感器、terrain、robot asset，以及本任务自己的 mdp。
 import isaaclab.sim as sim_utils
@@ -66,13 +65,13 @@ CRAWL_VX = 0.10 #定义前进速度目标
 TARGET_BASE_HEIGHT = 0.32 #约束 base 高度，防止趴低后用撑杆式步态取巧
 COMMAND_DEADBAND = 0.025  #速度绝对值小于该阈值时，训练成四脚站立不摆腿
 STANDING_COMMAND_PROB = 0.35  #显式零速度采样比例：让 policy 学会“不按键=不动”
-FRICTION_STATIC_RANGE = (0.6, 1.3)  #随机摩擦
-FRICTION_DYNAMIC_RANGE = (0.5, 1.1)
-BASE_MASS_SCALE_RANGE = (0.90, 1.10)    #成功 run 的随机 base 质量范围
-BASE_COM_RANGE = {"x": (-0.02, 0.02), "y": (-0.02, 0.02), "z": (-0.01, 0.01)}
+FRICTION_STATIC_RANGE = (0.45, 1.60)  #随机摩擦
+FRICTION_DYNAMIC_RANGE = (0.40, 1.35)
+BASE_MASS_SCALE_RANGE = (0.85, 1.15)    #成功 run 的随机 base 质量范围上轻微加宽
+BASE_COM_RANGE = {"x": (-0.03, 0.03), "y": (-0.03, 0.03), "z": (-0.015, 0.015)}
 # BASE_COM_RANGE = {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "z": (-0.02, 0.02)}
-ACTUATOR_STIFFNESS_SCALE_RANGE = (0.80, 1.20)
-ACTUATOR_DAMPING_SCALE_RANGE = (0.70, 1.30)
+ACTUATOR_STIFFNESS_SCALE_RANGE = (0.75, 1.25)
+ACTUATOR_DAMPING_SCALE_RANGE = (0.65, 1.40)
 
 
 # Robot 配置
@@ -301,8 +300,8 @@ class EventCfg: #重置配置
         mode="reset",
         params={
             "asset_cfg": SceneEntityCfg("robot", body_names=BASE_BODY),
-            "force_range": (-3.0, 3.0),
-            "torque_range": (-0.5, 0.5),
+            "force_range": (-4.0, 4.0),
+            "torque_range": (-0.7, 0.7),
         },
     )
 
@@ -310,14 +309,14 @@ class EventCfg: #重置配置
         func=mdp.reset_root_state_uniform,
         mode="reset",
         params={
-            "pose_range": {"x": (-0.03, 0.03), "y": (-0.03, 0.03), "yaw": (-0.10, 0.10)},
+            "pose_range": {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "yaw": (-0.12, 0.12)},
             "velocity_range": {
-                "x": (-0.05, 0.05),
-                "y": (-0.05, 0.05),
+                "x": (-0.07, 0.07),
+                "y": (-0.07, 0.07),
                 "z": (0.0, 0.0),
                 "roll": (-0.05, 0.05),
                 "pitch": (-0.05, 0.05),
-                "yaw": (-0.05, 0.05),
+                "yaw": (-0.07, 0.07),
             },
         },
     )
@@ -327,7 +326,7 @@ class EventCfg: #重置配置
         mode="reset",
         params={
             "asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True),
-            "position_range": (-0.05, 0.05),  #小范围随机初始关节偏移，防止完全对称过拟合
+            "position_range": (-0.06, 0.06),  #小范围随机初始关节偏移，防止完全对称过拟合
             "velocity_range": (0.0, 0.0),
         },
     )
@@ -335,8 +334,8 @@ class EventCfg: #重置配置
     push_robot = EventTerm( #训练中随机轻推，增加鲁棒性
         func=mdp.push_by_setting_velocity,
         mode="interval",
-        params={"velocity_range": {"x": (-0.45, 0.45), "y": (-0.35, 0.35), "yaw": (-0.25, 0.25)}},
-        interval_range_s=(6.0, 12.0),
+        params={"velocity_range": {"x": (-0.55, 0.55), "y": (-0.45, 0.45), "yaw": (-0.35, 0.35)}},
+        interval_range_s=(5.0, 10.0),
     )
 
 
@@ -452,11 +451,12 @@ class RewardsCfg:   #奖励配置
     pitch_l1 = RewTerm(func=mdp.pitch_l1, weight=-5.0)   #俯仰重锤！10°→-0.87/步，15°→-1.29/步
     base_ang_vel_xy = RewTerm(func=mdp.base_ang_vel_xy_l2, weight=-0.3)    #允许行走时轻微晃动
     lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)     #不要上下乱跳
-    lateral_yaw_vel = RewTerm(func=mdp.lateral_yaw_vel_l2, weight=-0.5)    #别横移/乱转
-    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.02)  #适度平滑（太大会让腿不敢抬）
+    lateral_yaw_vel = RewTerm(func=mdp.lateral_yaw_vel_l2, weight=-1.0)    #别横移/乱转
+    straight_path_y = RewTerm(func=mdp.root_y_position_l2, weight=-1.0)    #约束世界 y 偏移，减少走着走着路线偏掉
+    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.04)  #适度平滑（太大会让腿不敢抬）
     joint_vel = RewTerm(   #关节速度惩罚（减轻，不压制必要的快速摆腿）
         func=mdp.joint_vel_l2,
-        weight=-1.0e-3,
+        weight=-1.5e-3,
         params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True)},
     )
     torques = RewTerm(  #别用太大力矩
@@ -482,7 +482,7 @@ class TerminationsCfg:
 
 
 @configclass
-class BennettCrawl1FlatEnvCfg(ManagerBasedRLEnvCfg):
+class BennettCrawl3FlatEnvCfg(ManagerBasedRLEnvCfg):
     """Flat crawl environment with scheduler-conditioned observations."""
 
     scene: BennettQuadCrawlFlatSceneCfg = BennettQuadCrawlFlatSceneCfg(
@@ -497,7 +497,7 @@ class BennettCrawl1FlatEnvCfg(ManagerBasedRLEnvCfg):
 
     def __post_init__(self) -> None:
         self.decimation = 4
-        self.sim.dt = 0.005
+        self.sim.dt = 1.0 / 600.0
         self.episode_length_s = 20.0
         self.viewer.eye = (1.8, -2.4, 1.2)
         self.viewer.lookat = (0.0, 0.0, 0.2)
@@ -510,7 +510,7 @@ class BennettCrawl1FlatEnvCfg(ManagerBasedRLEnvCfg):
 
 
 @configclass
-class BennettCrawl1FlatEnvCfg_PLAY(BennettCrawl1FlatEnvCfg):
+class BennettCrawl3FlatEnvCfg_PLAY(BennettCrawl3FlatEnvCfg):
     def __post_init__(self) -> None:
         super().__post_init__()
         self.scene.num_envs = 5
@@ -520,5 +520,5 @@ class BennettCrawl1FlatEnvCfg_PLAY(BennettCrawl1FlatEnvCfg):
 
 
 
-#  python .\scripts\rsl_rl\train.py --task Isaac-BennettRL-Flat-Crawl1-v0 --headless
-#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-Flat-Crawl1-Play-v0 --video --keyboard --checkpoint
+#  python .\scripts\rsl_rl\train.py --task Isaac-BennettRL-Flat-Crawl3-v0 --headless
+#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-Flat-Crawl3-Play-v0 --video --keyboard --checkpoint
