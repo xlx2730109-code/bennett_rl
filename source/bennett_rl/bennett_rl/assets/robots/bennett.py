@@ -14,6 +14,8 @@ BENNETT_USD_PATH = str(Path(__file__).resolve().parent / "Urdf_Bennett_1" / "urd
 # Keep the newly rebuilt asset opt-in so existing Bennett tasks retain their
 # original dynamics. Go2-8 is currently the only task using BENNETT_CFG_V5.
 BENNETT_3_USD_PATH = str(Path(__file__).resolve().parent / "Urdf_Bennett_3" / "urdf" / "Urdf_Bennett_3.usd")
+# V4 = V3 USD + collision approximation optimized for speed
+BENNETT_4_USD_PATH = str(Path(__file__).resolve().parent / "Urdf_Bennett_4" / "urdf" / "Urdf_Bennett_3.usd")
 
 
 
@@ -140,6 +142,30 @@ BENNETT_CFG_V4 = _make_bennett_cfg(
 BENNETT_CFG_V5 = _make_bennett_cfg(
     # old: usd_path=BENNETT_USD_PATH,
     usd_path=BENNETT_3_USD_PATH,
+    joint_pos={
+        "FL_thigh": +0.1,
+        "FR_thigh": -0.1,
+        "RL_thigh": +0.1,
+        "RR_thigh": -0.1,
+        "FL_calf": -0.2,
+        "FR_calf": -0.2,
+        "RL_calf": -0.2,
+        "RR_calf": -0.2,
+    },
+    actuator_cfg=dict(
+        effort_limit=17,
+        saturation_effort=17,
+        velocity_limit=30.0,
+        stiffness=30.0,
+        damping=2,
+        friction=0,
+    ),
+)
+
+
+BENNETT_CFG_V6 = _make_bennett_cfg(
+    # V6 = V4 USD + collisionApproximation优化，与V5同参数
+    usd_path=BENNETT_4_USD_PATH,
     joint_pos={
         "FL_thigh": +0.1,
         "FR_thigh": -0.1,

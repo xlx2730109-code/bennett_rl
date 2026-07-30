@@ -1,4 +1,4 @@
-﻿"""Deterministic gait schedules for Bennett crawl locomotion.
+"""Deterministic gait schedules for Bennett crawl locomotion.
 
 The scheduler is kept independent from Isaac Lab so it can be unit-tested
 before being connected to observations, rewards, or actions.
@@ -124,6 +124,62 @@ def compute_crawl_schedule(
     return GaitSchedule(phase, leg_phase, desired_contact, desired_swing)
 
 
+def smooth_swing_profile(
+    schedule: GaitSchedule,
+    duty_factor: float | torch.Tensor,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return a zero-slope swing-height profile and its phase derivative.
+
+    The height profile is ``sin(pi * progress)^2``.  Unlike a binary clearance
+    target, it starts and ends with zero height and zero vertical velocity.
+    The derivative is with respect to global gait phase (cycles), not seconds.
+    """
+
+    duty = _broadcast_like(duty_factor, schedule.global_phase, "duty_factor")
+    swing_fraction = (1.0 - duty).clamp_min(1.0e-6)
+    progress = torch.clamp(schedule.leg_phase / swing_fraction[:, None], min=0.0, max=1.0)
+    swing_mask = schedule.desired_swing.to(torch.float32)
+    profile = torch.square(torch.sin(torch.pi * progress)) * swing_mask
+    derivative = (
+        torch.pi * torch.sin(2.0 * torch.pi * progress) / swing_fraction[:, None]
+    ) * swing_mask
+    return profile, derivative
+
+
+def soft_swing_weights(
+    schedule: GaitSchedule,
+    duty_factor: float | torch.Tensor,
+    transition_fraction: float = 0.04,
+) -> torch.Tensor:
+    """Return smooth swing weights in ``[0, 1]`` around contact transitions.
+
+    A short smoothstep ramp removes the discontinuous incentive to instantly
+    break or make contact at the hard phase boundary.  The hard schedule is
+    still used by policy observations and for counting swing/stance legs.
+    """
+
+    if transition_fraction <= 0.0:
+        raise ValueError(f"transition_fraction must be positive, got {transition_fraction}.")
+    duty = _broadcast_like(duty_factor, schedule.global_phase, "duty_factor")
+    swing_fraction = (1.0 - duty).clamp_min(1.0e-6)
+    blend_width = torch.minimum(
+        torch.full_like(swing_fraction, float(transition_fraction)),
+        0.5 * swing_fraction,
+    ).clamp_min(1.0e-6)
+
+    ramp_up = torch.clamp(schedule.leg_phase / blend_width[:, None], min=0.0, max=1.0)
+    ramp_down = torch.clamp(
+        (swing_fraction[:, None] - schedule.leg_phase) / blend_width[:, None],
+        min=0.0,
+        max=1.0,
+    )
+
+    def smoothstep(value: torch.Tensor) -> torch.Tensor:
+        return value * value * (3.0 - 2.0 * value)
+
+    return smoothstep(ramp_up) * smoothstep(ramp_down) * schedule.desired_swing.to(torch.float32)
+
+
 def render_contact_schedule(schedule: GaitSchedule) -> str:
     """Render a compact text table for a batch schedule.
 
@@ -139,5 +195,3 @@ def render_contact_schedule(schedule: GaitSchedule) -> str:
             f"{int(schedule.stance_count[env_id].item())}      {int(schedule.swing_count[env_id].item())}"
         )
     return "\n".join(lines)
-
-

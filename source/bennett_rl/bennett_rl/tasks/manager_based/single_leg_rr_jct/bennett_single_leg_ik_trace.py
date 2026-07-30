@@ -7,20 +7,7 @@
 # 并通过 UDP 发给 damiao_1.py 来控制真机的 FR_thigh 和 FR_calf 跟随。你可以在 isaac sim 里按键来调整 FR_thigh 和 FR_calf 的偏移，
 # 观察真机的跟随效果。
 
-"""Fixed-base Bennett RR single-leg joint motion test.
 
-This script intentionally does not do foot IK. It only commands one selected leg's
-active thigh/calf joints with a slow, uniform-speed sequence:
-
-Each keyframe is a pair of joint offsets from the default pose:
-
-    (thigh_offset_deg, calf_offset_deg)
-
-It also supports a manual keyboard mode:
-
-    Up/Down    -> thigh target angle
-    Left/Right -> calf target angle
-"""
 
 import argparse
 import json  #用来把目标角打包成文本数据

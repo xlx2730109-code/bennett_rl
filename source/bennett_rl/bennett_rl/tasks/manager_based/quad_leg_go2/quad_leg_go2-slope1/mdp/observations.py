@@ -1,4 +1,4 @@
-﻿"""Observation helpers for Bennett crawl locomotion."""
+"""Observation helpers for Bennett crawl locomotion."""
 
 from __future__ import annotations
 
@@ -25,16 +25,67 @@ def _moving_mask(env: ManagerBasedRLEnv, command_name: str, command_deadband: fl
     return torch.linalg.vector_norm(command[:, :3], dim=1) >= command_deadband
 
 
+def _stateful_commanded_phase(
+    env: ManagerBasedRLEnv,
+    frequency_hz: float,
+    command_name: str,
+    command_deadband: float,
+) -> torch.Tensor:
+    """Run one gait clock per environment and reset it on a stopped-to-moving edge.
+
+    Resetting to phase zero makes the scheduled swing foot start at zero
+    clearance rather than jumping into the middle of its lift trajectory.
+    The episode-length stamp prevents multiple observation/reward terms from
+    advancing the shared clock more than once in one policy step.
+    """
+
+    cache_name = "_bennett_slope1_gait_clocks"
+    clocks = getattr(env, cache_name, None)
+    if clocks is None:
+        clocks = {}
+        setattr(env, cache_name, clocks)
+
+    key = (float(frequency_hz), str(command_name), float(command_deadband))
+    state = clocks.get(key)
+    if state is None:
+        state = {
+            "phase": torch.zeros(env.num_envs, dtype=torch.float32, device=env.device),
+            "was_moving": torch.zeros(env.num_envs, dtype=torch.bool, device=env.device),
+            "last_step": torch.full_like(env.episode_length_buf, -1),
+        }
+        clocks[key] = state
+
+    phase = state["phase"]
+    was_moving = state["was_moving"]
+    last_step = state["last_step"]
+    current_step = env.episode_length_buf
+    needs_update = current_step != last_step
+    if torch.any(needs_update):
+        moving = _moving_mask(env, command_name, command_deadband)
+        episode_reset = (current_step < last_step) | (current_step == 0)
+        starting = needs_update & moving & (~was_moving | episode_reset)
+        continuing = needs_update & moving & was_moving & ~episode_reset
+        stopped = needs_update & ~moving
+
+        phase[starting | stopped | (needs_update & episode_reset)] = 0.0
+        phase[continuing] = torch.remainder(
+            phase[continuing] + env.step_dt * float(frequency_hz),
+            1.0,
+        )
+        was_moving[needs_update] = moving[needs_update]
+        last_step[needs_update] = current_step[needs_update]
+    return phase
+
+
 def commanded_crawl_global_phase(
     env: ManagerBasedRLEnv,
     frequency_hz: float = 0.5,
     command_name: str = "base_velocity",
     command_deadband: float = 0.025,
 ) -> torch.Tensor:
-    """Global phase that is frozen at zero while the velocity command is stopped."""
+    """Command-gated phase that starts from zero and stays continuous while moving."""
 
-    phase = crawl_global_phase(env, frequency_hz)
-    return torch.where(_moving_mask(env, command_name, command_deadband), phase, torch.zeros_like(phase))
+    return _stateful_commanded_phase(env, frequency_hz, command_name, command_deadband)
 
 
 def crawl_global_phase_sin_cos(env: ManagerBasedRLEnv, frequency_hz: float = 0.5) -> torch.Tensor:
@@ -156,4 +207,3 @@ def fixed_velocity_command(
 
     command = torch.tensor((lin_vel_x, lin_vel_y, ang_vel_z), dtype=torch.float32, device=env.device)
     return command.unsqueeze(0).repeat(env.num_envs, 1)
-

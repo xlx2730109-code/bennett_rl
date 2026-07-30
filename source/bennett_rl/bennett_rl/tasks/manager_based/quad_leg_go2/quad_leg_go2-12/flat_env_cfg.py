@@ -3,6 +3,7 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
+from isaaclab.terrains import MeshPlaneTerrainCfg, TerrainGeneratorCfg
 from isaaclab.utils import configclass
 
 from .rough_env_cfg import QuadLegGo212RoughEnvCfg
@@ -16,12 +17,25 @@ class QuadLegGo212FlatEnvCfg(QuadLegGo212RoughEnvCfg):
 
         # override rewards
         self.rewards.flat_orientation_l2.weight = -3.0
-        # old: Go2-10 re-enabled generic feet_air_time on flat terrain.
-        # Go2-12 uses explicit smooth height/velocity tracking instead.
+        self.rewards.feet_air_time.weight = 0.02
 
-        # change terrain to flat
-        self.scene.terrain.terrain_type = "plane"
-        self.scene.terrain.terrain_generator = None
+        # Use a local two-triangle flat mesh instead of Isaac Sim's stock
+        # ``terrain_type="plane"``.  The stock plane references a remote
+        # NVIDIA USD and can make an otherwise local training run fail when
+        # Nucleus/S3 is unavailable.  A 256 m square covers the default 4096
+        # environments at 2.5 m spacing; grid origins are still used.
+        self.scene.terrain.terrain_type = "generator"
+        self.scene.terrain.terrain_generator = TerrainGeneratorCfg(
+            seed=42,
+            curriculum=False,
+            size=(256.0, 256.0),
+            num_rows=1,
+            num_cols=1,
+            color_scheme="none",
+            sub_terrains={"flat": MeshPlaneTerrainCfg(proportion=1.0)},
+        )
+        self.scene.terrain.use_terrain_origins = False
+        self.scene.terrain.max_init_terrain_level = None
         # no height scan
         self.scene.height_scanner = None
         self.observations.policy.height_scan = None
@@ -35,7 +49,7 @@ class QuadLegGo212FlatEnvCfg_PLAY(QuadLegGo212FlatEnvCfg):
         super().__post_init__()
 
         # make a smaller scene for play
-        self.scene.num_envs = 3
+        self.scene.num_envs = 5
         self.scene.env_spacing = 2.5
         # disable randomization for play
         self.observations.policy.enable_corruption = False

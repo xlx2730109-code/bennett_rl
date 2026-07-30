@@ -183,7 +183,15 @@ def analyze(path: Path, *, reservoir_size: int, max_rows: int | None = None) -> 
         if reader.fieldnames is None:
             raise ValueError(f"CSV has no header: {path}")
         sample_key_name = "policy_step" if "policy_step" in reader.fieldnames else "loop_count"
-        required = {sample_key_name, "startup_phase", "joint_name", "action", "target_sim_rad", "rel_rad"}
+        required = {
+            sample_key_name,
+            "startup_phase",
+            "joint_name",
+            "action",
+            "target_sim_rad",
+            "train_default_rad",
+            "rel_rad",
+        }
         missing = sorted(required.difference(reader.fieldnames))
         if missing:
             raise ValueError(f"CSV is missing required columns: {missing}")
@@ -224,7 +232,13 @@ def analyze(path: Path, *, reservoir_size: int, max_rows: int | None = None) -> 
             raw_action = _float(row, "raw_action")
             action = _float(row, "action")
             target = _float(row, "target_sim_rad")
-            real = _float(row, "rel_rad")
+            train_default = _float(row, "train_default_rad")
+            real_relative = _float(row, "rel_rad")
+            real = (
+                train_default + real_relative
+                if train_default is not None and real_relative is not None
+                else None
+            )
             metrics["raw_action"].add(raw_action)
             metrics["action"].add(action)
             metrics["target_rad"].add(target)

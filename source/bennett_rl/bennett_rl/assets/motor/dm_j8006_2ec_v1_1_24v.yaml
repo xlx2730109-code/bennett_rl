@@ -1,0 +1,69 @@
+schema_version: 1
+
+identity:
+  manufacturer: "DaMiao"
+  model: "DM-J8006-2EC"
+  hardware_revision: "V1.1"
+  operating_point: "24 V"
+
+sources:
+  manual:
+    file: "DM-J8006-2EC V1.1减速电机说明书V1.0.pdf"
+  performance_curve:
+    file: "24V 120RPM 8006电机性能曲线图.png"
+    condition: "24 V, 120 rpm load sweep"
+
+electrical:
+  rated_voltage_v: 24.0
+  supported_voltage_range_v: [24.0, 48.0]
+  rated_phase_current_a: 9.0
+  peak_phase_current_a: 21.0
+  phase_resistance_ohm: 0.4
+  phase_inductance_h: 0.000215
+
+mechanical_output:
+  gear_ratio: 6.0
+  rated_torque_nm: 8.0
+  peak_torque_nm: 20.0
+  rated_speed_rpm: 120.0
+  rated_speed_rad_s: 12.5663706144
+  no_load_speed_at_24v_rpm: 190.0
+  no_load_speed_at_24v_rad_s: 19.8967534727
+
+feedback:
+  output_encoder_resolution_bits: 14
+  signals:
+    - output_position
+    - output_velocity
+    - output_torque
+    - mos_temperature
+    - rotor_temperature
+
+recommended_protection:
+  overcurrent_threshold_max_a: 39.0
+  overvoltage_threshold_max_v: 52.0
+  undervoltage_threshold_min_v: 15.0
+  motor_temperature_threshold_max_c: 100.0
+  driver_overtemperature_c: 120.0
+  communication_timeout: "configurable; actual value must be read from each motor"
+
+isaaclab_conservative_baseline:
+  actuator_class: "DCMotor"
+  effort_limit_nm: 8.0
+  saturation_effort_nm: 20.0
+  velocity_limit_rad_s: 19.8967534727
+  status: "candidate for isolated A/B validation; not yet approved for production training"
+  interpretation:
+    effort_limit_nm: "continuous hard torque cap in Isaac Lab DCMotor"
+    saturation_effort_nm: "zero-speed peak used to define the linear torque-speed envelope"
+    velocity_limit_rad_s: "24 V no-load output speed"
+
+known_limits_and_uncertainties:
+  - "The performance plot is a 24 V, approximately 120 rpm load sweep, not a complete maximum torque-speed envelope."
+  - "The plot reaches approximately 13 Nm and does not validate the 20 Nm peak region."
+  - "Peak-torque duration and thermal derating dynamics are not specified."
+  - "The standard Isaac Lab DCMotor model does not reproduce temporary 20 Nm operation followed by thermal derating to 8 Nm."
+  - "Closed-loop MIT-mode latency, bandwidth, friction, backlash, and direction-dependent behavior require system identification."
+  - "Phase current must not be treated as bus current or converted directly to output torque without calibration."
+  - "The manual's hybrid-control section contains a likely copied current value for another motor model; do not use it for this contract."
+  - "The extracted no-load-speed line for 48 V is layout-ambiguous and is intentionally excluded pending visual or vendor confirmation."

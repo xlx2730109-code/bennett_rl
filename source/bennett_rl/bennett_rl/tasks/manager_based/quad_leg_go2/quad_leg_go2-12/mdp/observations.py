@@ -31,16 +31,12 @@ def _stateful_commanded_phase(
     command_name: str,
     command_deadband: float,
 ) -> torch.Tensor:
-    """Advance one shared gait clock per environment and pause it while stopped.
+    """Run one gait clock per environment and reset it on a stopped-to-moving edge.
 
-    Go2-10 derived phase directly from total episode time.  After a period of
-    standing, the first non-zero keyboard command could therefore jump into the
-    middle of a swing.  Go2-12 starts at the beginning of a swing and advances
-    continuously until the command returns to zero.
-
-    The cache is shared by observations and rewards.  ``episode_length_buf`` is
-    used as a per-environment update stamp so multiple terms cannot advance the
-    same clock more than once in one policy step.
+    Resetting to phase zero makes the scheduled swing foot start at zero
+    clearance rather than jumping into the middle of its lift trajectory.
+    The episode-length stamp prevents multiple observation/reward terms from
+    advancing the shared clock more than once in one policy step.
     """
 
     cache_name = "_bennett_go212_gait_clocks"
@@ -66,18 +62,17 @@ def _stateful_commanded_phase(
     needs_update = current_step != last_step
     if torch.any(needs_update):
         moving = _moving_mask(env, command_name, command_deadband)
-        reset = (current_step < last_step) | (current_step == 0)
-        starting = needs_update & moving & (~was_moving | reset)
-        continuing = needs_update & moving & was_moving & ~reset
+        episode_reset = (current_step < last_step) | (current_step == 0)
+        starting = needs_update & moving & (~was_moving | episode_reset)
+        continuing = needs_update & moving & was_moving & ~episode_reset
         stopped = needs_update & ~moving
 
-        phase[starting | stopped | (needs_update & reset)] = 0.0
+        phase[starting | stopped | (needs_update & episode_reset)] = 0.0
         phase[continuing] = torch.remainder(
             phase[continuing] + env.step_dt * float(frequency_hz),
             1.0,
         )
         was_moving[needs_update] = moving[needs_update]
-        was_moving[needs_update & reset & ~moving] = False
         last_step[needs_update] = current_step[needs_update]
     return phase
 
@@ -88,7 +83,7 @@ def commanded_crawl_global_phase(
     command_name: str = "base_velocity",
     command_deadband: float = 0.025,
 ) -> torch.Tensor:
-    """Stateful global phase that restarts smoothly after a stopped command."""
+    """Command-gated phase that starts from zero and stays continuous while moving."""
 
     return _stateful_commanded_phase(env, frequency_hz, command_name, command_deadband)
 

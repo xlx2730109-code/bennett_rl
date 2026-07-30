@@ -13,6 +13,7 @@ class QuadLegGo2Slope1PPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 100
     max_iterations = 3000
     save_interval = 50
+    clip_actions = 3.5
     experiment_name = "quad_leg_go2/quad_leg_go2-slope1"
     policy = RslRlPpoActorCriticCfg(
         init_noise_std=1.0,

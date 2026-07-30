@@ -1,5 +1,4 @@
-# Bennett Go2-12: preserve the proven Go2-10 Sim2Real contract while
-# improving touchdown smoothness, reverse motion, and keyboard-style turning.
+# 相较于11，用的简化版的USD模型
 
 
 from isaaclab.managers import EventTermCfg as EventTerm
@@ -16,7 +15,7 @@ from . import mdp
 ##
 # Pre-defined configs
 ##
-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V5  # isort: skip
+from bennett_rl.assets.robots.bennett import BENNETT_CFG_V6  # isort: skip
 
 
 ACTUATED_JOINTS = [
@@ -42,7 +41,11 @@ LOW_GAIT_DUTY_FACTOR = 0.78
 LOW_GAIT_SWING_HEIGHT = 0.065
 CONTACT_TRANSITION_FRACTION = 0.04
 # stand, forward, backward, yaw, forward+yaw, backward+yaw, lateral, lateral+yaw
-COMMAND_MODE_PROBABILITIES = (0.20, 0.10, 0.12, 0.16, 0.18, 0.14, 0.05, 0.05)
+COMMAND_MODE_PROBABILITIES = (0.15, 0.14, 0.14, 0.20, 0.15, 0.15, 0.035, 0.035)
+JOINT_TARGET_LIMITS = {
+    ".*_thigh": (-0.80, 0.80),
+    ".*_calf": (-0.90, 0.55),
+}
 FRICTION_STATIC_RANGE = (0.6, 1.3)
 FRICTION_DYNAMIC_RANGE = (0.5, 1.1)
 BASE_MASS_SCALE_RANGE = (0.90, 1.10)
@@ -58,7 +61,7 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         super().__post_init__()
 
         # old: Go2-7 uses BENNETT_CFG_V4 on Urdf_Bennett_1.
-        robot_cfg = BENNETT_CFG_V5.copy()
+        robot_cfg = BENNETT_CFG_V6.copy()
         robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
         robot_cfg.spawn.articulation_props.fix_root_link = False
         robot_cfg.spawn.articulation_props.solver_velocity_iteration_count = 1
@@ -77,6 +80,8 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         robot_cfg.actuators["base_legs"].effort_limit = 7.0
         robot_cfg.actuators["base_legs"].saturation_effort = 12.0
         robot_cfg.actuators["base_legs"].stiffness = 28.0
+        # 24 V manual: approximately 190 rpm no-load output speed (19.9 rad/s).
+        robot_cfg.actuators["base_legs"].velocity_limit = 20.0
 
         # robot_cfg.actuators["base_legs"].effort_limit = 15.0
         # robot_cfg.actuators["base_legs"].saturation_effort = 17.0
@@ -95,6 +100,9 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.actions.joint_pos.joint_names = ACTUATED_JOINTS
         self.actions.joint_pos.scale = 0.20
         self.actions.joint_pos.preserve_order = True
+        # The current USD has infinite position limits.  Clip absolute processed
+        # targets here so safety does not depend only on the PPO runner clip.
+        self.actions.joint_pos.clip = JOINT_TARGET_LIMITS
 
         # old: Go2-10 sampled vx/vy/yaw independently.  That gave little
         # coverage to the exact keyboard modes (pure reverse, pure yaw, and
@@ -108,9 +116,9 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
             # Avoid a nonessential remote USD dependency during headless training.
             debug_vis=False,
             mode_probabilities=COMMAND_MODE_PROBABILITIES,
-            min_abs_lin_vel_x=LOW_SPEED_RANGE[0],
+            min_abs_lin_vel_x=0.06,
             min_abs_lin_vel_y=0.04,
-            min_abs_ang_vel_z=0.10,
+            min_abs_ang_vel_z=0.15,
             ranges=mdp.BalancedVelocityCommandCfg.Ranges(
                 lin_vel_x=(-LOW_SPEED_RANGE[1], LOW_SPEED_RANGE[1]),
                 lin_vel_y=(-0.10, 0.10),
@@ -167,6 +175,8 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         )
         self.scene.height_scanner = None
         self.curriculum.terrain_levels = None
+        # 接触传感器缩小到仅监视需要的5个 body（提速 ~30%）
+        self.scene.contact_forces.prim_path = "{ENV_REGEX_NS}/Robot/(base|FL_foot|FR_foot|RL_foot|RR_foot)"
 
         # Domain randomization follows Go2-7, but body names are scoped to the new USD.
         self.events.physics_material.params["static_friction_range"] = FRICTION_STATIC_RANGE
@@ -218,21 +228,37 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         )
 
         # rewards
-        # Explicit smooth swing tracking replaces the generic air-time term.
-        self.rewards.feet_air_time = None
+        # Preserve Go2-10's early locomotion signal.  Removing both air-time
+        # and clearance made four-step collapse a stable local optimum in Go2-12.
+        self.rewards.feet_air_time.params["sensor_cfg"].body_names = FOOT_BODIES
+        self.rewards.feet_air_time.weight = 0.01
         self.rewards.undesired_contacts = None
         self.rewards.dof_torques_l2.weight = -0.0002
-        self.rewards.track_lin_vel_xy_exp.weight = 1.4
+        self.rewards.track_lin_vel_xy_exp.weight = 1.2
         self.rewards.track_lin_vel_xy_exp.params["std"] = 0.10
         # Go2-10's final yaw error remained large relative to its command range.
         # A modest +33% task-weight increase keeps yaw below linear tracking but
         # makes pure and combined turn modes worth learning.
-        self.rewards.track_ang_vel_z_exp.weight = 1.0
+        self.rewards.track_ang_vel_z_exp.weight = 0.8
+        self.rewards.track_ang_vel_z_exp.params["std"] = 0.25
+        # A narrow companion kernel makes exact low-speed tracking materially
+        # better than standing still, while the broad kernels preserve a dense
+        # early-learning signal.
+        self.rewards.track_lin_vel_xy_fine_exp = RewTerm(
+            func=mdp.track_lin_vel_xy_exp,
+            weight=0.8,
+            params={"std": 0.04, "command_name": "base_velocity"},
+        )
+        self.rewards.track_ang_vel_z_fine_exp = RewTerm(
+            func=mdp.track_ang_vel_z_exp,
+            weight=0.6,
+            params={"std": 0.10, "command_name": "base_velocity"},
+        )
         self.rewards.dof_acc_l2.weight = -7.0e-7
         self.rewards.action_rate_l2.weight = -0.02
         self.rewards.action_second_difference_l2 = RewTerm(
             func=mdp.action_second_difference_l2,
-            weight=-0.01,
+            weight=-0.004,
         )
         self.rewards.flat_orientation_l2.weight = -3.0
         self.rewards.base_height_l2 = RewTerm(
@@ -310,12 +336,23 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         )
         # old: Go2-8/10 penalized only FR touchdown events, which can bias the crawl cycle.
         self.rewards.fr_swing_touchdown_events = None
-        # old: Go2-10 rewarded any swing foot above a fixed clearance with a
-        # plateau.  It did not encode lift/descent shape or touchdown speed.
-        self.rewards.swing_foot_clearance = None
+        # Keep the proven clearance reward as the primary lift-off signal, then
+        # use the smooth terms only as low-weight trajectory shaping.
+        self.rewards.swing_foot_clearance = RewTerm(
+            func=mdp.crawl_swing_foot_clearance,
+            weight=0.80,
+            params={
+                "asset_cfg": SceneEntityCfg("robot", body_names=FOOT_BODIES, preserve_order=True),
+                "frequency_hz": LOW_GAIT_FREQUENCY_HZ,
+                "duty_factor": LOW_GAIT_DUTY_FACTOR,
+                "target_height": LOW_GAIT_SWING_HEIGHT,
+                "command_name": "base_velocity",
+                "command_deadband": COMMAND_DEADBAND,
+            },
+        )
         self.rewards.swing_foot_height_tracking = RewTerm(
             func=mdp.crawl_swing_foot_height_tracking,
-            weight=0.75,
+            weight=0.20,
             params={
                 "asset_cfg": SceneEntityCfg("robot", body_names=FOOT_BODIES, preserve_order=True),
                 "frequency_hz": LOW_GAIT_FREQUENCY_HZ,
@@ -328,7 +365,7 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         )
         self.rewards.swing_foot_vertical_velocity_tracking = RewTerm(
             func=mdp.crawl_swing_foot_vertical_velocity_tracking,
-            weight=0.20,
+            weight=0.06,
             params={
                 "asset_cfg": SceneEntityCfg("robot", body_names=FOOT_BODIES, preserve_order=True),
                 "frequency_hz": LOW_GAIT_FREQUENCY_HZ,
@@ -341,7 +378,7 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         )
         self.rewards.touchdown_impact_l2 = RewTerm(
             func=mdp.crawl_touchdown_impact_l2,
-            weight=-0.08,
+            weight=-0.05,
             params={
                 "sensor_cfg": SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True),
                 "soft_force_limit": 40.0,
@@ -389,6 +426,15 @@ class QuadLegGo212RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
                 "asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True),
             },
         )
+
+        # A non-timeout failure must be more expensive than the apparent
+        # benefit of ending an episode after only a few low-motion steps.
+        self.rewards.termination_penalty = RewTerm(
+            func=mdp.is_terminated_term,
+            weight=-100.0,
+            params={"term_keys": ["base_contact", "root_height"]},
+        )
+
 
         # terminations
         self.terminations.base_contact.params["sensor_cfg"].body_names = BASE_BODY

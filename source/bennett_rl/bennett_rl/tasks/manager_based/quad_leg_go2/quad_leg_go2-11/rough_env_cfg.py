@@ -1,5 +1,5 @@
-# Bennett Go2-11: preserve the proven Go2-10 Sim2Real contract while
-# improving touchdown smoothness, reverse motion, and keyboard-style turning.
+# 相较于10，修改了很多。
+
 
 
 from isaaclab.managers import EventTermCfg as EventTerm
@@ -16,7 +16,7 @@ from . import mdp
 ##
 # Pre-defined configs
 ##
-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V5  # isort: skip
+from bennett_rl.assets.robots.bennett import BENNETT_CFG_V6  # isort: skip
 
 
 ACTUATED_JOINTS = [
@@ -62,7 +62,7 @@ class QuadLegGo211RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         super().__post_init__()
 
         # old: Go2-7 uses BENNETT_CFG_V4 on Urdf_Bennett_1.
-        robot_cfg = BENNETT_CFG_V5.copy()
+        robot_cfg = BENNETT_CFG_V6.copy()
         robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
         robot_cfg.spawn.articulation_props.fix_root_link = False
         robot_cfg.spawn.articulation_props.solver_velocity_iteration_count = 1
@@ -83,11 +83,6 @@ class QuadLegGo211RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         robot_cfg.actuators["base_legs"].stiffness = 28.0
         # 24 V manual: approximately 190 rpm no-load output speed (19.9 rad/s).
         robot_cfg.actuators["base_legs"].velocity_limit = 20.0
-
-        # robot_cfg.actuators["base_legs"].effort_limit = 15.0
-        # robot_cfg.actuators["base_legs"].saturation_effort = 17.0
-        # robot_cfg.actuators["base_legs"].stiffness = 40.0
-
 
         robot_cfg.actuators["base_legs"].damping = 2.0
         self.scene.robot = robot_cfg
