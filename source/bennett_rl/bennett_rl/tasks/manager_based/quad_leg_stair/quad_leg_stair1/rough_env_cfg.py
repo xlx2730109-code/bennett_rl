@@ -58,6 +58,10 @@ COMMAND_DEADBAND = 0.025
 UPSTAIR_SPEED_RANGE = (0.16, 0.24)
 UPSTAIR_HEADING_RAD = 0.0
 MAX_HEADING_CORRECTION_RAD_S = 0.40
+SUPPORT_CONTACT_THRESHOLD = 1.0
+MINIMUM_HEIGHT_SUPPORT_CONTACTS = 2
+PROGRESS_WINDOW_S = 8.0
+MINIMUM_PROGRESS_COMMAND_FRACTION = 0.45
 LEVEL_VALIDATION_EPISODES = 1024
 LEVEL_REQUIRED_SUCCESS_RATE = 0.70
 LEVEL_REQUIRED_CONSECUTIVE_PASS_BATCHES = 2
@@ -300,7 +304,7 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
         # not body-frame motion that can be exploited by turning or rocking.
         self.rewards.track_lin_vel_xy_exp.func = mdp.track_uphill_world_velocity_exp
         self.rewards.track_lin_vel_xy_exp.weight = 2.0
-        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.50
+        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.35
         self.rewards.track_ang_vel_z_exp.weight = 0.8
         self.rewards.track_ang_vel_z_exp.params["std"] = 0.25
         self.rewards.track_lin_vel_xy_fine_exp = RewTerm(
@@ -341,7 +345,10 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
             weight=-4.0,
             params={
                 "target_height": TARGET_BASE_HEIGHT_ABOVE_FEET,
+                "sensor_cfg": contact_cfg,
                 "asset_cfg": foot_cfg,
+                "contact_threshold": SUPPORT_CONTACT_THRESHOLD,
+                "minimum_support_contacts": MINIMUM_HEIGHT_SUPPORT_CONTACTS,
             },
         )
         self.rewards.feet_slide = RewTerm(
@@ -407,7 +414,19 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
                 # Give early exploration room to recover while the soft
                 # 0.38-m height objective still rejects a crawling solution.
                 "minimum_clearance": MINIMUM_FAILURE_CLEARANCE,
+                "sensor_cfg": contact_cfg,
                 "asset_cfg": foot_cfg,
+                "contact_threshold": SUPPORT_CONTACT_THRESHOLD,
+                "minimum_support_contacts": MINIMUM_HEIGHT_SUPPORT_CONTACTS,
+            },
+        )
+        self.terminations.insufficient_progress = DoneTerm(
+            func=mdp.insufficient_stair_progress,
+            params={
+                "command_name": "base_velocity",
+                "command_deadband": COMMAND_DEADBAND,
+                "window_s": PROGRESS_WINDOW_S,
+                "minimum_command_fraction": MINIMUM_PROGRESS_COMMAND_FRACTION,
             },
         )
         self.terminations.outside_lane = DoneTerm(
@@ -425,6 +444,10 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
                 "maximum_lateral_distance": STAIR_LANE_HALF_WIDTH,
                 "asset_cfg": foot_cfg,
             },
+        )
+
+        self.rewards.termination_penalty.params["term_keys"].append(
+            "insufficient_progress"
         )
 
 

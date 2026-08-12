@@ -26,6 +26,7 @@ class validated_stair_level(ManagerTermBase):
         self._reported_trials = 0
         self._reported_successes = 0
         self._reported_success_rate = 0.0
+        self._reported_level = -1
         self._consecutive_pass_batches = 0
 
     def reset(self, env_ids: Sequence[int] | None = None):
@@ -77,6 +78,7 @@ class validated_stair_level(ManagerTermBase):
             self._reported_trials = self._batch_trials
             self._reported_successes = self._batch_successes
             self._reported_success_rate = success_rate
+            self._reported_level = self._current_level
             if success_rate >= float(required_success_rate):
                 self._consecutive_pass_batches += 1
             else:
@@ -87,10 +89,9 @@ class validated_stair_level(ManagerTermBase):
                 self._consecutive_pass_batches = 0
             self._batch_trials = 0
             self._batch_successes = 0
-        elif self._batch_trials > 0:
-            self._reported_trials = self._batch_trials
-            self._reported_successes = self._batch_successes
-            self._reported_success_rate = self._batch_successes / self._batch_trials
+        # Publish only completed validation batches.  Reporting the partial
+        # accumulator on every asynchronous reset makes TensorBoard display a
+        # noisy, non-comparable ratio and previously obscured the true gate.
 
         assigned_levels = torch.full_like(previous_level, self._current_level)
         if self._current_level > 0 and float(previous_level_replay_fraction) > 0.0:
@@ -114,6 +115,7 @@ class validated_stair_level(ManagerTermBase):
             "current_training_level": float(self._current_level),
             "current_step_height_cm": float(self._current_level + 1),
             "validated_pass_level": float(self._validated_pass_level),
+            "validation_batch_level": float(self._reported_level),
             "validation_success_rate": float(self._reported_success_rate),
             "validation_successes": float(self._reported_successes),
             "validation_trials": float(self._reported_trials),

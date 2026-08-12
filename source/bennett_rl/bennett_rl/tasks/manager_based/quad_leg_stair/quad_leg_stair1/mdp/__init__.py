@@ -15,6 +15,7 @@ from .rewards import (
 )
 from .terminations import (
     base_clearance_above_feet_below_minimum,
+    insufficient_stair_progress,
     outside_stair_lane,
     stair_top_success,
 )

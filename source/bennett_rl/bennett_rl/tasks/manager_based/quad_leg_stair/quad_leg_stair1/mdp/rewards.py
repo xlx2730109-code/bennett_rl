@@ -11,6 +11,8 @@ from isaaclab.managers import SceneEntityCfg
 from isaaclab.sensors import ContactSensor
 from isaaclab.terrains import TerrainImporter
 
+from .support import support_foot_height_w
+
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
 
@@ -31,14 +33,23 @@ def _foot_contacts(
 def base_height_above_feet_l2(
     env: ManagerBasedRLEnv,
     target_height: float,
+    sensor_cfg: SceneEntityCfg,
     asset_cfg: SceneEntityCfg,
+    contact_threshold: float,
+    minimum_support_contacts: int,
 ) -> torch.Tensor:
-    """Penalize terrain-relative body-height error instead of world-Z height."""
+    """Penalize body-height error relative only to reliable support feet."""
 
     asset: Articulation = env.scene[asset_cfg.name]
-    mean_foot_height = torch.mean(asset.data.body_pos_w[:, asset_cfg.body_ids, 2], dim=1)
-    clearance = asset.data.root_pos_w[:, 2] - mean_foot_height
-    return torch.square(clearance - float(target_height))
+    support_height, valid = support_foot_height_w(
+        env,
+        sensor_cfg=sensor_cfg,
+        asset_cfg=asset_cfg,
+        contact_threshold=contact_threshold,
+        minimum_support_contacts=minimum_support_contacts,
+    )
+    clearance = asset.data.root_pos_w[:, 2] - support_height
+    return torch.square(clearance - float(target_height)) * valid.to(clearance.dtype)
 
 
 def uphill_velocity_progress(
@@ -75,7 +86,22 @@ def track_uphill_world_velocity_exp(
     asset: Articulation = env.scene[asset_cfg.name]
     velocity_error = torch.square(command[:, 0] - asset.data.root_lin_vel_w[:, 0])
     velocity_error += torch.square(asset.data.root_lin_vel_w[:, 1])
-    return torch.exp(-velocity_error / float(std) ** 2)
+    score = torch.exp(-velocity_error / float(std) ** 2)
+
+    # A wide exponential kernel is useful for discovering motion from scratch,
+    # but its raw value is also high while standing.  Center it on the exact
+    # zero-velocity score so stationary behavior receives zero rather than a
+    # large survival-compatible reward.  Preserve the normal stationary target
+    # when an explicit zero command is used during deployment.
+    stationary_score = torch.exp(-torch.square(command[:, 0]) / float(std) ** 2)
+    normalizer = torch.clamp(1.0 - stationary_score, min=1.0e-4)
+    centered_score = torch.clamp(
+        (score - stationary_score) / normalizer,
+        min=-1.0,
+        max=1.0,
+    )
+    moving_command = torch.abs(command[:, 0]) >= 1.0e-3
+    return torch.where(moving_command, centered_score, score)
 
 
 def moving_touchdown_impact_l2(
