@@ -529,20 +529,28 @@ def trot_stance_feet_slide(
     return torch.clamp(torch.sum(slide, dim=1), max=float(max_value))
 
 
-def feet_lateral_stance_width_excess_l2(
+def feet_lateral_boundary_excess_l2(
     env: ManagerBasedRLEnv,
     asset_cfg: SceneEntityCfg,
-    max_pair_width: tuple[float, float],
-    max_excess: float,
+    max_outward_y: float,
+    penalty_band: float,
+    max_normalized_excess: float,
 ) -> torch.Tensor:
-    """Penalize excessive front/rear stance width in the robot body frame.
+    """Apply one strong outward soft boundary to all four body-frame feet.
 
-    Pair width directly catches a single foot splaying outward without forcing
-    this linkage's asymmetric neutral footholds to individual target positions.
+    The admissible region has exactly zero cost. Beyond the common boundary,
+    the normalized quadratic cost grows rapidly but remains bounded for PPO
+    numerical stability.
     """
 
-    if len(asset_cfg.body_ids) != 4 or len(max_pair_width) != 2:
-        raise ValueError("Expected FL, FR, RL, RR feet and front/rear width limits.")
+    if len(asset_cfg.body_ids) != 4:
+        raise ValueError("Expected ordered FL, FR, RL, RR foot bodies.")
+    if float(max_outward_y) <= 0.0:
+        raise ValueError("max_outward_y must be positive.")
+    if float(penalty_band) <= 0.0:
+        raise ValueError("penalty_band must be positive.")
+    if float(max_normalized_excess) <= 0.0:
+        raise ValueError("max_normalized_excess must be positive.")
 
     asset: Articulation = env.scene[asset_cfg.name]
     foot_pos_w = asset.data.body_pos_w[:, asset_cfg.body_ids]
@@ -558,15 +566,14 @@ def feet_lateral_stance_width_excess_l2(
         relative_pos_w.reshape(-1, 3),
     ).reshape(num_envs, num_feet, 3)
 
-    front_width = torch.abs(foot_pos_b[:, 0, 1] - foot_pos_b[:, 1, 1])
-    rear_width = torch.abs(foot_pos_b[:, 2, 1] - foot_pos_b[:, 3, 1])
-    pair_width = torch.stack((front_width, rear_width), dim=1)
-    limits = foot_pos_b.new_tensor(max_pair_width)
-    excess = torch.clamp(
-        torch.relu(pair_width - limits),
-        max=float(max_excess),
+    # Ordered feet are FL, FR, RL, RR: left is +Y and right is -Y.
+    outward_sign = foot_pos_b.new_tensor((1.0, -1.0, 1.0, -1.0))
+    outward_y = foot_pos_b[:, :, 1] * outward_sign
+    normalized_excess = torch.clamp(
+        torch.relu(outward_y - float(max_outward_y)) / float(penalty_band),
+        max=float(max_normalized_excess),
     )
-    return torch.sum(torch.square(excess), dim=1)
+    return torch.sum(torch.square(normalized_excess), dim=1)
 
 
 def minimum_support_contacts_l2(

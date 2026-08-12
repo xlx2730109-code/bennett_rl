@@ -23,7 +23,7 @@ from .rewards import (
     base_height_above_feet_l2,
     commanded_straight_lateral_yaw_vel_l2,
     commanded_yaw_error_l2,
-    feet_lateral_stance_width_excess_l2,
+    feet_lateral_boundary_excess_l2,
     minimum_support_contacts_l2,
     moving_touchdown_impact_l2,
     trot_contact_match,

@@ -24,9 +24,11 @@ or PPO configuration.
   varies from `0.68` to `0.60`, and swing height is `0.045 m`.
 - At the `0.20 m/s` command midpoint the schedule is `0.85 Hz`, about 15%
   slower and 18% longer per cycle than the previous `1.00 Hz` schedule.
-- A body-frame front/rear stance-width penalty allows `0.40/0.39 m` (neutral
-  is about `0.36 m`) and keeps a live gradient across larger unsafe spreads.
-  It does not prescribe individual footholds.
+- Every foot uses the same body-frame outward soft boundary of `0.23 m`:
+  roughly the measured `0.18 m` neutral half-width plus a `0.05 m` dynamic
+  margin. The interior has zero cost; each `0.05 m` of excess is normalized
+  before squaring, so unsafe splay is strongly penalized without terminating
+  an episode or prescribing an exact foothold.
 - A worst-swing-foot clearance shortfall term requires every scheduled foot
   to reach at least 75% of the existing smooth `0.045 m` profile. This closes
   the mean-reward loophole where one diagonal foot could remain planted while

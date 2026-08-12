@@ -373,17 +373,19 @@ class QuadLegSlope4FlatEnvCfg(LocomotionVelocityRoughEnvCfg):
                 **GAIT_PARAMS,
             },
         )
-        self.rewards.feet_lateral_stance_width_excess_l2 = RewTerm(
-            func=mdp.feet_lateral_stance_width_excess_l2,
-            weight=-6.0,
+        self.rewards.feet_lateral_boundary_excess_l2 = RewTerm(
+            func=mdp.feet_lateral_boundary_excess_l2,
+            weight=-0.25,
             params={
                 "asset_cfg": foot_cfg,
-                # Body-frame front/rear pair widths. Neutral measurements are
-                # about 0.36 m; the margin preserves uphill balance correction.
-                "max_pair_width": (0.40, 0.39),
-                # Keep the gradient active across the observed ~0.55 m front
-                # stance instead of saturating after only 0.10 m of excess.
-                "max_excess": 0.25,
+                # All four feet use one body-frame outward boundary. The
+                # measured neutral half-width is about 0.18 m; add the
+                # user-selected 0.05 m dynamic margin.
+                "max_outward_y": 0.23,
+                # Normalize each 0.05 m of excess before squaring so a large
+                # violation is expensive while the boundary interior is free.
+                "penalty_band": 0.05,
+                "max_normalized_excess": 4.0,
             },
         )
         self.rewards.minimum_support_contacts = RewTerm(
