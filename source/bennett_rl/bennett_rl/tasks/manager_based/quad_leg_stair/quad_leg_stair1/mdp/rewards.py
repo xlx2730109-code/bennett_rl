@@ -168,6 +168,84 @@ def stair_swing_clearance(
     ) / swing_count
 
 
+def stair_swing_overclearance_l2(
+    env: ManagerBasedRLEnv,
+    sensor_cfg: SceneEntityCfg,
+    asset_cfg: SceneEntityCfg,
+    contact_threshold: float,
+    maximum_clearance: float,
+    normalization: float,
+    command_name: str,
+    command_deadband: float,
+) -> torch.Tensor:
+    """Penalize excessive swing height without prescribing gait or leg order.
+
+    A blind policy needs one clearance envelope that remains safe for the
+    largest trained step.  The limit is therefore absolute rather than tied to
+    the current curriculum level: otherwise the actor would be punished for a
+    conservative 10-cm-capable swing on the easier rows that it cannot observe.
+    Every foot uses the same limit and only its excess above that limit is
+    penalized.
+    """
+
+    if maximum_clearance <= 0.0:
+        raise ValueError("maximum_clearance must be positive.")
+    if normalization <= 0.0:
+        raise ValueError("normalization must be positive.")
+
+    contact = _foot_contacts(env, sensor_cfg, contact_threshold)
+    swing = ~contact
+    asset: Articulation = env.scene[asset_cfg.name]
+    foot_height = asset.data.body_pos_w[:, asset_cfg.body_ids, 2]
+
+    negative_infinity = torch.full_like(foot_height, -torch.inf)
+    highest_support = torch.where(contact, foot_height, negative_infinity).amax(
+        dim=1, keepdim=True
+    )
+    has_support = contact.any(dim=1, keepdim=True)
+    # Keep the arithmetic finite even in an all-feet-swing transition frame.
+    highest_support = torch.where(
+        has_support, highest_support, foot_height.amin(dim=1, keepdim=True)
+    )
+    relative_height = torch.clamp(foot_height - highest_support, min=0.0)
+    normalized_excess = torch.clamp(
+        torch.relu(relative_height - float(maximum_clearance))
+        / float(normalization),
+        max=2.0,
+    )
+    moving = _moving_mask(env, command_name, command_deadband).to(torch.float32)
+    return moving * has_support.squeeze(1).to(torch.float32) * torch.sum(
+        torch.square(normalized_excess) * swing.to(torch.float32), dim=1
+    )
+
+
+def action_soft_limit_l2(
+    env: ManagerBasedRLEnv,
+    soft_limit: float,
+    hard_limit: float,
+) -> torch.Tensor:
+    """Penalize only the part of an applied action near the runner clip.
+
+    PPO may emit values outside the runner clip even though the environment
+    always receives a clipped action.  Keeping a penalty-free interior retains
+    the large stair-climbing workspace, while the boundary cost discourages a
+    policy from using clipping as a persistent joint target.
+    """
+
+    if soft_limit < 0.0:
+        raise ValueError("soft_limit must be non-negative.")
+    if hard_limit <= soft_limit:
+        raise ValueError("hard_limit must be greater than soft_limit.")
+
+    action = env.action_manager.action
+    normalized_excess = torch.clamp(
+        torch.relu(torch.abs(action) - float(soft_limit))
+        / float(hard_limit - soft_limit),
+        max=1.0,
+    )
+    return torch.sum(torch.square(normalized_excess), dim=1)
+
+
 def minimum_support_contacts_l2(
     env: ManagerBasedRLEnv,
     sensor_cfg: SceneEntityCfg,

@@ -5,11 +5,13 @@ from isaaclab_tasks.manager_based.locomotion.velocity.mdp import *  # noqa: F401
 from .curriculums import validated_stair_level
 from .observations import foot_contact_state, normalized_terrain_level
 from .rewards import (
+    action_soft_limit_l2,
     base_height_above_feet_l2,
     lane_deviation_l2,
     minimum_support_contacts_l2,
     moving_touchdown_impact_l2,
     stair_swing_clearance,
+    stair_swing_overclearance_l2,
     track_uphill_world_velocity_exp,
     uphill_velocity_progress,
 )

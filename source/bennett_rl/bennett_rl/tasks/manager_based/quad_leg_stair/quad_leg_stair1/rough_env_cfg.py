@@ -62,6 +62,10 @@ SUPPORT_CONTACT_THRESHOLD = 1.0
 MINIMUM_HEIGHT_SUPPORT_CONTACTS = 2
 PROGRESS_WINDOW_S = 8.0
 MINIMUM_PROGRESS_COMMAND_FRACTION = 0.45
+MAXIMUM_SWING_CLEARANCE = 0.18
+SWING_OVERCLEARANCE_NORMALIZATION = 0.05
+ACTION_SOFT_LIMIT = 3.0
+ACTION_HARD_LIMIT = 3.5
 LEVEL_VALIDATION_EPISODES = 1024
 LEVEL_REQUIRED_SUCCESS_RATE = 0.70
 LEVEL_REQUIRED_CONSECUTIVE_PASS_BATCHES = 2
@@ -331,6 +335,14 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
         self.rewards.dof_torques_l2.weight = -0.0002
         self.rewards.dof_acc_l2.weight = -7.0e-7
         self.rewards.action_rate_l2.weight = -0.015
+        self.rewards.action_soft_limit = RewTerm(
+            func=mdp.action_soft_limit_l2,
+            weight=-0.05,
+            params={
+                "soft_limit": ACTION_SOFT_LIMIT,
+                "hard_limit": ACTION_HARD_LIMIT,
+            },
+        )
         self.rewards.flat_orientation_l2.weight = -2.0
         self.rewards.dof_pos_limits.weight = -0.20
 
@@ -365,6 +377,19 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
                 "contact_threshold": 1.0,
                 "clearance_margin": 0.025,
                 "height_levels": STAIR_HEIGHT_LEVELS,
+                "command_name": "base_velocity",
+                "command_deadband": COMMAND_DEADBAND,
+            },
+        )
+        self.rewards.swing_overclearance = RewTerm(
+            func=mdp.stair_swing_overclearance_l2,
+            weight=-0.05,
+            params={
+                "sensor_cfg": contact_cfg,
+                "asset_cfg": foot_cfg,
+                "contact_threshold": 1.0,
+                "maximum_clearance": MAXIMUM_SWING_CLEARANCE,
+                "normalization": SWING_OVERCLEARANCE_NORMALIZATION,
                 "command_name": "base_velocity",
                 "command_deadband": COMMAND_DEADBAND,
             },
