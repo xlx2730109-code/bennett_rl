@@ -202,12 +202,6 @@ class BennettSingleLegTraceEnvCfg_PLAY(BennettSingleLegTraceEnvCfg):
 
 
 
-# python .\scripts\zero_agent.py --task=Isaac-Bennett-SingleLeg-RR-Trace-v0 --num_envs=8
-# python .\scripts\rsl_rl\train.py --task=Isaac-Bennett-SingleLeg-RR-Trace-v0 --headless
-# python .\scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-Play-v0 --video --checkpoint
-# tensorboard --logdir
-
-
 
 
 # 架构
