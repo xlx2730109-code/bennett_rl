@@ -29,6 +29,54 @@ parser.add_argument(
     help="Length of each recorded video in simulated seconds when --video_length is not set.",
 )
 parser.add_argument(
+    "--video_output_dir",
+    type=str,
+    default=None,
+    help="Optional video output directory. Defaults to <checkpoint_dir>/videos/play.",
+)
+parser.add_argument(
+    "--disable_export",
+    action="store_true",
+    default=False,
+    help="Do not export or overwrite policy.pt and policy.onnx during playback.",
+)
+parser.add_argument(
+    "--endpoint_trail",
+    action="store_true",
+    default=False,
+    help="Draw the selected robot body as a green endpoint marker with a position trail.",
+)
+parser.add_argument(
+    "--endpoint_body",
+    type=str,
+    default=None,
+    help="Exact robot body used by --endpoint_trail. Defaults to RR_foot for V4, otherwise RR_2.",
+)
+parser.add_argument(
+    "--endpoint_trail_points",
+    type=int,
+    default=250,
+    help="Maximum number of saved endpoint trail points.",
+)
+parser.add_argument(
+    "--endpoint_trail_stride",
+    type=int,
+    default=None,
+    help="Save one trail point every N environment steps. Defaults to approximately every 0.016 seconds.",
+)
+parser.add_argument(
+    "--endpoint_radius",
+    type=float,
+    default=0.016,
+    help="Radius in metres of the current green endpoint marker.",
+)
+parser.add_argument(
+    "--endpoint_trail_radius",
+    type=float,
+    default=0.002,
+    help="Radius in metres of each green trail marker.",
+)
+parser.add_argument(
     "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations."
 )
 parser.add_argument("--keyboard", action="store_true", default=False, help="Enable keyboard control.")
@@ -103,6 +151,7 @@ import gymnasium as gym
 import torch
 from rsl_rl.runners import DistillationRunner, OnPolicyRunner
 
+import isaaclab.sim as sim_utils
 from isaaclab.devices import Se2Keyboard, Se2KeyboardCfg
 from isaaclab.envs import (
     DirectMARLEnv,
@@ -111,6 +160,8 @@ from isaaclab.envs import (
     ManagerBasedRLEnvCfg,
     multi_agent_to_single_agent,
 )
+from isaaclab.markers import VisualizationMarkers
+from isaaclab.markers.config import POSITION_GOAL_MARKER_CFG
 from isaaclab.utils.assets import retrieve_file_path
 from isaaclab.utils.dict import print_dict
 
@@ -249,6 +300,52 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
 
     raw_env = env.unwrapped
 
+    endpoint_robot = None
+    endpoint_marker = None
+    endpoint_body_id = None
+    endpoint_trail: list[torch.Tensor] = []
+    endpoint_trail_stride = args_cli.endpoint_trail_stride
+    if args_cli.endpoint_trail:
+        if raw_env.num_envs != 1:
+            raise ValueError("--endpoint_trail requires exactly one environment. Use --num_envs 1.")
+        if args_cli.endpoint_trail_points < 1:
+            raise ValueError("--endpoint_trail_points must be at least 1.")
+        if endpoint_trail_stride is None:
+            endpoint_trail_stride = max(1, int(round(0.016 / dt)))
+        if endpoint_trail_stride < 1:
+            raise ValueError("--endpoint_trail_stride must be at least 1.")
+        if args_cli.endpoint_radius <= 0.0 or args_cli.endpoint_trail_radius <= 0.0:
+            raise ValueError("Endpoint marker radii must be greater than zero.")
+
+        endpoint_robot = raw_env.scene["robot"]
+        endpoint_body_name = args_cli.endpoint_body
+        if endpoint_body_name is None:
+            endpoint_body_name = "RR_foot" if "V4-50Hz" in args_cli.task else "RR_2"
+        endpoint_body_ids, resolved_endpoint_body_names = endpoint_robot.find_bodies(
+            [endpoint_body_name], preserve_order=True
+        )
+        if len(endpoint_body_ids) != 1:
+            raise RuntimeError(
+                f"Failed to resolve endpoint body '{endpoint_body_name}': {resolved_endpoint_body_names}"
+            )
+        endpoint_body_id = endpoint_body_ids[0]
+
+        marker_cfg = POSITION_GOAL_MARKER_CFG.copy()
+        marker_cfg.prim_path = "/Visuals/RslRlEndpointTrail"
+        marker_cfg.markers["target_far"].radius = args_cli.endpoint_trail_radius
+        marker_cfg.markers["target_far"].visual_material = sim_utils.PreviewSurfaceCfg(
+            diffuse_color=(0.0, 1.0, 0.0)
+        )
+        marker_cfg.markers["target_near"].radius = args_cli.endpoint_radius
+        marker_cfg.markers["target_near"].visual_material = sim_utils.PreviewSurfaceCfg(
+            diffuse_color=(0.0, 1.0, 0.0)
+        )
+        endpoint_marker = VisualizationMarkers(marker_cfg)
+        print(
+            f"[INFO] Enabled endpoint trail: body={resolved_endpoint_body_names[0]}, "
+            f"points={args_cli.endpoint_trail_points}, stride={endpoint_trail_stride}."
+        )
+
     # wrap for video recording
     if args_cli.video:
         if args_cli.video_length is None:
@@ -258,7 +355,15 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
                 f"for {args_cli.video_seconds:g}s videos (step_dt={dt})."
             )
         video_kwargs = {
-            "video_folder": os.path.join(log_dir, "videos", "play"),
+            "video_folder": (
+                os.path.abspath(args_cli.video_output_dir)
+                if args_cli.video_output_dir is not None
+                else os.path.join(
+                    log_dir,
+                    "videos",
+                    f"play_with_trail_{int(round(1.0 / dt))}hz" if args_cli.endpoint_trail else "play",
+                )
+            ),
             "step_trigger": lambda step: step == 0,
             "video_length": args_cli.video_length,
             "fps": int(1 / dt),
@@ -285,6 +390,22 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             command_term.is_standing_env[:] = torch.logical_not(moving)
         if hasattr(command_term, "is_heading_env"):
             command_term.is_heading_env[:] = False
+
+    def _update_endpoint_trail(step_index: int, dones: torch.Tensor | None = None):
+        if endpoint_robot is None or endpoint_marker is None or endpoint_body_id is None:
+            return
+        if dones is not None and bool(torch.any(dones).item()):
+            endpoint_trail.clear()
+
+        endpoint_pos_w = endpoint_robot.data.body_pos_w[:, endpoint_body_id].clone()
+        if step_index % endpoint_trail_stride == 0:
+            endpoint_trail.append(endpoint_pos_w)
+            del endpoint_trail[: max(0, len(endpoint_trail) - args_cli.endpoint_trail_points)]
+
+        marker_positions = torch.cat([*endpoint_trail, endpoint_pos_w], dim=0)
+        marker_indices = torch.zeros(marker_positions.shape[0], device=endpoint_robot.device, dtype=torch.long)
+        marker_indices[-1] = 1
+        endpoint_marker.visualize(marker_positions, marker_indices=marker_indices)
 
     print(f"[INFO]: Loading model checkpoint from: {resume_path}")
     # load previously trained model
@@ -317,14 +438,16 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         normalizer = None
 
     # export policy to onnx/jit
-    export_model_dir = os.path.join(os.path.dirname(resume_path), "exported")
-    export_policy_as_jit(policy_nn, normalizer=normalizer, path=export_model_dir, filename="policy.pt")
-    export_policy_as_onnx(policy_nn, normalizer=normalizer, path=export_model_dir, filename="policy.onnx")
+    if not args_cli.disable_export:
+        export_model_dir = os.path.join(os.path.dirname(resume_path), "exported")
+        export_policy_as_jit(policy_nn, normalizer=normalizer, path=export_model_dir, filename="policy.pt")
+        export_policy_as_onnx(policy_nn, normalizer=normalizer, path=export_model_dir, filename="policy.onnx")
 
     # reset environment
     _sync_keyboard_base_velocity_command()
     obs = env.get_observations()
     timestep = 0
+    _update_endpoint_trail(timestep)
     # simulate environment
     while simulation_app.is_running():
         start_time = time.time()
@@ -335,6 +458,7 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             actions = policy(obs)
             # env stepping
             obs, _, dones, _ = env.step(actions)
+            _update_endpoint_trail(timestep + 1, dones)
             # reset recurrent states for episodes that have terminated
             policy_nn.reset(dones)
         timestep += 1

@@ -60,6 +60,17 @@ def single_leg_track_reference_exp(
     return torch.exp(-torch.sum(torch.square(error), dim=1) / max(sigma**2, 1.0e-6))
 
 
+def single_leg_action_track_reference_exp(
+    env: ManagerBasedRLEnv,
+    sigma: float = 0.06,
+    action_name: str = "joint_pos",
+) -> torch.Tensor:
+    """Reward the processed RR action for following the sinusoidal reference offsets."""
+    action_term: SingleLegPositionAction = env.action_manager.get_term(action_name)
+    error = action_term.processed_actions - _reference_offsets(env)
+    return torch.exp(-torch.sum(torch.square(error), dim=1) / max(sigma**2, 1.0e-6))
+
+
 @configclass
 class SingleLegPositionActionCfg(ActionTermCfg):
     """Configuration for two-dimensional RR single-leg joint-position action."""
