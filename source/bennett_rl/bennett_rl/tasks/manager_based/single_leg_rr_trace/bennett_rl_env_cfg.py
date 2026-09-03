@@ -225,7 +225,6 @@ class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 单一 50Hz 入口，
         self.viewer.lookat = (0.0, 0.0, 0.2)
         self.sim.render_interval = self.decimation
 
-
 @configclass
 class BennettSingleLegTraceEnvCfg_PLAY(BennettSingleLegTraceEnvCfg):
     def __post_init__(self) -> None:
