@@ -55,7 +55,7 @@ _build
 # RL-Games
 **/runs/*
 # Keep exported policies, configs, source diffs, TensorBoard events, and videos.
-# Periodic checkpoints are ignored; scripts/sync_training_artifacts.ps1 force-adds
+# Periodic checkpoints are ignored; .A_GongJu/sync_training_artifacts.ps1 force-adds
 # only the highest-numbered model_*.pt in each training run directory.
 **/logs/**/model_*.pt
 **/recordings/*
