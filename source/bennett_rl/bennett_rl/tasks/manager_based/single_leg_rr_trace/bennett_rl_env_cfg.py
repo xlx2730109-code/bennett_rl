@@ -16,7 +16,7 @@ from isaaclab.scene import InteractiveSceneCfg
 from isaaclab.terrains import TerrainImporterCfg
 from isaaclab.utils import configclass
 
-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V5, BENNETT_CFG_V6
+from bennett_rl.assets.robots.bennett import BENNETT_CFG_V3
 
 from . import mdp
 
@@ -35,19 +35,10 @@ ACTIVE_LEG_JOINTS = [
 
 
 def _make_fixed_bennett_cfg() -> ArticulationCfg:   #作用：生成固定基座Bennett机器人的配置
-    robot_cfg = BENNETT_CFG_V5.copy()
+    robot_cfg = BENNETT_CFG_V3.copy()
     robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
     robot_cfg.spawn.articulation_props.fix_root_link = True
-    return robot_cfg
-
-
-def _make_fixed_bennett_v4_cfg() -> ArticulationCfg:
-    """Create the fixed-base latest Bennett model from Urdf_Bennett_4."""
-
-    # BENNETT_CFG_V6 is the robot-config entry backed by assets/robots/Urdf_Bennett_4.
-    robot_cfg = BENNETT_CFG_V6.copy()
-    robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
-    robot_cfg.spawn.articulation_props.fix_root_link = True
+    robot_cfg.init_state.pos = (0.0, 0.0, 0.32)
     return robot_cfg
 
 
@@ -75,13 +66,6 @@ class SingleLegTraceSceneCfg(InteractiveSceneCfg):  # 场景：地面、固定�
         prim_path="/World/DomeLight",
         spawn=sim_utils.DomeLightCfg(color=(0.9, 0.9, 0.9), intensity=500.0),
     )
-
-
-@configclass
-class SingleLegTraceV4SceneCfg(SingleLegTraceSceneCfg):
-    """Fixed-base single-leg scene using Urdf_Bennett_4."""
-
-    robot: ArticulationCfg = _make_fixed_bennett_v4_cfg()
 
 
 @configclass
@@ -173,22 +157,6 @@ class RewardsCfg:   #作用：生成Bennett机器人的奖励配置：tracking�
 
 
 @configclass
-class V4RewardsCfg(RewardsCfg):
-    """V4 rewards with a wider physical basin and direct sinusoidal action guidance."""
-
-    track_reference = RewTerm(
-        func=mdp.single_leg_track_reference_exp,
-        weight=5.0,
-        params={"sigma": 0.15, "asset_cfg": SceneEntityCfg("robot", joint_names=RR_TRACE_JOINTS)},
-    )
-    track_action_reference = RewTerm(
-        func=mdp.single_leg_action_track_reference_exp,
-        weight=0.5,
-        params={"sigma": 0.06, "action_name": "joint_pos"},
-    )
-
-
-@configclass
 class TerminationsCfg: # 只按时间结束
     """Only terminate on time-out for this suspended trace task."""
 
@@ -225,40 +193,13 @@ class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 单一 50Hz 入口，
         self.viewer.lookat = (0.0, 0.0, 0.2)
         self.sim.render_interval = self.decimation
 
+
 @configclass
 class BennettSingleLegTraceEnvCfg_PLAY(BennettSingleLegTraceEnvCfg):
     def __post_init__(self) -> None:
         super().__post_init__()
         self.scene.num_envs = 1 #Play时只有一个环境
         self.scene.env_spacing = 1.5
-
-
-@configclass
-class BennettSingleLegTraceV4EnvCfg(BennettSingleLegTraceEnvCfg):
-    """Independent 50 Hz training task using the latest Urdf_Bennett_4 model."""
-
-    scene: SingleLegTraceV4SceneCfg = SingleLegTraceV4SceneCfg(
-        num_envs=4096, env_spacing=1.5, clone_in_fabric=False
-    )
-    rewards: V4RewardsCfg = V4RewardsCfg()
-
-    def __post_init__(self) -> None:
-        super().__post_init__()
-        self.sim.dt = 1.0 / 300.0
-        self.decimation = 6
-        self.sim.render_interval = self.decimation
-
-
-@configclass
-class BennettSingleLegTraceV4EnvCfg_PLAY(BennettSingleLegTraceV4EnvCfg):
-    """Single-environment close-view playback for the Urdf_Bennett_4 task."""
-
-    def __post_init__(self) -> None:
-        super().__post_init__()
-        self.scene.num_envs = 1
-        self.scene.env_spacing = 1.5
-        self.viewer.eye = (0.8, -1.2, 0.65)
-        self.viewer.lookat = (0.0, -0.08, 0.12)
 
 
 
