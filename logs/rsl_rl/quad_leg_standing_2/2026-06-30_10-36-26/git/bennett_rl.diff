@@ -1,0 +1,885 @@
+--- git status ---
+On branch master
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/agents/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/agents/rsl_rl_ppo_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/bennett_rl_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/mdp/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/mdp/rewards.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/agents/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/agents/rsl_rl_ppo_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/bennett_rl_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/flat_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/mdp/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/mdp/rewards.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/rough_env_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/__init__.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_standing_1/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_standing_2/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_track/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/
+	source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_jct/
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/__init__.py
+deleted file mode 100644
+index efbb2d7..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/__init__.py
++++ /dev/null
+@@ -1,23 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-import gymnasium as gym
+-
+-from . import agents
+-
+-##
+-# Register Gym environments.
+-##
+-
+-
+-gym.register(
+-    id="Template-Bennett-Rl-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.bennett_rl_env_cfg:BennettRlEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:PPORunnerCfg",
+-    },
+-)
+\ No newline at end of file
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/agents/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/agents/__init__.py
+deleted file mode 100644
+index a597dfa..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/agents/__init__.py
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+\ No newline at end of file
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/agents/rsl_rl_ppo_cfg.py
+deleted file mode 100644
+index 4556af6..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/agents/rsl_rl_ppo_cfg.py
++++ /dev/null
+@@ -1,38 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from isaaclab.utils import configclass
+-
+-from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, RslRlPpoAlgorithmCfg
+-
+-
+-@configclass
+-class PPORunnerCfg(RslRlOnPolicyRunnerCfg):
+-    num_steps_per_env = 16
+-    max_iterations = 150
+-    save_interval = 50
+-    experiment_name = "cartpole_direct"
+-    policy = RslRlPpoActorCriticCfg(
+-        init_noise_std=1.0,
+-        actor_obs_normalization=False,
+-        critic_obs_normalization=False,
+-        actor_hidden_dims=[32, 32],
+-        critic_hidden_dims=[32, 32],
+-        activation="elu",
+-    )
+-    algorithm = RslRlPpoAlgorithmCfg(
+-        value_loss_coef=1.0,
+-        use_clipped_value_loss=True,
+-        clip_param=0.2,
+-        entropy_coef=0.005,
+-        num_learning_epochs=5,
+-        num_mini_batches=4,
+-        learning_rate=1.0e-3,
+-        schedule="adaptive",
+-        gamma=0.99,
+-        lam=0.95,
+-        desired_kl=0.01,
+-        max_grad_norm=1.0,
+-    )
+\ No newline at end of file
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/bennett_rl_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/bennett_rl_env_cfg.py
+deleted file mode 100644
+index 3ed33ee..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/bennett_rl_env_cfg.py
++++ /dev/null
+@@ -1,180 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-import math
+-
+-import isaaclab.sim as sim_utils
+-from isaaclab.assets import ArticulationCfg, AssetBaseCfg
+-from isaaclab.envs import ManagerBasedRLEnvCfg
+-from isaaclab.managers import EventTermCfg as EventTerm
+-from isaaclab.managers import ObservationGroupCfg as ObsGroup
+-from isaaclab.managers import ObservationTermCfg as ObsTerm
+-from isaaclab.managers import RewardTermCfg as RewTerm
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.managers import TerminationTermCfg as DoneTerm
+-from isaaclab.scene import InteractiveSceneCfg
+-from isaaclab.utils import configclass
+-
+-from . import mdp
+-
+-##
+-# Pre-defined configs
+-##
+-
+-from isaaclab_assets.robots.cartpole import CARTPOLE_CFG  # isort:skip
+-
+-
+-##
+-# Scene definition
+-##
+-
+-
+-@configclass
+-class BennettRlSceneCfg(InteractiveSceneCfg):
+-    """Configuration for a cart-pole scene."""
+-
+-    # ground plane
+-    ground = AssetBaseCfg(
+-        prim_path="/World/ground",
+-        spawn=sim_utils.GroundPlaneCfg(size=(100.0, 100.0)),
+-    )
+-
+-    # robot
+-    robot: ArticulationCfg = CARTPOLE_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+-
+-    # lights
+-    dome_light = AssetBaseCfg(
+-        prim_path="/World/DomeLight",
+-        spawn=sim_utils.DomeLightCfg(color=(0.9, 0.9, 0.9), intensity=500.0),
+-    )
+-
+-
+-##
+-# MDP settings
+-##
+-
+-
+-@configclass
+-class ActionsCfg:
+-    """Action specifications for the MDP."""
+-
+-    joint_effort = mdp.JointEffortActionCfg(asset_name="robot", joint_names=["slider_to_cart"], scale=100.0)
+-
+-
+-@configclass
+-class ObservationsCfg:
+-    """Observation specifications for the MDP."""
+-
+-    @configclass
+-    class PolicyCfg(ObsGroup):
+-        """Observations for policy group."""
+-
+-        # observation terms (order preserved)
+-        joint_pos_rel = ObsTerm(func=mdp.joint_pos_rel)
+-        joint_vel_rel = ObsTerm(func=mdp.joint_vel_rel)
+-
+-        def __post_init__(self) -> None:
+-            self.enable_corruption = False
+-            self.concatenate_terms = True
+-
+-    # observation groups
+-    policy: PolicyCfg = PolicyCfg()
+-
+-
+-@configclass
+-class EventCfg:
+-    """Configuration for events."""
+-
+-    # reset
+-    reset_cart_position = EventTerm(
+-        func=mdp.reset_joints_by_offset,
+-        mode="reset",
+-        params={
+-            "asset_cfg": SceneEntityCfg("robot", joint_names=["slider_to_cart"]),
+-            "position_range": (-1.0, 1.0),
+-            "velocity_range": (-0.5, 0.5),
+-        },
+-    )
+-
+-    reset_pole_position = EventTerm(
+-        func=mdp.reset_joints_by_offset,
+-        mode="reset",
+-        params={
+-            "asset_cfg": SceneEntityCfg("robot", joint_names=["cart_to_pole"]),
+-            "position_range": (-0.25 * math.pi, 0.25 * math.pi),
+-            "velocity_range": (-0.25 * math.pi, 0.25 * math.pi),
+-        },
+-    )
+-
+-
+-@configclass
+-class RewardsCfg:
+-    """Reward terms for the MDP."""
+-
+-    # (1) Constant running reward
+-    alive = RewTerm(func=mdp.is_alive, weight=1.0)
+-    # (2) Failure penalty
+-    terminating = RewTerm(func=mdp.is_terminated, weight=-2.0)
+-    # (3) Primary task: keep pole upright
+-    pole_pos = RewTerm(
+-        func=mdp.joint_pos_target_l2,
+-        weight=-1.0,
+-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=["cart_to_pole"]), "target": 0.0},
+-    )
+-    # (4) Shaping tasks: lower cart velocity
+-    cart_vel = RewTerm(
+-        func=mdp.joint_vel_l1,
+-        weight=-0.01,
+-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=["slider_to_cart"])},
+-    )
+-    # (5) Shaping tasks: lower pole angular velocity
+-    pole_vel = RewTerm(
+-        func=mdp.joint_vel_l1,
+-        weight=-0.005,
+-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=["cart_to_pole"])},
+-    )
+-
+-
+-@configclass
+-class TerminationsCfg:
+-    """Termination terms for the MDP."""
+-
+-    # (1) Time out
+-    time_out = DoneTerm(func=mdp.time_out, time_out=True)
+-    # (2) Cart out of bounds
+-    cart_out_of_bounds = DoneTerm(
+-        func=mdp.joint_pos_out_of_manual_limit,
+-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=["slider_to_cart"]), "bounds": (-3.0, 3.0)},
+-    )
+-
+-
+-##
+-# Environment configuration
+-##
+-
+-
+-@configclass
+-class BennettRlEnvCfg(ManagerBasedRLEnvCfg):
+-    # Scene settings
+-    scene: BennettRlSceneCfg = BennettRlSceneCfg(num_envs=4096, env_spacing=4.0)
+-    # Basic settings
+-    observations: ObservationsCfg = ObservationsCfg()
+-    actions: ActionsCfg = ActionsCfg()
+-    events: EventCfg = EventCfg()
+-    # MDP settings
+-    rewards: RewardsCfg = RewardsCfg()
+-    terminations: TerminationsCfg = TerminationsCfg()
+-
+-    # Post initialization
+-    def __post_init__(self) -> None:
+-        """Post initialization."""
+-        # general settings
+-        self.decimation = 2
+-        self.episode_length_s = 5
+-        # viewer settings
+-        self.viewer.eye = (8.0, 0.0, 5.0)
+-        # simulation settings
+-        self.sim.dt = 1 / 120
+-        self.sim.render_interval = self.decimation
+\ No newline at end of file
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/mdp/__init__.py
+deleted file mode 100644
+index 966d4a3..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/mdp/__init__.py
++++ /dev/null
+@@ -1,10 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-"""This sub-module contains the functions that are specific to the environment."""
+-
+-from isaaclab.envs.mdp import *  # noqa: F401, F403
+-
+-from .rewards import *  # noqa: F401, F403
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/mdp/rewards.py
+deleted file mode 100644
+index 5500089..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_track/mdp/rewards.py
++++ /dev/null
+@@ -1,27 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from __future__ import annotations
+-
+-from typing import TYPE_CHECKING
+-
+-import torch
+-
+-from isaaclab.assets import Articulation
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.utils.math import wrap_to_pi
+-
+-if TYPE_CHECKING:
+-    from isaaclab.envs import ManagerBasedRLEnv
+-
+-
+-def joint_pos_target_l2(env: ManagerBasedRLEnv, target: float, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+-    """Penalize joint position deviation from a target value."""
+-    # extract the used quantities (to enable type-hinting)
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    # wrap the joint positions to (-pi, pi)
+-    joint_pos = wrap_to_pi(asset.data.joint_pos[:, asset_cfg.joint_ids])
+-    # compute the reward
+-    return torch.sum(torch.square(joint_pos - target), dim=1)
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/__init__.py
+deleted file mode 100644
+index 0a88947..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/__init__.py
++++ /dev/null
+@@ -1,53 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-import gymnasium as gym
+-
+-from . import agents
+-
+-##
+-# Register Gym environments.
+-##
+-
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity-Flat-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettQuadVelocityFlatEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityFlatPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity-Flat-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettQuadVelocityFlatEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityFlatPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity-Rough-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:BennettQuadVelocityRoughEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityRoughPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity-Rough-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:BennettQuadVelocityRoughEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityRoughPPORunnerCfg",
+-    },
+-)
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/agents/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/agents/__init__.py
+deleted file mode 100644
+index a597dfa..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/agents/__init__.py
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+\ No newline at end of file
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/agents/rsl_rl_ppo_cfg.py
+deleted file mode 100644
+index b850d34..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/agents/rsl_rl_ppo_cfg.py
++++ /dev/null
+@@ -1,54 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from isaaclab.utils import configclass
+-
+-from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, RslRlPpoAlgorithmCfg
+-
+-
+-@configclass
+-class BennettQuadVelocityRoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+-    num_steps_per_env = 24
+-    max_iterations = 1500
+-    save_interval = 50
+-    experiment_name = "Bennett_quad_velocity_rough"
+-    policy = RslRlPpoActorCriticCfg(
+-        init_noise_std=1.0,
+-        actor_obs_normalization=False,
+-        critic_obs_normalization=False,
+-        actor_hidden_dims=[512, 256, 128],
+-        critic_hidden_dims=[512, 256, 128],
+-        activation="elu",
+-    )
+-    algorithm = RslRlPpoAlgorithmCfg(
+-        value_loss_coef=1.0,
+-        use_clipped_value_loss=True,
+-        clip_param=0.2,
+-        entropy_coef=0.01,
+-        num_learning_epochs=5,
+-        num_mini_batches=4,
+-        learning_rate=1.0e-3,
+-        schedule="adaptive",
+-        gamma=0.99,
+-        lam=0.95,
+-        desired_kl=0.01,
+-        max_grad_norm=1.0,
+-    )
+-
+-
+-@configclass
+-class BennettQuadVelocityFlatPPORunnerCfg(BennettQuadVelocityRoughPPORunnerCfg):
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.max_iterations = 300
+-        self.experiment_name = "Bennett_quad_velocity_flat"
+-        self.policy.actor_hidden_dims = [128, 128, 128]
+-        self.policy.critic_hidden_dims = [128, 128, 128]
+-
+-
+-PPORunnerCfg = BennettQuadVelocityFlatPPORunnerCfg
+-BennettGo2RoughPPORunnerCfg = BennettQuadVelocityRoughPPORunnerCfg
+-BennettGo2FlatPPORunnerCfg = BennettQuadVelocityFlatPPORunnerCfg
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/bennett_rl_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/bennett_rl_env_cfg.py
+deleted file mode 100644
+index 3ccc1c9..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/bennett_rl_env_cfg.py
++++ /dev/null
+@@ -1,7 +0,0 @@
+-"""Compatibility exports for the Bennett quadruped velocity tasks.
+-
+-The actual task configs live in ``rough_env_cfg.py`` and ``flat_env_cfg.py``.
+-"""
+-
+-from .flat_env_cfg import BennettQuadVelocityFlatEnvCfg, BennettQuadVelocityFlatEnvCfg_PLAY
+-from .rough_env_cfg import BennettQuadVelocityRoughEnvCfg, BennettQuadVelocityRoughEnvCfg_PLAY
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/flat_env_cfg.py
+deleted file mode 100644
+index 39d87ba..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/flat_env_cfg.py
++++ /dev/null
+@@ -1,36 +0,0 @@
+-from isaaclab.utils import configclass
+-
+-from .rough_env_cfg import BennettQuadVelocityRoughEnvCfg
+-
+-
+-@configclass
+-class BennettQuadVelocityFlatEnvCfg(BennettQuadVelocityRoughEnvCfg):
+-    """Bennett quadruped velocity-tracking locomotion task on flat terrain."""
+-
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.rewards.flat_orientation_l2.weight = -2.5
+-        self.rewards.feet_air_time.weight = 0.25
+-
+-        self.scene.terrain.terrain_type = "plane"
+-        self.scene.terrain.terrain_generator = None
+-        self.scene.height_scanner = None
+-        self.observations.policy.height_scan = None
+-        self.curriculum.terrain_levels = None
+-
+-
+-@configclass
+-class BennettQuadVelocityFlatEnvCfg_PLAY(BennettQuadVelocityFlatEnvCfg):
+-    def __post_init__(self) -> None:
+-        super().__post_init__()
+-
+-        self.scene.num_envs = 50
+-        self.scene.env_spacing = 2.5
+-        self.observations.policy.enable_corruption = False
+-        self.events.base_external_force_torque = None
+-        self.events.push_robot = None
+-
+-
+-BennettGo2FlatEnvCfg = BennettQuadVelocityFlatEnvCfg
+-BennettGo2FlatEnvCfg_PLAY = BennettQuadVelocityFlatEnvCfg_PLAY
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/mdp/__init__.py
+deleted file mode 100644
+index 966d4a3..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/mdp/__init__.py
++++ /dev/null
+@@ -1,10 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-"""This sub-module contains the functions that are specific to the environment."""
+-
+-from isaaclab.envs.mdp import *  # noqa: F401, F403
+-
+-from .rewards import *  # noqa: F401, F403
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/mdp/rewards.py
+deleted file mode 100644
+index ecd3bb4..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/mdp/rewards.py
++++ /dev/null
+@@ -1,4 +0,0 @@
+-"""Custom MDP terms for Bennett quadruped velocity tasks.
+-
+-Currently this package uses Isaac Lab's built-in locomotion velocity MDP terms.
+-"""
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/rough_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/rough_env_cfg.py
+deleted file mode 100644
+index 6eda97c..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_velocity/rough_env_cfg.py
++++ /dev/null
+@@ -1,102 +0,0 @@
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.utils import configclass
+-
+-from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import LocomotionVelocityRoughEnvCfg
+-
+-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V3
+-
+-
+-ACTIVE_JOINTS = [
+-    "FL_thigh",
+-    "FL_calf",
+-    "FR_thigh",
+-    "FR_calf",
+-    "RL_thigh",
+-    "RL_calf",
+-    "RR_thigh",
+-    "RR_calf",
+-]
+-
+-
+-@configclass
+-class BennettQuadVelocityRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
+-    """Bennett quadruped velocity-tracking locomotion task on rough terrain.
+-
+-    This is a velocity-command policy task. The policy outputs normalized joint-position actions for the eight
+-    actuated thigh/calf joints; Isaac Lab applies them through the Bennett DCMotorCfg PD actuator model. It is not a
+-    hardware MIT-command runner.
+-    """
+-
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.decimation = 4
+-        self.sim.dt = 1.0 / 200.0
+-
+-        self.scene.robot = BENNETT_CFG_V3.replace(prim_path="{ENV_REGEX_NS}/Robot")
+-        self.scene.height_scanner.prim_path = "{ENV_REGEX_NS}/Robot/base"
+-
+-        self.actions.joint_pos.joint_names = ACTIVE_JOINTS
+-        self.actions.joint_pos.scale = 0.25
+-
+-        # Sim2Real-oriented observation shape: no direct base linear velocity observation.
+-        # old: inherited LocomotionVelocityRoughEnvCfg policy.base_lin_vel.
+-        self.observations.policy.base_lin_vel = None
+-        self.observations.policy.joint_pos.params["asset_cfg"] = SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS)
+-        self.observations.policy.joint_vel.params["asset_cfg"] = SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS)
+-
+-        # Scale down rough terrains for Bennett's small body/leg dimensions.
+-        self.scene.terrain.terrain_generator.sub_terrains["boxes"].grid_height_range = (0.025, 0.1)
+-        self.scene.terrain.terrain_generator.sub_terrains["random_rough"].noise_range = (0.01, 0.06)
+-        self.scene.terrain.terrain_generator.sub_terrains["random_rough"].noise_step = 0.01
+-
+-        self.events.push_robot = None
+-        self.events.add_base_mass.params["mass_distribution_params"] = (-1.0, 3.0)
+-        self.events.add_base_mass.params["asset_cfg"].body_names = "base"
+-        self.events.base_external_force_torque.params["asset_cfg"].body_names = "base"
+-        self.events.reset_robot_joints.params["position_range"] = (1.0, 1.0)
+-        self.events.reset_base.params = {
+-            "pose_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "yaw": (0.0, 0.0)},
+-            "velocity_range": {
+-                "x": (0.0, 0.0),
+-                "y": (0.0, 0.0),
+-                "z": (0.0, 0.0),
+-                "roll": (0.0, 0.0),
+-                "pitch": (0.0, 0.0),
+-                "yaw": (0.0, 0.0),
+-            },
+-        }
+-        self.events.base_com = None
+-
+-        # old: self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_foot"
+-        self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_1"
+-        self.rewards.feet_air_time.weight = 0.01
+-        self.rewards.undesired_contacts = None
+-        self.rewards.dof_torques_l2.weight = -0.0002
+-        self.rewards.track_lin_vel_xy_exp.weight = 1.5
+-        self.rewards.track_ang_vel_z_exp.weight = 0.75
+-        self.rewards.dof_acc_l2.weight = -2.5e-7
+-
+-        self.terminations.base_contact.params["sensor_cfg"].body_names = "base"
+-
+-
+-@configclass
+-class BennettQuadVelocityRoughEnvCfg_PLAY(BennettQuadVelocityRoughEnvCfg):
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.scene.num_envs = 50
+-        self.scene.env_spacing = 2.5
+-        self.scene.terrain.max_init_terrain_level = None
+-        if self.scene.terrain.terrain_generator is not None:
+-            self.scene.terrain.terrain_generator.num_rows = 5
+-            self.scene.terrain.terrain_generator.num_cols = 5
+-            self.scene.terrain.terrain_generator.curriculum = False
+-
+-        self.observations.policy.enable_corruption = False
+-        self.events.base_external_force_torque = None
+-        self.events.push_robot = None
+-
+-
+-BennettGo2RoughEnvCfg = BennettQuadVelocityRoughEnvCfg
+-BennettGo2RoughEnvCfg_PLAY = BennettQuadVelocityRoughEnvCfg_PLAY
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/__init__.py
+index c36f9f2..f12318a 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/__init__.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/__init__.py
+@@ -18,7 +18,7 @@ gym.register(
+     disable_env_checker=True,
+     kwargs={
+         "env_cfg_entry_point": f"{__name__}.bennett_rl_env_cfg:BennettSingleLegTraceEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettSingleLegTrace50HzPPORunnerCfg",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettSingleLegTracePPORunnerCfg",
+     },
+ )
+ 
+@@ -28,46 +28,6 @@ gym.register(
+     disable_env_checker=True,
+     kwargs={
+         "env_cfg_entry_point": f"{__name__}.bennett_rl_env_cfg:BennettSingleLegTraceEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettSingleLegTrace50HzPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-Bennett-SingleLeg-RR-Trace-50Hz-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.bennett_rl_env_cfg:BennettSingleLegTrace50HzEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettSingleLegTrace50HzPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-Bennett-SingleLeg-RR-Trace-50Hz-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.bennett_rl_env_cfg:BennettSingleLegTrace50HzEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettSingleLegTrace50HzPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-Bennett-SingleLeg-RR-Trace-250Hz-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.bennett_rl_env_cfg:BennettSingleLegTrace250HzEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettSingleLegTrace250HzPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-Bennett-SingleLeg-RR-Trace-250Hz-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.bennett_rl_env_cfg:BennettSingleLegTrace250HzEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettSingleLegTrace250HzPPORunnerCfg",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettSingleLegTracePPORunnerCfg",
+     },
+ )
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py
+index 4b62925..fd2b87d 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py
+@@ -38,24 +38,4 @@ class BennettSingleLegTracePPORunnerCfg(RslRlOnPolicyRunnerCfg):
+     )
+ 
+ 
+-@configclass
+-class BennettSingleLegTrace50HzPPORunnerCfg(BennettSingleLegTracePPORunnerCfg):
+-    """PPO config for the 50 Hz single-leg trace task."""
+-
+-    experiment_name = "single_leg_rr_trace"   
+-
+-
+-@configclass
+-class BennettSingleLegTrace250HzPPORunnerCfg(BennettSingleLegTracePPORunnerCfg):
+-    """PPO config for the 250 Hz single-leg trace task.
+-
+-    The rollout length is increased so each PPO update still sees about
+-    0.48 seconds of simulated time: 120 steps / 250 Hz ~= 24 steps / 50 Hz.
+-    """
+-
+-    num_steps_per_env = 120
+-    # experiment_name = "single_leg_rr_trace_250hz"
+-    experiment_name = "single_leg_rr_trace"
+-
+-
+-PPORunnerCfg = BennettSingleLegTrace50HzPPORunnerCfg
++PPORunnerCfg = BennettSingleLegTracePPORunnerCfg
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py
+index c273d62..079ec86 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py
+@@ -1,3 +1,6 @@
++# 单腿轨迹跟踪
++
++
+ import math
+ 
+ import isaaclab.sim as sim_utils
+@@ -159,7 +162,7 @@ class TerminationsCfg: # 只按时间结束
+     time_out = DoneTerm(func=mdp.time_out, time_out=True)
+ 
+ @configclass
+-class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 默认 50Hz，老入口，作用是生成Bennett机器人的环境配置
++class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 单一 50Hz 入口，作用是生成Bennett机器人的环境配置
+     scene: SingleLegTraceSceneCfg = SingleLegTraceSceneCfg(num_envs=4096, env_spacing=1.5, clone_in_fabric=False)  
+     observations: ObservationsCfg = ObservationsCfg()
+     actions: ActionsCfg = ActionsCfg()
+@@ -169,23 +172,20 @@ class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 默认 50Hz，老入
+     terminations: TerminationsCfg = TerminationsCfg()
+ 
+     def __post_init__(self) -> None:
++        self.decimation = 6 #50Hz
++        self.sim.dt = 1.0 / 300 #50Hz
++
+         # self.decimation = 6 #50Hz
+         # self.sim.dt = 1.0 / 300 #50Hz
+ 
+-        # self.decimation = 5 #100Hz
+-        # self.sim.dt = 1.0 / 500 #100Hz
+-
+-        # self.decimation = 4 #150Hz
+-        # self.sim.dt = 1.0 / 600 #150Hz
+-
+-        # self.decimation = 3 #200Hz
+-        # self.sim.dt = 1.0 / 600 #200Hz
++        # self.decimation = 6 #50Hz
++        # self.sim.dt = 1.0 / 300 #50Hz
+ 
+-        # self.decimation = 4 #250Hz
+-        # self.sim.dt = 1.0 / 1000 #250Hz
++        # self.decimation = 6 #50Hz
++        # self.sim.dt = 1.0 / 300 #50Hz
+ 
+-        self.decimation = 4 #500Hz
+-        self.sim.dt = 1.0 / 2000 #500Hz
++        # self.decimation = 6 #50Hz
++        # self.sim.dt = 1.0 / 300 #50Hz
+ 
+         self.episode_length_s = 8.0
+         self.viewer.eye = (1.8, -2.4, 1.2)
+@@ -194,46 +194,16 @@ class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 默认 50Hz，老入
+ 
+ 
+ @configclass
+-class BennettSingleLegTrace50HzEnvCfg(BennettSingleLegTraceEnvCfg): # 明确 50Hz，继承默认类，不额外改
+-
+-    pass
+-
+-
+-@configclass
+-class BennettSingleLegTrace250HzEnvCfg(BennettSingleLegTraceEnvCfg):  # 明确 250Hz，只覆盖 dt/decimation
+-
+-    def __post_init__(self) -> None:
+-        super().__post_init__()
+-        self.decimation = 1
+-        self.sim.dt = 1.0 / 250.0
+-        self.sim.render_interval = self.decimation
+-
+-
+-@configclass
+-class BennettSingleLegTraceEnvCfg_PLAY(BennettSingleLegTrace50HzEnvCfg):
+-    def __post_init__(self) -> None:
+-        super().__post_init__()
+-        self.scene.num_envs = 1
+-        self.scene.env_spacing = 1.5
+-
+-
+-@configclass
+-class BennettSingleLegTrace50HzEnvCfg_PLAY(BennettSingleLegTraceEnvCfg_PLAY):
+-
+-    pass
+-
+-
+-@configclass
+-class BennettSingleLegTrace250HzEnvCfg_PLAY(BennettSingleLegTrace250HzEnvCfg):
++class BennettSingleLegTraceEnvCfg_PLAY(BennettSingleLegTraceEnvCfg):
+     def __post_init__(self) -> None:
+         super().__post_init__()
+-        self.scene.num_envs = 1
++        self.scene.num_envs = 1 #Play时只有一个环境
+         self.scene.env_spacing = 1.5
+ 
+ 
+ 
+-# python .\scripts\zero_agent.py --task=Isaac-Bennett-SingleLeg-RR-Trace-50Hz-v0 --num_envs=8
+-# python .\scripts\rsl_rl\train.py --task=Isaac-Bennett-SingleLeg-RR-Trace-50Hz-v0 --headless
++# python .\scripts\zero_agent.py --task=Isaac-Bennett-SingleLeg-RR-Trace-v0 --num_envs=8
++# python .\scripts\rsl_rl\train.py --task=Isaac-Bennett-SingleLeg-RR-Trace-v0 --headless
+ # python .\scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-Play-v0 --video --checkpoint
+ # tensorboard --logdir
+ 
+@@ -249,13 +219,3 @@ class BennettSingleLegTrace250HzEnvCfg_PLAY(BennettSingleLegTrace250HzEnvCfg):
+ #   EventCfg                     # reset 腿关节
+ #   RewardsCfg                   # tracking、速度、action_rate、torque
+ #   TerminationsCfg              # 只按时间结束
+-
+-# 频率版本
+-#   BennettSingleLegTraceEnvCfg          # 默认 50Hz，老入口
+-#   BennettSingleLegTrace50HzEnvCfg      # 明确 50Hz，继承默认类，不额外改
+-#   BennettSingleLegTrace250HzEnvCfg     # 明确 250Hz，只覆盖 dt/decimation
+-
+-# 播放版本
+-#   BennettSingleLegTraceEnvCfg_PLAY
+-#   BennettSingleLegTrace50HzEnvCfg_PLAY
+-#   BennettSingleLegTrace250HzEnvCfg_PLAY

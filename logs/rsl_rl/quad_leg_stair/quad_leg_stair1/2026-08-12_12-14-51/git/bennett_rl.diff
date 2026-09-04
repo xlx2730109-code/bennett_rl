@@ -1,0 +1,347 @@
+--- git status ---
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/curriculums.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/terminations.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/support.py
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md
+index b0510dc..ab5e294 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md
+@@ -13,8 +13,10 @@ Trot1、Go2-10、Gravel 或其他自定义任务；只使用 Isaac Lab 通用速
+ - 前进命令采用Slope4已训练成功的0.16–0.24 m/s范围。
+ - 横向速度目标为0；训练环境根据世界+X航向误差生成±0.40 rad/s以内的偏航
+   修正命令，使真实IMU航向闭环可以复现走偏后的纠偏输入。
+-- 课程从1 cm开始。只有一批运动环境中至少70%完成“全四脚进入顶部平台并
+-  稳定0.25 s”，才整体升到下一个高度；失败不会误升级。
++- 课程从1 cm开始。只有连续两批、每批至少1024个当前等级episode中至少70%
++  完成“全四脚进入顶部平台并稳定0.25 s”，才整体升到下一个高度；失败不会
++  误升级。TensorBoard只报告完整验证批次，不把未完成批次的瞬时比例当结果；
++  `validation_batch_level`明确标记该成功率属于哪个高度等级。
+ 
+ ## 真机可迁移观测与动作
+ 
+@@ -59,6 +61,10 @@ actor 不读取基座线速度、地形高度扫描或足端接触力。训练 c
+ - 不规定对角腿序或固定摆动周期；宽速度跟踪核、轻量通用离地时间奖励和低权重
+   台阶净空奖励只负责帮助从零发现运动，精细速度核负责后续跟踪精度。
+ - 低机身失败阈值放宽到0.16 m用于早期恢复，但到达顶部仍要求至少0.20 m净空。
++- 楼梯上的机身高度与低机身失败只参考至少两只当前接触的支撑脚；摆动脚抬到
++  更高一级时不会虚假抬高“地面”并诱发大跨腿或误重置。
++- 速度奖励扣除了零速度基线；持续前进命令下，每8 s至少完成对应指令距离的
++  45%，否则作为`insufficient_progress`失败重置，防止卡阶后靠站稳长期获益。
+ 
+ ## 训练
+ 
+@@ -75,7 +81,7 @@ D:\Conda\envs\env_isaaclab\python.exe -B .\scripts\rsl_rl\train.py `
+ ```
+ 
+ 250轮门槛训练至少应满足：学习率始终为`0.0003`；noise std保持有限且为正；
+-`base_contact`、`low_base_clearance`和`outside_lane`没有持续恶化；课程不会在无
++`base_contact`、`low_base_clearance`、`insufficient_progress`和`outside_lane`没有持续恶化；课程不会在无
+ `stair_success`时升级；`uphill_velocity_progress`不应长期接近0；确定性策略能在
+ 1 cm台阶产生真实前进、抬脚和四足接触切换。未通过这些门槛时不要直接跑满
+ 3000轮。
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py
+index fa0c887..12b6f37 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py
+@@ -15,6 +15,7 @@ from .rewards import (
+ )
+ from .terminations import (
+     base_clearance_above_feet_below_minimum,
++    insufficient_stair_progress,
+     outside_stair_lane,
+     stair_top_success,
+ )
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/curriculums.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/curriculums.py
+index 5d14d97..3e47942 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/curriculums.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/curriculums.py
+@@ -26,6 +26,7 @@ class validated_stair_level(ManagerTermBase):
+         self._reported_trials = 0
+         self._reported_successes = 0
+         self._reported_success_rate = 0.0
++        self._reported_level = -1
+         self._consecutive_pass_batches = 0
+ 
+     def reset(self, env_ids: Sequence[int] | None = None):
+@@ -77,6 +78,7 @@ class validated_stair_level(ManagerTermBase):
+             self._reported_trials = self._batch_trials
+             self._reported_successes = self._batch_successes
+             self._reported_success_rate = success_rate
++            self._reported_level = self._current_level
+             if success_rate >= float(required_success_rate):
+                 self._consecutive_pass_batches += 1
+             else:
+@@ -87,10 +89,9 @@ class validated_stair_level(ManagerTermBase):
+                 self._consecutive_pass_batches = 0
+             self._batch_trials = 0
+             self._batch_successes = 0
+-        elif self._batch_trials > 0:
+-            self._reported_trials = self._batch_trials
+-            self._reported_successes = self._batch_successes
+-            self._reported_success_rate = self._batch_successes / self._batch_trials
++        # Publish only completed validation batches.  Reporting the partial
++        # accumulator on every asynchronous reset makes TensorBoard display a
++        # noisy, non-comparable ratio and previously obscured the true gate.
+ 
+         assigned_levels = torch.full_like(previous_level, self._current_level)
+         if self._current_level > 0 and float(previous_level_replay_fraction) > 0.0:
+@@ -114,6 +115,7 @@ class validated_stair_level(ManagerTermBase):
+             "current_training_level": float(self._current_level),
+             "current_step_height_cm": float(self._current_level + 1),
+             "validated_pass_level": float(self._validated_pass_level),
++            "validation_batch_level": float(self._reported_level),
+             "validation_success_rate": float(self._reported_success_rate),
+             "validation_successes": float(self._reported_successes),
+             "validation_trials": float(self._reported_trials),
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py
+index 7fccf69..8e0bc29 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py
+@@ -11,6 +11,8 @@ from isaaclab.managers import SceneEntityCfg
+ from isaaclab.sensors import ContactSensor
+ from isaaclab.terrains import TerrainImporter
+ 
++from .support import support_foot_height_w
++
+ if TYPE_CHECKING:
+     from isaaclab.envs import ManagerBasedRLEnv
+ 
+@@ -31,14 +33,23 @@ def _foot_contacts(
+ def base_height_above_feet_l2(
+     env: ManagerBasedRLEnv,
+     target_height: float,
++    sensor_cfg: SceneEntityCfg,
+     asset_cfg: SceneEntityCfg,
++    contact_threshold: float,
++    minimum_support_contacts: int,
+ ) -> torch.Tensor:
+-    """Penalize terrain-relative body-height error instead of world-Z height."""
++    """Penalize body-height error relative only to reliable support feet."""
+ 
+     asset: Articulation = env.scene[asset_cfg.name]
+-    mean_foot_height = torch.mean(asset.data.body_pos_w[:, asset_cfg.body_ids, 2], dim=1)
+-    clearance = asset.data.root_pos_w[:, 2] - mean_foot_height
+-    return torch.square(clearance - float(target_height))
++    support_height, valid = support_foot_height_w(
++        env,
++        sensor_cfg=sensor_cfg,
++        asset_cfg=asset_cfg,
++        contact_threshold=contact_threshold,
++        minimum_support_contacts=minimum_support_contacts,
++    )
++    clearance = asset.data.root_pos_w[:, 2] - support_height
++    return torch.square(clearance - float(target_height)) * valid.to(clearance.dtype)
+ 
+ 
+ def uphill_velocity_progress(
+@@ -75,7 +86,22 @@ def track_uphill_world_velocity_exp(
+     asset: Articulation = env.scene[asset_cfg.name]
+     velocity_error = torch.square(command[:, 0] - asset.data.root_lin_vel_w[:, 0])
+     velocity_error += torch.square(asset.data.root_lin_vel_w[:, 1])
+-    return torch.exp(-velocity_error / float(std) ** 2)
++    score = torch.exp(-velocity_error / float(std) ** 2)
++
++    # A wide exponential kernel is useful for discovering motion from scratch,
++    # but its raw value is also high while standing.  Center it on the exact
++    # zero-velocity score so stationary behavior receives zero rather than a
++    # large survival-compatible reward.  Preserve the normal stationary target
++    # when an explicit zero command is used during deployment.
++    stationary_score = torch.exp(-torch.square(command[:, 0]) / float(std) ** 2)
++    normalizer = torch.clamp(1.0 - stationary_score, min=1.0e-4)
++    centered_score = torch.clamp(
++        (score - stationary_score) / normalizer,
++        min=-1.0,
++        max=1.0,
++    )
++    moving_command = torch.abs(command[:, 0]) >= 1.0e-3
++    return torch.where(moving_command, centered_score, score)
+ 
+ 
+ def moving_touchdown_impact_l2(
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/terminations.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/terminations.py
+index 6fbfd19..1711521 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/terminations.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/terminations.py
+@@ -10,6 +10,8 @@ from isaaclab.assets import Articulation
+ from isaaclab.managers import ManagerTermBase, SceneEntityCfg, TerminationTermCfg
+ from isaaclab.terrains import TerrainImporter
+ 
++from .support import support_foot_height_w
++
+ if TYPE_CHECKING:
+     from isaaclab.envs import ManagerBasedRLEnv
+ 
+@@ -17,14 +19,87 @@ if TYPE_CHECKING:
+ def base_clearance_above_feet_below_minimum(
+     env: ManagerBasedRLEnv,
+     minimum_clearance: float,
++    sensor_cfg: SceneEntityCfg,
+     asset_cfg: SceneEntityCfg,
++    contact_threshold: float,
++    minimum_support_contacts: int,
+ ) -> torch.Tensor:
+-    """Terminate a collapsed posture using foot-relative, not world-Z, height."""
++    """Terminate low clearance only from a reliable support-foot reference."""
+ 
+     asset: Articulation = env.scene[asset_cfg.name]
+-    mean_foot_height = torch.mean(asset.data.body_pos_w[:, asset_cfg.body_ids, 2], dim=1)
+-    clearance = asset.data.root_pos_w[:, 2] - mean_foot_height
+-    return clearance < float(minimum_clearance)
++    support_height, valid = support_foot_height_w(
++        env,
++        sensor_cfg=sensor_cfg,
++        asset_cfg=asset_cfg,
++        contact_threshold=contact_threshold,
++        minimum_support_contacts=minimum_support_contacts,
++    )
++    clearance = asset.data.root_pos_w[:, 2] - support_height
++    return valid & (clearance < float(minimum_clearance))
++
++
++class insufficient_stair_progress(ManagerTermBase):
++    """Fail moving episodes that repeatedly make too little world-+X progress."""
++
++    def __init__(self, cfg: TerminationTermCfg, env: ManagerBasedRLEnv):
++        super().__init__(cfg, env)
++        self._anchor_x = torch.zeros(env.num_envs, device=env.device)
++        self._elapsed = torch.zeros(env.num_envs, device=env.device)
++        self._commanded_distance = torch.zeros(env.num_envs, device=env.device)
++        self._initialized = torch.zeros(env.num_envs, dtype=torch.bool, device=env.device)
++
++    def reset(self, env_ids: torch.Tensor | slice | None = None):
++        if env_ids is None:
++            env_ids = slice(None)
++        self._anchor_x[env_ids] = 0.0
++        self._elapsed[env_ids] = 0.0
++        self._commanded_distance[env_ids] = 0.0
++        self._initialized[env_ids] = False
++
++    def __call__(
++        self,
++        env: ManagerBasedRLEnv,
++        command_name: str,
++        command_deadband: float,
++        window_s: float,
++        minimum_command_fraction: float,
++        asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
++    ) -> torch.Tensor:
++        if window_s <= 0.0:
++            raise ValueError("window_s must be positive.")
++        if not 0.0 < minimum_command_fraction <= 1.0:
++            raise ValueError("minimum_command_fraction must be in (0, 1].")
++
++        asset: Articulation = env.scene[asset_cfg.name]
++        position_x = asset.data.root_pos_w[:, 0]
++        command_x = env.command_manager.get_command(command_name)[:, 0]
++        moving = command_x >= float(command_deadband)
++
++        newly_active = moving & ~self._initialized
++        self._anchor_x[newly_active] = position_x[newly_active]
++        self._elapsed[newly_active] = 0.0
++        self._commanded_distance[newly_active] = 0.0
++        self._initialized[newly_active] = True
++
++        inactive = ~moving
++        self._elapsed[inactive] = 0.0
++        self._commanded_distance[inactive] = 0.0
++        self._initialized[inactive] = False
++
++        active = moving & self._initialized & ~newly_active
++        self._elapsed[active] += float(env.step_dt)
++        self._commanded_distance[active] += command_x[active] * float(env.step_dt)
++
++        window_complete = active & (self._elapsed >= float(window_s))
++        actual_progress = position_x - self._anchor_x
++        required_progress = self._commanded_distance * float(minimum_command_fraction)
++        failure = window_complete & (actual_progress < required_progress)
++
++        passed_window = window_complete & ~failure
++        self._anchor_x[passed_window] = position_x[passed_window]
++        self._elapsed[passed_window] = 0.0
++        self._commanded_distance[passed_window] = 0.0
++        return failure
+ 
+ 
+ def outside_stair_lane(
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py
+index 354939b..0a943f4 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py
+@@ -58,6 +58,10 @@ COMMAND_DEADBAND = 0.025
+ UPSTAIR_SPEED_RANGE = (0.16, 0.24)
+ UPSTAIR_HEADING_RAD = 0.0
+ MAX_HEADING_CORRECTION_RAD_S = 0.40
++SUPPORT_CONTACT_THRESHOLD = 1.0
++MINIMUM_HEIGHT_SUPPORT_CONTACTS = 2
++PROGRESS_WINDOW_S = 8.0
++MINIMUM_PROGRESS_COMMAND_FRACTION = 0.45
+ LEVEL_VALIDATION_EPISODES = 1024
+ LEVEL_REQUIRED_SUCCESS_RATE = 0.70
+ LEVEL_REQUIRED_CONSECUTIVE_PASS_BATCHES = 2
+@@ -300,7 +304,7 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
+         # not body-frame motion that can be exploited by turning or rocking.
+         self.rewards.track_lin_vel_xy_exp.func = mdp.track_uphill_world_velocity_exp
+         self.rewards.track_lin_vel_xy_exp.weight = 2.0
+-        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.50
++        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.35
+         self.rewards.track_ang_vel_z_exp.weight = 0.8
+         self.rewards.track_ang_vel_z_exp.params["std"] = 0.25
+         self.rewards.track_lin_vel_xy_fine_exp = RewTerm(
+@@ -341,7 +345,10 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
+             weight=-4.0,
+             params={
+                 "target_height": TARGET_BASE_HEIGHT_ABOVE_FEET,
++                "sensor_cfg": contact_cfg,
+                 "asset_cfg": foot_cfg,
++                "contact_threshold": SUPPORT_CONTACT_THRESHOLD,
++                "minimum_support_contacts": MINIMUM_HEIGHT_SUPPORT_CONTACTS,
+             },
+         )
+         self.rewards.feet_slide = RewTerm(
+@@ -407,7 +414,19 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
+                 # Give early exploration room to recover while the soft
+                 # 0.38-m height objective still rejects a crawling solution.
+                 "minimum_clearance": MINIMUM_FAILURE_CLEARANCE,
++                "sensor_cfg": contact_cfg,
+                 "asset_cfg": foot_cfg,
++                "contact_threshold": SUPPORT_CONTACT_THRESHOLD,
++                "minimum_support_contacts": MINIMUM_HEIGHT_SUPPORT_CONTACTS,
++            },
++        )
++        self.terminations.insufficient_progress = DoneTerm(
++            func=mdp.insufficient_stair_progress,
++            params={
++                "command_name": "base_velocity",
++                "command_deadband": COMMAND_DEADBAND,
++                "window_s": PROGRESS_WINDOW_S,
++                "minimum_command_fraction": MINIMUM_PROGRESS_COMMAND_FRACTION,
+             },
+         )
+         self.terminations.outside_lane = DoneTerm(
+@@ -427,6 +446,10 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
+             },
+         )
+ 
++        self.rewards.termination_penalty.params["term_keys"].append(
++            "insufficient_progress"
++        )
++
+ 
+ @configclass
+ class QuadLegStair1EnvCfg_PLAY(QuadLegStair1EnvCfg):

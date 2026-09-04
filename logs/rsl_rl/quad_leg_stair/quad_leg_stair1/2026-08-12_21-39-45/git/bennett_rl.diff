@@ -1,0 +1,187 @@
+--- git status ---
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md
+index ab5e294..1ea0a84 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/README.md
+@@ -60,6 +60,11 @@ actor 不读取基座线速度、地形高度扫描或足端接触力。训练 c
+ - 不加载Slope4 checkpoint，也不复制它的50维相位/目标接触观测。
+ - 不规定对角腿序或固定摆动周期；宽速度跟踪核、轻量通用离地时间奖励和低权重
+   台阶净空奖励只负责帮助从零发现运动，精细速度核负责后续跟踪精度。
++- 四条腿继续使用完全相同的自由步态规则。摆动足相对最高支撑足超过18 cm时才
++  产生过高净空软惩罚；该绝对上限按10 cm最大台阶设计，不会因actor看不到
++  当前课程等级而在低台阶上强迫它使用不同步态。
++- 8维动作在`|action|<=3.0`内不受幅值惩罚，仅在3.0到runner裁剪3.5之间逐渐
++  增加软惩罚，抑制某个关节长期依赖动作裁剪而不压缩正常上楼动作空间。
+ - 低机身失败阈值放宽到0.16 m用于早期恢复，但到达顶部仍要求至少0.20 m净空。
+ - 楼梯上的机身高度与低机身失败只参考至少两只当前接触的支撑脚；摆动脚抬到
+   更高一级时不会虚假抬高“地面”并诱发大跨腿或误重置。
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py
+index 12b6f37..6068b01 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/__init__.py
+@@ -5,11 +5,13 @@ from isaaclab_tasks.manager_based.locomotion.velocity.mdp import *  # noqa: F401
+ from .curriculums import validated_stair_level
+ from .observations import foot_contact_state, normalized_terrain_level
+ from .rewards import (
++    action_soft_limit_l2,
+     base_height_above_feet_l2,
+     lane_deviation_l2,
+     minimum_support_contacts_l2,
+     moving_touchdown_impact_l2,
+     stair_swing_clearance,
++    stair_swing_overclearance_l2,
+     track_uphill_world_velocity_exp,
+     uphill_velocity_progress,
+ )
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py
+index 8e0bc29..b676e6b 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/mdp/rewards.py
+@@ -168,6 +168,84 @@ def stair_swing_clearance(
+     ) / swing_count
+ 
+ 
++def stair_swing_overclearance_l2(
++    env: ManagerBasedRLEnv,
++    sensor_cfg: SceneEntityCfg,
++    asset_cfg: SceneEntityCfg,
++    contact_threshold: float,
++    maximum_clearance: float,
++    normalization: float,
++    command_name: str,
++    command_deadband: float,
++) -> torch.Tensor:
++    """Penalize excessive swing height without prescribing gait or leg order.
++
++    A blind policy needs one clearance envelope that remains safe for the
++    largest trained step.  The limit is therefore absolute rather than tied to
++    the current curriculum level: otherwise the actor would be punished for a
++    conservative 10-cm-capable swing on the easier rows that it cannot observe.
++    Every foot uses the same limit and only its excess above that limit is
++    penalized.
++    """
++
++    if maximum_clearance <= 0.0:
++        raise ValueError("maximum_clearance must be positive.")
++    if normalization <= 0.0:
++        raise ValueError("normalization must be positive.")
++
++    contact = _foot_contacts(env, sensor_cfg, contact_threshold)
++    swing = ~contact
++    asset: Articulation = env.scene[asset_cfg.name]
++    foot_height = asset.data.body_pos_w[:, asset_cfg.body_ids, 2]
++
++    negative_infinity = torch.full_like(foot_height, -torch.inf)
++    highest_support = torch.where(contact, foot_height, negative_infinity).amax(
++        dim=1, keepdim=True
++    )
++    has_support = contact.any(dim=1, keepdim=True)
++    # Keep the arithmetic finite even in an all-feet-swing transition frame.
++    highest_support = torch.where(
++        has_support, highest_support, foot_height.amin(dim=1, keepdim=True)
++    )
++    relative_height = torch.clamp(foot_height - highest_support, min=0.0)
++    normalized_excess = torch.clamp(
++        torch.relu(relative_height - float(maximum_clearance))
++        / float(normalization),
++        max=2.0,
++    )
++    moving = _moving_mask(env, command_name, command_deadband).to(torch.float32)
++    return moving * has_support.squeeze(1).to(torch.float32) * torch.sum(
++        torch.square(normalized_excess) * swing.to(torch.float32), dim=1
++    )
++
++
++def action_soft_limit_l2(
++    env: ManagerBasedRLEnv,
++    soft_limit: float,
++    hard_limit: float,
++) -> torch.Tensor:
++    """Penalize only the part of an applied action near the runner clip.
++
++    PPO may emit values outside the runner clip even though the environment
++    always receives a clipped action.  Keeping a penalty-free interior retains
++    the large stair-climbing workspace, while the boundary cost discourages a
++    policy from using clipping as a persistent joint target.
++    """
++
++    if soft_limit < 0.0:
++        raise ValueError("soft_limit must be non-negative.")
++    if hard_limit <= soft_limit:
++        raise ValueError("hard_limit must be greater than soft_limit.")
++
++    action = env.action_manager.action
++    normalized_excess = torch.clamp(
++        torch.relu(torch.abs(action) - float(soft_limit))
++        / float(hard_limit - soft_limit),
++        max=1.0,
++    )
++    return torch.sum(torch.square(normalized_excess), dim=1)
++
++
+ def minimum_support_contacts_l2(
+     env: ManagerBasedRLEnv,
+     sensor_cfg: SceneEntityCfg,
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py
+index 0a943f4..3f6c9f5 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/quad_leg_stair1/rough_env_cfg.py
+@@ -62,6 +62,10 @@ SUPPORT_CONTACT_THRESHOLD = 1.0
+ MINIMUM_HEIGHT_SUPPORT_CONTACTS = 2
+ PROGRESS_WINDOW_S = 8.0
+ MINIMUM_PROGRESS_COMMAND_FRACTION = 0.45
++MAXIMUM_SWING_CLEARANCE = 0.18
++SWING_OVERCLEARANCE_NORMALIZATION = 0.05
++ACTION_SOFT_LIMIT = 3.0
++ACTION_HARD_LIMIT = 3.5
+ LEVEL_VALIDATION_EPISODES = 1024
+ LEVEL_REQUIRED_SUCCESS_RATE = 0.70
+ LEVEL_REQUIRED_CONSECUTIVE_PASS_BATCHES = 2
+@@ -331,6 +335,14 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
+         self.rewards.dof_torques_l2.weight = -0.0002
+         self.rewards.dof_acc_l2.weight = -7.0e-7
+         self.rewards.action_rate_l2.weight = -0.015
++        self.rewards.action_soft_limit = RewTerm(
++            func=mdp.action_soft_limit_l2,
++            weight=-0.05,
++            params={
++                "soft_limit": ACTION_SOFT_LIMIT,
++                "hard_limit": ACTION_HARD_LIMIT,
++            },
++        )
+         self.rewards.flat_orientation_l2.weight = -2.0
+         self.rewards.dof_pos_limits.weight = -0.20
+ 
+@@ -369,6 +381,19 @@ class QuadLegStair1EnvCfg(LocomotionVelocityRoughEnvCfg):
+                 "command_deadband": COMMAND_DEADBAND,
+             },
+         )
++        self.rewards.swing_overclearance = RewTerm(
++            func=mdp.stair_swing_overclearance_l2,
++            weight=-0.05,
++            params={
++                "sensor_cfg": contact_cfg,
++                "asset_cfg": foot_cfg,
++                "contact_threshold": 1.0,
++                "maximum_clearance": MAXIMUM_SWING_CLEARANCE,
++                "normalization": SWING_OVERCLEARANCE_NORMALIZATION,
++                "command_name": "base_velocity",
++                "command_deadband": COMMAND_DEADBAND,
++            },
++        )
+         self.rewards.minimum_support = RewTerm(
+             func=mdp.minimum_support_contacts_l2,
+             weight=-0.10,

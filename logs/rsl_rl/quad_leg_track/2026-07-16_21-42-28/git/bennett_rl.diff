@@ -1,0 +1,3272 @@
+--- git status ---
+On branch master
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   source/bennett_rl/bennett_rl/assets/robots/bennett.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/__init__.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/rsl_rl_ppo_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_flat_ppo_cfg.yaml
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_rough_ppo_cfg.yaml
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/flat_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/rewards.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/terminations.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/rough_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/rsl_rl_ppo_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/skrl_flat_ppo_cfg.yaml
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/flat_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/events.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/rewards.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_track/bennett_rl_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/agents/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/agents/rsl_rl_ppo_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/bennett_rl_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/flat_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/mdp/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/mdp/rewards.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/rough_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/agents/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/agents/rsl_rl_ppo_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/bennett_rl_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/flat_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/mdp/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/mdp/rewards.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/rough_env_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl1/flat_env_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/__init__.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/agents/rsl_rl_ppo_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/flat_env_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/mdp/rewards.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/__init__.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/agents/rsl_rl_ppo_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/flat_env_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/mdp/rewards.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/agents/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/agents/rsl_rl_ppo_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/flat_env_cfg.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/mdp/__init__.py
+	deleted:    source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/mdp/rewards.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.A_GongJu/
+	source/bennett_rl/bennett_rl/assets/robots/Urdf_Bennett_3/
+	source/bennett_rl/bennett_rl/tasks/manager_based/go2/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-2/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-3/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-4/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-5/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-6/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-7/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-8/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-slope1/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-slope2/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl4/
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/source/bennett_rl/bennett_rl/assets/robots/bennett.py b/source/bennett_rl/bennett_rl/assets/robots/bennett.py
+index 811a84a..2866b3a 100644
+--- a/source/bennett_rl/bennett_rl/assets/robots/bennett.py
++++ b/source/bennett_rl/bennett_rl/assets/robots/bennett.py
+@@ -11,6 +11,10 @@ from isaaclab.assets.articulation import ArticulationCfg
+ # / "..."：使用 / 运算符（Python 路径拼接语法）将父目录与目标子文件/夹 ... 组合。
+ BENNETT_USD_PATH = str(Path(__file__).resolve().parent / "Urdf_Bennett_1" / "urdf" / "Urdf_Bennett_1.usd")
+ # BENNETT_USD_PATH = str(Path(__file__).resolve().parent / "Urdf_Bennett_2" / "urdf" / "Urdf_Bennett_2.usd")
++# Keep the newly rebuilt asset opt-in so existing Bennett tasks retain their
++# original dynamics. Go2-8 is currently the only task using BENNETT_CFG_V5.
++BENNETT_3_USD_PATH = str(Path(__file__).resolve().parent / "Urdf_Bennett_3" / "urdf" / "Urdf_Bennett_3.usd")
++
+ 
+ 
+ def _make_bennett_cfg(usd_path: str, actuator_cfg: dict, joint_pos: dict) -> ArticulationCfg:
+@@ -109,3 +113,49 @@ BENNETT_CFG_V3 = _make_bennett_cfg(
+     ),
+ )
+ 
++
++BENNETT_CFG_V4 = _make_bennett_cfg(
++    usd_path=BENNETT_USD_PATH,
++    joint_pos={
++        "FL_thigh": +0.12,
++        "FR_thigh": -0.12,
++        "RL_thigh": +0.12,
++        "RR_thigh": -0.12,
++        "FL_calf": -0.24,
++        "FR_calf": -0.24,
++        "RL_calf": -0.24,
++        "RR_calf": -0.24,
++    },
++    actuator_cfg=dict(
++        effort_limit=15,
++        saturation_effort=15,
++        velocity_limit=30.0,
++        stiffness=30.0,
++        damping=2,
++        friction=0,
++    ),
++)
++
++
++BENNETT_CFG_V5 = _make_bennett_cfg(
++    # old: usd_path=BENNETT_USD_PATH,
++    usd_path=BENNETT_3_USD_PATH,
++    joint_pos={
++        "FL_thigh": +0.1,
++        "FR_thigh": -0.1,
++        "RL_thigh": +0.1,
++        "RR_thigh": -0.1,
++        "FL_calf": -0.2,
++        "FR_calf": -0.2,
++        "RL_calf": -0.2,
++        "RR_calf": -0.2,
++    },
++    actuator_cfg=dict(
++        effort_limit=17,
++        saturation_effort=17,
++        velocity_limit=30.0,
++        stiffness=30.0,
++        damping=2,
++        friction=0,
++    ),
++)
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/__init__.py
+index ec22c69..865818b 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/__init__.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/__init__.py
+@@ -16,8 +16,8 @@ gym.register(
+     entry_point="isaaclab.envs:ManagerBasedRLEnv",
+     disable_env_checker=True,
+     kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:UnitreeGo2FlatEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:UnitreeGo2FlatPPORunnerCfg",
++        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:QuadLegGo21FlatEnvCfg",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:QuadLegGo21FlatPPORunnerCfg",
+         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+     },
+ )
+@@ -27,8 +27,8 @@ gym.register(
+     entry_point="isaaclab.envs:ManagerBasedRLEnv",
+     disable_env_checker=True,
+     kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:UnitreeGo2FlatEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:UnitreeGo2FlatPPORunnerCfg",
++        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:QuadLegGo21FlatEnvCfg_PLAY",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:QuadLegGo21FlatPPORunnerCfg",
+         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+     },
+ )
+@@ -38,8 +38,8 @@ gym.register(
+     entry_point="isaaclab.envs:ManagerBasedRLEnv",
+     disable_env_checker=True,
+     kwargs={
+-        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:UnitreeGo2RoughEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:UnitreeGo2RoughPPORunnerCfg",
++        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:QuadLegGo21RoughEnvCfg",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:QuadLegGo21RoughPPORunnerCfg",
+         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_rough_ppo_cfg.yaml",
+     },
+ )
+@@ -49,8 +49,8 @@ gym.register(
+     entry_point="isaaclab.envs:ManagerBasedRLEnv",
+     disable_env_checker=True,
+     kwargs={
+-        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:UnitreeGo2RoughEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:UnitreeGo2RoughPPORunnerCfg",
++        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:QuadLegGo21RoughEnvCfg_PLAY",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:QuadLegGo21RoughPPORunnerCfg",
+         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_rough_ppo_cfg.yaml",
+     },
+ )
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/rsl_rl_ppo_cfg.py
+index 5838ab2..b9cb766 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/rsl_rl_ppo_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/rsl_rl_ppo_cfg.py
+@@ -9,11 +9,11 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
+ 
+ 
+ @configclass
+-class UnitreeGo2RoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
++class QuadLegGo21RoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+     num_steps_per_env = 24
+-    max_iterations = 20000
++    max_iterations = 1500
+     save_interval = 50
+-    experiment_name = "quad_leg_go2/quad_leg_go2-1_rough"
++    experiment_name = "quad_leg_go2/quad_leg_go2-1/rough"
+     policy = RslRlPpoActorCriticCfg(
+         init_noise_std=1.0,
+         actor_obs_normalization=False,
+@@ -39,11 +39,11 @@ class UnitreeGo2RoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+ 
+ 
+ @configclass
+-class UnitreeGo2FlatPPORunnerCfg(UnitreeGo2RoughPPORunnerCfg):
++class QuadLegGo21FlatPPORunnerCfg(QuadLegGo21RoughPPORunnerCfg):
+     def __post_init__(self):
+         super().__post_init__()
+ 
+-        self.max_iterations = 20000
+-        self.experiment_name = "quad_leg_go2/quad_leg_go2-1"
+-        self.policy.actor_hidden_dims = [512, 256, 128]
+-        self.policy.critic_hidden_dims = [512, 256, 128]
++        self.max_iterations = 300
++        self.experiment_name = "quad_leg_go2/quad_leg_go2-1/flat"
++        self.policy.actor_hidden_dims = [128, 128, 128]
++        self.policy.critic_hidden_dims = [128, 128, 128]
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_flat_ppo_cfg.yaml b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_flat_ppo_cfg.yaml
+index e36d3a5..28a3f9d 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_flat_ppo_cfg.yaml
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_flat_ppo_cfg.yaml
+@@ -71,7 +71,7 @@ agent:
+   time_limit_bootstrap: False
+   # logging and checkpoint
+   experiment:
+-    directory: "unitree_go2_flat"
++    directory: "quad_leg_go2/quad_leg_go2-1/flat"
+     experiment_name: ""
+     write_interval: auto
+     checkpoint_interval: auto
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_rough_ppo_cfg.yaml b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_rough_ppo_cfg.yaml
+index 4c89ca2..98cf376 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_rough_ppo_cfg.yaml
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/agents/skrl_rough_ppo_cfg.yaml
+@@ -71,7 +71,7 @@ agent:
+   time_limit_bootstrap: False
+   # logging and checkpoint
+   experiment:
+-    directory: "unitree_go2_rough"
++    directory: "quad_leg_go2/quad_leg_go2-1/rough"
+     experiment_name: ""
+     write_interval: auto
+     checkpoint_interval: auto
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/flat_env_cfg.py
+index 4dd3dd6..dfba968 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/flat_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/flat_env_cfg.py
+@@ -5,24 +5,22 @@
+ 
+ from isaaclab.utils import configclass
+ 
+-from .rough_env_cfg import UnitreeGo2RoughEnvCfg
++from .rough_env_cfg import QuadLegGo21RoughEnvCfg
+ 
+ 
+ @configclass
+-class UnitreeGo2FlatEnvCfg(UnitreeGo2RoughEnvCfg):
++class QuadLegGo21FlatEnvCfg(QuadLegGo21RoughEnvCfg):
+     def __post_init__(self):
+         # post init of parent
+         super().__post_init__()
+ 
+         # override rewards
+         self.rewards.flat_orientation_l2.weight = -2.5
+-        self.rewards.feet_air_time.params["threshold"] = 0.22
+-        self.rewards.feet_air_time.weight = 0.35
++        self.rewards.feet_air_time.weight = 0.25
+ 
+         # change terrain to flat
+         self.scene.terrain.terrain_type = "plane"
+         self.scene.terrain.terrain_generator = None
+-        self.scene.terrain.max_init_terrain_level = None
+         # no height scan
+         self.scene.height_scanner = None
+         self.observations.policy.height_scan = None
+@@ -30,13 +28,13 @@ class UnitreeGo2FlatEnvCfg(UnitreeGo2RoughEnvCfg):
+         self.curriculum.terrain_levels = None
+ 
+ 
+-class UnitreeGo2FlatEnvCfg_PLAY(UnitreeGo2FlatEnvCfg):
++class QuadLegGo21FlatEnvCfg_PLAY(QuadLegGo21FlatEnvCfg):
+     def __post_init__(self) -> None:
+         # post init of parent
+         super().__post_init__()
+ 
+         # make a smaller scene for play
+-        self.scene.num_envs = 5
++        self.scene.num_envs = 50
+         self.scene.env_spacing = 2.5
+         # disable randomization for play
+         self.observations.policy.enable_corruption = False
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/__init__.py
+deleted file mode 100644
+index 47ccb3d..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/__init__.py
++++ /dev/null
+@@ -1,9 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-"""Local MDP helpers for the Bennett Go2-style velocity task."""
+-
+-from .rewards import *  # noqa: F401, F403
+-from .terminations import *  # noqa: F401, F403
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/rewards.py
+deleted file mode 100644
+index 78bb896..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/rewards.py
++++ /dev/null
+@@ -1,28 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from __future__ import annotations
+-
+-from typing import TYPE_CHECKING
+-
+-import torch
+-
+-from isaaclab.assets import Articulation
+-from isaaclab.managers import SceneEntityCfg
+-
+-if TYPE_CHECKING:
+-    from isaaclab.envs import ManagerBasedRLEnv
+-
+-
+-def base_height_exp(
+-    env: ManagerBasedRLEnv,
+-    target_height: float,
+-    sigma: float,
+-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+-) -> torch.Tensor:
+-    """Reward keeping the base close to the target walking height."""
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    height_error = asset.data.root_pos_w[:, 2] - target_height
+-    return torch.exp(-torch.square(height_error) / max(sigma**2, 1.0e-6))
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/terminations.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/terminations.py
+deleted file mode 100644
+index f31aeff..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/mdp/terminations.py
++++ /dev/null
+@@ -1,37 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from __future__ import annotations
+-
+-from typing import TYPE_CHECKING
+-
+-import torch
+-
+-from isaaclab.assets import Articulation
+-from isaaclab.managers import SceneEntityCfg
+-
+-if TYPE_CHECKING:
+-    from isaaclab.envs import ManagerBasedRLEnv
+-
+-
+-def base_height_below(
+-    env: ManagerBasedRLEnv,
+-    minimum_height: float,
+-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+-) -> torch.Tensor:
+-    """Terminate when the base is too low to represent a usable walking state."""
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    return asset.data.root_pos_w[:, 2] < minimum_height
+-
+-
+-def base_tilt_over(
+-    env: ManagerBasedRLEnv,
+-    max_projected_gravity_xy: float = 0.68,
+-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+-) -> torch.Tensor:
+-    """Terminate when roll/pitch tilt is too large for this early straight-line task."""
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    tilt = torch.linalg.norm(asset.data.projected_gravity_b[:, :2], dim=1)
+-    return tilt > max_projected_gravity_xy
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/rough_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/rough_env_cfg.py
+index a39b797..c7b392c 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/rough_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_go2/quad_leg_go2-1/rough_env_cfg.py
+@@ -3,11 +3,6 @@
+ #
+ # SPDX-License-Identifier: BSD-3-Clause
+ 
+-import math
+-
+-from isaaclab.managers import RewardTermCfg
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.managers import TerminationTermCfg as DoneTerm
+ from isaaclab.utils import configclass
+ 
+ from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import LocomotionVelocityRoughEnvCfg
+@@ -15,42 +10,16 @@ from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import Lo
+ ##
+ # Pre-defined configs
+ ##
+-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V1  # isort: skip
+-
+-from . import mdp as go2_mdp
+-
+-
+-ACTIVE_JOINTS = [
+-    "FL_thigh",
+-    "FL_calf",
+-    "FR_thigh",
+-    "FR_calf",
+-    "RL_thigh",
+-    "RL_calf",
+-    "RR_thigh",
+-    "RR_calf",
+-]
+-
+-FOOT_BODIES = ".*_1"
+-BASE_BODY = "base"
++from isaaclab_assets.robots.unitree import UNITREE_GO2_CFG  # isort: skip
+ 
+ 
+ @configclass
+-class UnitreeGo2RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
++class QuadLegGo21RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
+     def __post_init__(self):
+         # post init of parent
+         super().__post_init__()
+ 
+-        # Use Bennett hardware/asset while keeping this task as the Go2-style reward experiment.
+-        # old: self.scene.robot = UNITREE_GO2_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+-        robot_cfg = BENNETT_CFG_V1.copy()
+-        robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
+-        robot_cfg.spawn.articulation_props.solver_velocity_iteration_count = 1
+-        robot_cfg.actuators["base_legs"].effort_limit = 10.0
+-        robot_cfg.actuators["base_legs"].saturation_effort = 12.0
+-        robot_cfg.actuators["base_legs"].stiffness = 40.0
+-        robot_cfg.actuators["base_legs"].damping = 2.5
+-        self.scene.robot = robot_cfg
++        self.scene.robot = UNITREE_GO2_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+         self.scene.height_scanner.prim_path = "{ENV_REGEX_NS}/Robot/base"
+         # scale down the terrains because the robot is small
+         self.scene.terrain.terrain_generator.sub_terrains["boxes"].grid_height_range = (0.025, 0.1)
+@@ -58,41 +27,16 @@ class UnitreeGo2RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
+         self.scene.terrain.terrain_generator.sub_terrains["random_rough"].noise_step = 0.01
+ 
+         # reduce action scale
+-        self.actions.joint_pos.joint_names = ACTIVE_JOINTS
+         self.actions.joint_pos.scale = 0.25
+-        self.actions.joint_pos.preserve_order = True
+-
+-        # Low-speed straight-line Bennett bring-up.
+-        self.commands.base_velocity.resampling_time_range = (10.0, 10.0)
+-        self.commands.base_velocity.heading_command = False
+-        self.commands.base_velocity.rel_standing_envs = 0.0
+-        self.commands.base_velocity.rel_heading_envs = 0.0
+-        self.commands.base_velocity.ranges.lin_vel_x = (0.20, 0.45)
+-        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
+-        self.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0)
+-
+-        # Sim2Real-oriented 33D policy observation: no direct base linear velocity.
+-        self.observations.policy.base_lin_vel = None
+-        self.observations.policy.joint_pos.params["asset_cfg"] = SceneEntityCfg(
+-            "robot", joint_names=ACTIVE_JOINTS, preserve_order=True
+-        )
+-        self.observations.policy.joint_vel.params["asset_cfg"] = SceneEntityCfg(
+-            "robot", joint_names=ACTIVE_JOINTS, preserve_order=True
+-        )
+ 
+         # event
+-        self.events.physics_material.params["static_friction_range"] = (0.8, 0.8)
+-        self.events.physics_material.params["dynamic_friction_range"] = (0.6, 0.6)
+-        self.events.physics_material.params["restitution_range"] = (0.0, 0.0)
+         self.events.push_robot = None
+-        # old: self.events.add_base_mass.params["mass_distribution_params"] = (-1.0, 3.0)
+-        self.events.add_base_mass = None
+-        self.events.base_external_force_torque = None
++        self.events.add_base_mass.params["mass_distribution_params"] = (-1.0, 3.0)
++        self.events.add_base_mass.params["asset_cfg"].body_names = "base"
++        self.events.base_external_force_torque.params["asset_cfg"].body_names = "base"
+         self.events.reset_robot_joints.params["position_range"] = (1.0, 1.0)
+-        self.events.reset_robot_joints.params["velocity_range"] = (0.0, 0.0)
+         self.events.reset_base.params = {
+-            # old: "pose_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5), "yaw": (-3.14, 3.14)}
+-            "pose_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "yaw": (0.0, 0.0)},
++            "pose_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5), "yaw": (-3.14, 3.14)},
+             "velocity_range": {
+                 "x": (0.0, 0.0),
+                 "y": (0.0, 0.0),
+@@ -105,50 +49,26 @@ class UnitreeGo2RoughEnvCfg(LocomotionVelocityRoughEnvCfg):
+         self.events.base_com = None
+ 
+         # rewards
+-        # old: self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_foot"
+-        self.rewards.feet_air_time.params["sensor_cfg"].body_names = FOOT_BODIES
+-        self.rewards.feet_air_time.params["threshold"] = 0.22
+-        self.rewards.feet_air_time.weight = 0.35
++        self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_foot"
++        self.rewards.feet_air_time.weight = 0.01
+         self.rewards.undesired_contacts = None
+-        self.rewards.dof_torques_l2.weight = -2.0e-5
+-        self.rewards.track_lin_vel_xy_exp.weight = 2.0
+-        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.12
+-        self.rewards.track_ang_vel_z_exp.weight = 0.5
+-        self.rewards.track_ang_vel_z_exp.params["std"] = 0.25
+-        self.rewards.lin_vel_z_l2.weight = -2.0
+-        self.rewards.ang_vel_xy_l2.weight = -0.3
+-        self.rewards.dof_acc_l2.weight = -5.0e-7
+-        self.rewards.action_rate_l2.weight = -0.04
+-        self.rewards.base_height = RewardTermCfg(
+-            func=go2_mdp.base_height_exp,
+-            weight=0.6,
+-            params={
+-                "target_height": 0.32,
+-                "sigma": 0.06,
+-                "asset_cfg": SceneEntityCfg("robot"),
+-            },
+-        )
++        self.rewards.dof_torques_l2.weight = -0.0002
++        self.rewards.track_lin_vel_xy_exp.weight = 1.5
++        self.rewards.track_ang_vel_z_exp.weight = 0.75
++        self.rewards.dof_acc_l2.weight = -2.5e-7
+ 
+         # terminations
+-        self.terminations.base_contact.params["sensor_cfg"].body_names = BASE_BODY
+-        self.terminations.low_base_height = DoneTerm(
+-            func=go2_mdp.base_height_below,
+-            params={"minimum_height": 0.22, "asset_cfg": SceneEntityCfg("robot")},
+-        )
+-        self.terminations.excessive_tilt = DoneTerm(
+-            func=go2_mdp.base_tilt_over,
+-            params={"max_projected_gravity_xy": math.sin(0.75), "asset_cfg": SceneEntityCfg("robot")},
+-        )
++        self.terminations.base_contact.params["sensor_cfg"].body_names = "base"
+ 
+ 
+ @configclass
+-class UnitreeGo2RoughEnvCfg_PLAY(UnitreeGo2RoughEnvCfg):
++class QuadLegGo21RoughEnvCfg_PLAY(QuadLegGo21RoughEnvCfg):
+     def __post_init__(self):
+         # post init of parent
+         super().__post_init__()
+ 
+         # make a smaller scene for play
+-        self.scene.num_envs = 5
++        self.scene.num_envs = 50
+         self.scene.env_spacing = 2.5
+         # spawn the robot randomly in the grid (instead of their terrain levels)
+         self.scene.terrain.max_init_terrain_level = None
+@@ -163,6 +83,3 @@ class UnitreeGo2RoughEnvCfg_PLAY(UnitreeGo2RoughEnvCfg):
+         # remove random pushing event
+         self.events.base_external_force_torque = None
+         self.events.push_robot = None
+-
+-
+-# python .\scripts\rsl_rl\play.py --task=logs\rsl_rl\quad_leg_go2 --video  --checkpoint
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/__init__.py
+deleted file mode 100644
+index 4b2da34..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/__init__.py
++++ /dev/null
+@@ -1,6 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-"""Bennett tasks adapted from Spot locomotion configs."""
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/__init__.py
+deleted file mode 100644
+index 538a11c..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/__init__.py
++++ /dev/null
+@@ -1,34 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-import gymnasium as gym
+-
+-from . import agents
+-
+-##
+-# Register Gym environments.
+-##
+-
+-gym.register(
+-    id="Isaac-BennettRL-Flat-Spot1-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:SpotFlatEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:SpotFlatPPORunnerCfg",
+-        "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-Flat-Spot1-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:SpotFlatEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:SpotFlatPPORunnerCfg",
+-        "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+-    },
+-)
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/__init__.py
+deleted file mode 100644
+index 460a305..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/__init__.py
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/rsl_rl_ppo_cfg.py
+deleted file mode 100644
+index 4ab5280..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/rsl_rl_ppo_cfg.py
++++ /dev/null
+@@ -1,39 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from isaaclab.utils import configclass
+-
+-from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, RslRlPpoAlgorithmCfg
+-
+-
+-@configclass
+-class SpotFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+-    num_steps_per_env = 24
+-    max_iterations = 20000
+-    save_interval = 50
+-    experiment_name = "quad_leg_spot/quad_leg_spot1"
+-    store_code_state = False
+-    policy = RslRlPpoActorCriticCfg(
+-        init_noise_std=1.0,
+-        actor_obs_normalization=False,
+-        critic_obs_normalization=False,
+-        actor_hidden_dims=[512, 256, 128],
+-        critic_hidden_dims=[512, 256, 128],
+-        activation="elu",
+-    )
+-    algorithm = RslRlPpoAlgorithmCfg(
+-        value_loss_coef=0.5,
+-        use_clipped_value_loss=True,
+-        clip_param=0.2,
+-        entropy_coef=0.0025,
+-        num_learning_epochs=5,
+-        num_mini_batches=4,
+-        learning_rate=1.0e-3,
+-        schedule="adaptive",
+-        gamma=0.99,
+-        lam=0.95,
+-        desired_kl=0.01,
+-        max_grad_norm=1.0,
+-    )
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/skrl_flat_ppo_cfg.yaml b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/skrl_flat_ppo_cfg.yaml
+deleted file mode 100644
+index dcbf892..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/agents/skrl_flat_ppo_cfg.yaml
++++ /dev/null
+@@ -1,85 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-seed: 42
+-
+-
+-# Models are instantiated using skrl's model instantiator utility
+-# https://skrl.readthedocs.io/en/latest/api/utils/model_instantiators.html
+-models:
+-  separate: False
+-  policy:  # see gaussian_model parameters
+-    class: GaussianMixin
+-    clip_actions: False
+-    clip_log_std: True
+-    min_log_std: -20.0
+-    max_log_std: 2.0
+-    initial_log_std: 0.0
+-    network:
+-      - name: net
+-        input: OBSERVATIONS
+-        layers: [512, 256, 128]
+-        activations: elu
+-    output: ACTIONS
+-  value:  # see deterministic_model parameters
+-    class: DeterministicMixin
+-    clip_actions: False
+-    network:
+-      - name: net
+-        input: OBSERVATIONS
+-        layers: [512, 256, 128]
+-        activations: elu
+-    output: ONE
+-
+-
+-# Rollout memory
+-# https://skrl.readthedocs.io/en/latest/api/memories/random.html
+-memory:
+-  class: RandomMemory
+-  memory_size: -1  # automatically determined (same as agent:rollouts)
+-
+-
+-# PPO agent configuration (field names are from PPO_DEFAULT_CONFIG)
+-# https://skrl.readthedocs.io/en/latest/api/agents/ppo.html
+-agent:
+-  class: PPO
+-  rollouts: 24
+-  learning_epochs: 5
+-  mini_batches: 4
+-  discount_factor: 0.99
+-  lambda: 0.95
+-  learning_rate: 1.0e-03
+-  learning_rate_scheduler: KLAdaptiveLR
+-  learning_rate_scheduler_kwargs:
+-    kl_threshold: 0.01
+-  state_preprocessor: null
+-  state_preprocessor_kwargs: null
+-  value_preprocessor: null
+-  value_preprocessor_kwargs: null
+-  random_timesteps: 0
+-  learning_starts: 0
+-  grad_norm_clip: 1.0
+-  ratio_clip: 0.2
+-  value_clip: 0.2
+-  clip_predicted_values: True
+-  entropy_loss_scale: 0.0025
+-  value_loss_scale: 0.5
+-  kl_threshold: 0.0
+-  rewards_shaper_scale: 1.0
+-  time_limit_bootstrap: False
+-  # logging and checkpoint
+-  experiment:
+-    directory: "spot_flat"
+-    experiment_name: ""
+-    write_interval: auto
+-    checkpoint_interval: auto
+-
+-
+-# Sequential trainer
+-# https://skrl.readthedocs.io/en/latest/api/trainers/sequential.html
+-trainer:
+-  class: SequentialTrainer
+-  timesteps: 480000
+-  environment_info: log
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/flat_env_cfg.py
+deleted file mode 100644
+index e75fcaf..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/flat_env_cfg.py
++++ /dev/null
+@@ -1,460 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-import math
+-
+-import isaaclab.sim as sim_utils
+-import isaaclab.terrains as terrain_gen
+-from isaaclab.envs import ViewerCfg
+-from isaaclab.managers import EventTermCfg as EventTerm
+-from isaaclab.managers import ObservationGroupCfg as ObsGroup
+-from isaaclab.managers import ObservationTermCfg as ObsTerm
+-from isaaclab.managers import RewardTermCfg, SceneEntityCfg
+-from isaaclab.managers import TerminationTermCfg as DoneTerm
+-from isaaclab.terrains import TerrainImporterCfg
+-from isaaclab.utils import configclass
+-from isaaclab.utils.assets import ISAACLAB_NUCLEUS_DIR
+-from isaaclab.utils.noise import AdditiveUniformNoiseCfg as Unoise
+-
+-import isaaclab_tasks.manager_based.locomotion.velocity.mdp as mdp
+-from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import LocomotionVelocityRoughEnvCfg
+-
+-##
+-# Pre-defined configs
+-##
+-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V1  # isort: skip
+-
+-from . import mdp as spot_mdp
+-
+-
+-ACTIVE_JOINTS = [
+-    "FL_thigh",
+-    "FL_calf",
+-    "FR_thigh",
+-    "FR_calf",
+-    "RL_thigh",
+-    "RL_calf",
+-    "RR_thigh",
+-    "RR_calf",
+-]
+-
+-FOOT_BODIES = ["FL_1", "FR_1", "RL_1", "RR_1"]
+-BASE_BODY = ["base"]
+-
+-
+-COBBLESTONE_ROAD_CFG = terrain_gen.TerrainGeneratorCfg(
+-    size=(8.0, 8.0),
+-    border_width=20.0,
+-    num_rows=9,
+-    num_cols=21,
+-    horizontal_scale=0.1,
+-    vertical_scale=0.005,
+-    slope_threshold=0.75,
+-    difficulty_range=(0.0, 1.0),
+-    use_cache=False,
+-    sub_terrains={
+-        "flat": terrain_gen.MeshPlaneTerrainCfg(proportion=0.2),
+-        "random_rough": terrain_gen.HfRandomUniformTerrainCfg(
+-            proportion=0.2, noise_range=(0.02, 0.05), noise_step=0.02, border_width=0.25
+-        ),
+-    },
+-)
+-
+-
+-@configclass
+-class SpotActionsCfg:
+-    """Action specifications for the MDP."""
+-
+-    # old: joint_pos = mdp.JointPositionActionCfg(asset_name="robot", joint_names=[".*"], scale=0.2, use_default_offset=True)
+-    joint_pos = mdp.JointPositionActionCfg(
+-        asset_name="robot",
+-        joint_names=ACTIVE_JOINTS,
+-        scale=0.25,
+-        use_default_offset=True,
+-        preserve_order=True,
+-    )
+-
+-
+-@configclass
+-class SpotCommandsCfg:  #训练给 policy 的速度命令
+-    """Command specifications for the MDP."""
+-
+-    base_velocity = mdp.UniformVelocityCommandCfg(
+-        asset_name="robot",
+-        resampling_time_range=(10.0, 10.0),
+-        # old: rel_standing_envs=0.1
+-        rel_standing_envs=0.0,
+-        rel_heading_envs=0.0,
+-        heading_command=False,
+-        debug_vis=True,
+-        ranges=mdp.UniformVelocityCommandCfg.Ranges(
+-            # Start with low-speed straight-line training for Bennett.
+-            # old: lin_vel_x=(-2.0, 3.0), lin_vel_y=(-1.5, 1.5), ang_vel_z=(-2.0, 2.0)
+-            # old: lin_vel_x=(-1, 1)
+-            lin_vel_x=(0.08, 0.16),
+-            lin_vel_y=(0.0, 0.0),
+-            ang_vel_z=(0.0, 0.0),
+-        ),
+-    )
+-
+-
+-@configclass
+-class SpotObservationsCfg:
+-    """Observation specifications for the MDP."""
+-
+-    @configclass
+-    class PolicyCfg(ObsGroup):
+-        """Observations for policy group."""
+-
+-        # Sim2Real-oriented 33D observation: no direct base linear velocity term.
+-        # old: base_lin_vel = ObsTerm(func=mdp.base_lin_vel, ...)
+-        base_ang_vel = ObsTerm(
+-            func=mdp.base_ang_vel, params={"asset_cfg": SceneEntityCfg("robot")}, noise=Unoise(n_min=-0.1, n_max=0.1)
+-        )
+-        projected_gravity = ObsTerm(
+-            func=mdp.projected_gravity,
+-            params={"asset_cfg": SceneEntityCfg("robot")},
+-            noise=Unoise(n_min=-0.05, n_max=0.05),
+-        )
+-        velocity_commands = ObsTerm(func=mdp.generated_commands, params={"command_name": "base_velocity"})
+-        joint_pos = ObsTerm(
+-            func=mdp.joint_pos_rel,
+-            params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS, preserve_order=True)},
+-            noise=Unoise(n_min=-0.05, n_max=0.05),
+-        )
+-        joint_vel = ObsTerm(
+-            func=mdp.joint_vel_rel,
+-            params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS, preserve_order=True)},
+-            noise=Unoise(n_min=-0.5, n_max=0.5),
+-        )
+-        actions = ObsTerm(func=mdp.last_action)
+-
+-        def __post_init__(self):
+-            self.enable_corruption = False
+-            self.concatenate_terms = True
+-
+-    # observation groups
+-    policy: PolicyCfg = PolicyCfg()
+-
+-
+-@configclass
+-class SpotEventCfg: #reset 和随机化
+-    """Configuration for randomization."""
+-
+-    # startup
+-    physics_material = EventTerm(
+-        func=mdp.randomize_rigid_body_material,
+-        mode="startup",
+-        params={
+-            "asset_cfg": SceneEntityCfg("robot", body_names=".*"),
+-            # old: "static_friction_range": (0.3, 1.0),
+-            # old: "dynamic_friction_range": (0.3, 0.8),
+-            "static_friction_range": (0.8, 0.8),    #作用是摩擦力
+-            "dynamic_friction_range": (0.6, 0.6),
+-            "restitution_range": (0.0, 0.0),    #作用是弹性碰撞
+-            "num_buckets": 64,     #作用是摩擦力
+-        },
+-    )
+-
+-    add_base_mass = EventTerm(
+-        func=mdp.randomize_rigid_body_mass,
+-        mode="startup",
+-        params={
+-            "asset_cfg": SceneEntityCfg("robot", body_names=BASE_BODY),
+-            "mass_distribution_params": (-2.5, 2.5),    #作用是随机化质量分布
+-            "operation": "add",
+-        },
+-    )
+-
+-    # reset
+-    base_external_force_torque = EventTerm(
+-        func=mdp.apply_external_force_torque,
+-        mode="reset",
+-        params={
+-            "asset_cfg": SceneEntityCfg("robot", body_names=BASE_BODY),
+-            "force_range": (0.0, 0.0),
+-            "torque_range": (-0.0, 0.0),
+-        },
+-    )
+-
+-    reset_base = EventTerm(
+-        func=mdp.reset_root_state_uniform,
+-        mode="reset",
+-        params={
+-            "asset_cfg": SceneEntityCfg("robot"),
+-            # old: "pose_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5), "yaw": (-3.14, 3.14)},
+-            "pose_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "yaw": (0.0, 0.0)},
+-            "velocity_range": {
+-                # old: randomized initial base velocity copied from Spot.
+-                "x": (0.0, 0.0),
+-                "y": (0.0, 0.0),
+-                "z": (0.0, 0.0),
+-                "roll": (0.0, 0.0),
+-                "pitch": (0.0, 0.0),
+-                "yaw": (0.0, 0.0),
+-            },
+-        },
+-    )
+-
+-    reset_robot_joints = EventTerm(
+-        func=spot_mdp.reset_joints_around_default,
+-        mode="reset",
+-        params={
+-            # old: "position_range": (-0.2, 0.2),
+-            # old: "velocity_range": (-2.5, 2.5),
+-            "position_range": (0.0, 0.0),    #作用是随机化关节位置
+-            "velocity_range": (0.0, 0.0),    #作用是随机化关节速度
+-            "asset_cfg": SceneEntityCfg("robot"),
+-        },
+-    )
+-
+-    # interval
+-    push_robot = EventTerm(
+-        func=mdp.push_by_setting_velocity,
+-        mode="interval",
+-        interval_range_s=(10.0, 15.0),    #作用是随机化推力
+-        params={
+-            "asset_cfg": SceneEntityCfg("robot"),
+-            "velocity_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5)},    #作用是随机化推力
+-        },
+-    )
+-
+-
+-@configclass
+-class SpotRewardsCfg:
+-    # -- task
+-    air_time = RewardTermCfg(
+-        func=spot_mdp.air_time_reward,
+-        # old: weight=5.0
+-        weight=1.0,
+-        params={
+-            "mode_time": 0.3,
+-            "velocity_threshold": 0.5,
+-            "asset_cfg": SceneEntityCfg("robot"),
+-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True),
+-        },
+-    )
+-    base_angular_velocity = RewardTermCfg(
+-        func=spot_mdp.base_angular_velocity_reward,
+-        # old: weight=5.0, params={"std": 2.0, ...}
+-        weight=0.5,
+-        params={"std": 0.25, "asset_cfg": SceneEntityCfg("robot")},
+-    )
+-    base_linear_velocity = RewardTermCfg(
+-        func=spot_mdp.base_linear_velocity_reward,
+-        weight=5.0,
+-        # old: std=1.0 was too loose for 0.08-0.16 m/s Bennett straight-line commands.
+-        params={"std": 0.12, "ramp_rate": 0.5, "ramp_at_vel": 1.0, "asset_cfg": SceneEntityCfg("robot")},
+-    )
+-    foot_clearance = RewardTermCfg(
+-        func=spot_mdp.foot_clearance_reward,
+-        # old: weight=0.5
+-        weight=0.2,
+-        params={
+-            "std": 0.05,
+-            "tanh_mult": 2.0,
+-            "target_height": 0.1,
+-            "asset_cfg": SceneEntityCfg("robot", body_names=FOOT_BODIES, preserve_order=True),
+-        },
+-    )
+-    gait = RewardTermCfg(
+-        func=spot_mdp.GaitReward,
+-        # old: weight=10.0
+-        weight=4.0,
+-        params={
+-            "std": 0.1,
+-            "max_err": 0.2,
+-            "velocity_threshold": 0.05,
+-            "synced_feet_pair_names": (("FL_1", "RR_1"), ("FR_1", "RL_1")),
+-            "asset_cfg": SceneEntityCfg("robot"),
+-            "sensor_cfg": SceneEntityCfg("contact_forces"),
+-        },
+-    )
+-
+-    # -- penalties
+-    # old: action_smoothness = RewardTermCfg(func=spot_mdp.action_smoothness_penalty, weight=-1.0)
+-    action_smoothness = RewardTermCfg(func=spot_mdp.action_smoothness_penalty, weight=-0.05)
+-    air_time_variance = RewardTermCfg(
+-        func=spot_mdp.air_time_variance_penalty,
+-        weight=-1.0,
+-        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True)},
+-    )
+-    base_motion = RewardTermCfg(
+-        func=spot_mdp.base_motion_penalty, weight=-2.0, params={"asset_cfg": SceneEntityCfg("robot")}
+-    )
+-    base_orientation = RewardTermCfg(
+-        func=spot_mdp.base_orientation_penalty, weight=-3.0, params={"asset_cfg": SceneEntityCfg("robot")}
+-    )
+-    foot_slip = RewardTermCfg(
+-        func=spot_mdp.foot_slip_penalty,
+-        weight=-0.5,
+-        params={
+-            "asset_cfg": SceneEntityCfg("robot", body_names=FOOT_BODIES, preserve_order=True),
+-            "sensor_cfg": SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True),
+-            "threshold": 1.0,
+-        },
+-    )
+-    joint_acc = RewardTermCfg(
+-        func=spot_mdp.joint_acceleration_penalty,
+-        weight=-1.0e-4,
+-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS, preserve_order=True)},
+-    )
+-    joint_pos = RewardTermCfg(
+-        func=spot_mdp.joint_position_penalty,
+-        # old: weight=-0.7
+-        weight=-0.3,
+-        params={
+-            "asset_cfg": SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS, preserve_order=True),
+-            "stand_still_scale": 5.0,
+-            "velocity_threshold": 0.05,
+-        },
+-    )
+-    joint_torques = RewardTermCfg(
+-        func=spot_mdp.joint_torques_penalty,
+-        weight=-5.0e-4,
+-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS, preserve_order=True)},
+-    )
+-    joint_vel = RewardTermCfg(
+-        func=spot_mdp.joint_velocity_penalty,
+-        weight=-1.0e-2,
+-        params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS, preserve_order=True)},
+-    )
+-
+-
+-@configclass
+-class SpotTerminationsCfg:
+-    """Termination terms for the MDP."""
+-
+-    time_out = DoneTerm(func=mdp.time_out, time_out=True)
+-    body_contact = DoneTerm(
+-        func=mdp.illegal_contact,
+-        params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=BASE_BODY), "threshold": 1.0},
+-    )
+-    low_base_height = DoneTerm(
+-        func=spot_mdp.base_height_below,
+-        params={"minimum_height": 0.20, "asset_cfg": SceneEntityCfg("robot")},
+-    )
+-    excessive_tilt = DoneTerm(
+-        func=spot_mdp.base_tilt_over,
+-        params={"max_projected_gravity_xy": math.sin(0.75), "asset_cfg": SceneEntityCfg("robot")},
+-    )
+-    terrain_out_of_bounds = DoneTerm(
+-        func=mdp.terrain_out_of_bounds,
+-        params={"asset_cfg": SceneEntityCfg("robot"), "distance_buffer": 3.0},
+-        time_out=True,
+-    )
+-
+-
+-@configclass
+-class SpotCurriculumCfg:
+-    """No terrain curriculum for the flat Spot1/Bennett task."""
+-
+-    pass
+-
+-
+-@configclass
+-class SpotFlatEnvCfg(LocomotionVelocityRoughEnvCfg):
+-    """Configuration for the Spot robot in a flat environment."""
+-
+-    # Basic settings
+-    observations: SpotObservationsCfg = SpotObservationsCfg()
+-    actions: SpotActionsCfg = SpotActionsCfg()
+-    commands: SpotCommandsCfg = SpotCommandsCfg()
+-
+-    # MDP setting
+-    rewards: SpotRewardsCfg = SpotRewardsCfg()
+-    terminations: SpotTerminationsCfg = SpotTerminationsCfg()
+-    events: SpotEventCfg = SpotEventCfg()
+-    curriculum: SpotCurriculumCfg = SpotCurriculumCfg()
+-
+-    # Viewer
+-    viewer = ViewerCfg(eye=(10.5, 10.5, 0.3), origin_type="world", env_index=0, asset_name="robot")
+-
+-    def __post_init__(self):
+-        # post init of parent
+-        super().__post_init__()
+-
+-        # general settings
+-        self.decimation = 10  # 50 Hz
+-        self.episode_length_s = 20.0
+-        # simulation settings
+-        self.sim.dt = 0.002  # 500 Hz
+-        self.sim.render_interval = self.decimation
+-        self.sim.physics_material.static_friction = 1.0
+-        self.sim.physics_material.dynamic_friction = 1.0
+-        self.sim.physics_material.friction_combine_mode = "multiply"
+-        self.sim.physics_material.restitution_combine_mode = "multiply"
+-        # update sensor update periods
+-        # we tick all the sensors based on the smallest update period (physics update period)
+-        self.scene.contact_forces.update_period = self.sim.dt
+-
+-        # switch robot to Bennett while keeping this task's Spot-style rewards.
+-        # old: self.scene.robot = SPOT_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+-        robot_cfg = BENNETT_CFG_V1.copy()
+-        robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
+-        robot_cfg.spawn.articulation_props.solver_velocity_iteration_count = 1
+-        robot_cfg.actuators["base_legs"].effort_limit = 10.0
+-        robot_cfg.actuators["base_legs"].saturation_effort = 12.0
+-        robot_cfg.actuators["base_legs"].stiffness = 40.0
+-        robot_cfg.actuators["base_legs"].damping = 1.5
+-        self.scene.robot = robot_cfg
+-
+-        # terrain
+-        self.scene.terrain = TerrainImporterCfg(
+-            prim_path="/World/ground",
+-            terrain_type="plane",
+-            # old: terrain_generator=COBBLESTONE_ROAD_CFG,
+-            # old: max_init_terrain_level=COBBLESTONE_ROAD_CFG.num_rows - 1,
+-            terrain_generator=None,
+-            max_init_terrain_level=None,
+-            collision_group=-1,
+-            physics_material=sim_utils.RigidBodyMaterialCfg(
+-                friction_combine_mode="multiply",
+-                restitution_combine_mode="multiply",
+-                static_friction=1.0,
+-                dynamic_friction=1.0,
+-            ),
+-            visual_material=sim_utils.MdlFileCfg(
+-                mdl_path=f"{ISAACLAB_NUCLEUS_DIR}/Materials/TilesMarbleSpiderWhiteBrickBondHoned/TilesMarbleSpiderWhiteBrickBondHoned.mdl",
+-                project_uvw=True,
+-                texture_scale=(0.25, 0.25),
+-            ),
+-            debug_vis=True,
+-        )
+-
+-        # no height scan
+-        self.scene.height_scanner = None
+-        self.curriculum.terrain_levels = None
+-        self.events.add_base_mass = None
+-        self.events.base_external_force_torque = None
+-        self.events.push_robot = None
+-
+-
+-class SpotFlatEnvCfg_PLAY(SpotFlatEnvCfg):
+-    def __post_init__(self) -> None:
+-        # post init of parent
+-        super().__post_init__()
+-
+-        # make a smaller scene for play
+-        self.scene.num_envs = 5
+-        self.scene.env_spacing = 2.5
+-        # spawn the robot randomly in the grid (instead of their terrain levels)
+-        self.scene.terrain.max_init_terrain_level = None
+-
+-        # reduce the number of terrains to save memory
+-        if self.scene.terrain.terrain_generator is not None:
+-            self.scene.terrain.terrain_generator.num_rows = 5
+-            self.scene.terrain.terrain_generator.num_cols = 5
+-            self.scene.terrain.terrain_generator.curriculum = False
+-
+-        # disable randomization for play
+-        self.observations.policy.enable_corruption = False
+-        # remove random pushing event
+-        self.events.push_robot = None
+-        self.events.base_external_force_torque = None
+-
+-
+-# python .\scripts\zero_agent.py --task Isaac-BennettRL-Flat-Spot1-v0 --num_envs 8 
+-# python .\scripts\rsl_rl\train.py --task Isaac-BennettRL-Flat-Spot1-v0 --headless 
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/__init__.py
+deleted file mode 100644
+index cf460b5..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/__init__.py
++++ /dev/null
+@@ -1,10 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-
+-"""This sub-module contains the functions that are specific to the Spot locomotion task."""
+-
+-from .events import *  # noqa: F401, F403
+-from .rewards import *  # noqa: F401, F403
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/events.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/events.py
+deleted file mode 100644
+index b1a4793..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/events.py
++++ /dev/null
+@@ -1,59 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-
+-"""This sub-module contains the functions that can be used to enable Spot randomizations.
+-
+-The functions can be passed to the :class:`isaaclab.managers.EventTermCfg` object to enable
+-the randomization introduced by the function.
+-"""
+-
+-from __future__ import annotations
+-
+-from typing import TYPE_CHECKING
+-
+-import torch
+-
+-from isaaclab.assets import Articulation
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.utils.math import sample_uniform
+-
+-if TYPE_CHECKING:
+-    from isaaclab.envs import ManagerBasedEnv
+-
+-
+-def reset_joints_around_default(
+-    env: ManagerBasedEnv,
+-    env_ids: torch.Tensor,
+-    position_range: tuple[float, float],
+-    velocity_range: tuple[float, float],
+-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+-):
+-    """Reset the robot joints in the interval around the default position and velocity by the given ranges.
+-
+-    This function samples random values from the given ranges around the default joint positions and velocities.
+-    The ranges are clipped to fit inside the soft joint limits. The sampled values are then set into the physics
+-    simulation.
+-    """
+-    # extract the used quantities (to enable type-hinting)
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    # get default joint state
+-    joint_min_pos = asset.data.default_joint_pos[env_ids] + position_range[0]
+-    joint_max_pos = asset.data.default_joint_pos[env_ids] + position_range[1]
+-    joint_min_vel = asset.data.default_joint_vel[env_ids] + velocity_range[0]
+-    joint_max_vel = asset.data.default_joint_vel[env_ids] + velocity_range[1]
+-    # clip pos to range
+-    joint_pos_limits = asset.data.soft_joint_pos_limits[env_ids, ...]
+-    joint_min_pos = torch.clamp(joint_min_pos, min=joint_pos_limits[..., 0], max=joint_pos_limits[..., 1])
+-    joint_max_pos = torch.clamp(joint_max_pos, min=joint_pos_limits[..., 0], max=joint_pos_limits[..., 1])
+-    # clip vel to range
+-    joint_vel_abs_limits = asset.data.soft_joint_vel_limits[env_ids]
+-    joint_min_vel = torch.clamp(joint_min_vel, min=-joint_vel_abs_limits, max=joint_vel_abs_limits)
+-    joint_max_vel = torch.clamp(joint_max_vel, min=-joint_vel_abs_limits, max=joint_vel_abs_limits)
+-    # sample these values randomly
+-    joint_pos = sample_uniform(joint_min_pos, joint_max_pos, joint_min_pos.shape, joint_min_pos.device)
+-    joint_vel = sample_uniform(joint_min_vel, joint_max_vel, joint_min_vel.shape, joint_min_vel.device)
+-    # set into the physics simulation
+-    asset.write_joint_state_to_sim(joint_pos, joint_vel, env_ids=env_ids)
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/rewards.py
+deleted file mode 100644
+index 68a2832..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_spot/quad_leg_spot1/mdp/rewards.py
++++ /dev/null
+@@ -1,305 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-"""This sub-module contains the reward functions that can be used for Spot's locomotion task.
+-
+-The functions can be passed to the :class:`isaaclab.managers.RewardTermCfg` object to
+-specify the reward function and its parameters.
+-"""
+-
+-from __future__ import annotations
+-
+-from typing import TYPE_CHECKING
+-
+-import torch
+-
+-from isaaclab.assets import Articulation, RigidObject
+-from isaaclab.managers import ManagerTermBase, SceneEntityCfg
+-from isaaclab.sensors import ContactSensor
+-
+-if TYPE_CHECKING:
+-    from isaaclab.envs import ManagerBasedRLEnv
+-    from isaaclab.managers import RewardTermCfg
+-
+-
+-##
+-# Task Rewards
+-##
+-
+-
+-def air_time_reward(
+-    env: ManagerBasedRLEnv,
+-    asset_cfg: SceneEntityCfg,
+-    sensor_cfg: SceneEntityCfg,
+-    mode_time: float,
+-    velocity_threshold: float,
+-) -> torch.Tensor:
+-    """Reward longer feet air and contact time."""
+-    # extract the used quantities (to enable type-hinting)
+-    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    if contact_sensor.cfg.track_air_time is False:
+-        raise RuntimeError("Activate ContactSensor's track_air_time!")
+-    # compute the reward
+-    current_air_time = contact_sensor.data.current_air_time[:, sensor_cfg.body_ids]
+-    current_contact_time = contact_sensor.data.current_contact_time[:, sensor_cfg.body_ids]
+-
+-    t_max = torch.max(current_air_time, current_contact_time)
+-    t_min = torch.clip(t_max, max=mode_time)
+-    stance_cmd_reward = torch.clip(current_contact_time - current_air_time, -mode_time, mode_time)
+-    cmd = torch.norm(env.command_manager.get_command("base_velocity"), dim=1).unsqueeze(dim=1).expand(-1, 4)
+-    body_vel = torch.linalg.norm(asset.data.root_lin_vel_b[:, :2], dim=1).unsqueeze(dim=1).expand(-1, 4)
+-    reward = torch.where(
+-        torch.logical_or(cmd > 0.0, body_vel > velocity_threshold),
+-        torch.where(t_max < mode_time, t_min, 0),
+-        stance_cmd_reward,
+-    )
+-    return torch.sum(reward, dim=1)
+-
+-
+-def base_angular_velocity_reward(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, std: float) -> torch.Tensor:
+-    """Reward tracking of angular velocity commands (yaw) using abs exponential kernel."""
+-    # extract the used quantities (to enable type-hinting)
+-    asset: RigidObject = env.scene[asset_cfg.name]
+-    # compute the error
+-    target = env.command_manager.get_command("base_velocity")[:, 2]
+-    ang_vel_error = torch.linalg.norm((target - asset.data.root_ang_vel_b[:, 2]).unsqueeze(1), dim=1)
+-    return torch.exp(-ang_vel_error / std)
+-
+-
+-def base_linear_velocity_reward(
+-    env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, std: float, ramp_at_vel: float = 1.0, ramp_rate: float = 0.5
+-) -> torch.Tensor:
+-    """Reward tracking of linear velocity commands (xy axes) using abs exponential kernel."""
+-    # extract the used quantities (to enable type-hinting)
+-    asset: RigidObject = env.scene[asset_cfg.name]
+-    # compute the error
+-    target = env.command_manager.get_command("base_velocity")[:, :2]
+-    lin_vel_error = torch.linalg.norm((target - asset.data.root_lin_vel_b[:, :2]), dim=1)
+-    # fixed 1.0 multiple for tracking below the ramp_at_vel value, then scale by the rate above
+-    vel_cmd_magnitude = torch.linalg.norm(target, dim=1)
+-    velocity_scaling_multiple = torch.clamp(1.0 + ramp_rate * (vel_cmd_magnitude - ramp_at_vel), min=1.0)
+-    return torch.exp(-lin_vel_error / std) * velocity_scaling_multiple
+-
+-
+-class GaitReward(ManagerTermBase):
+-    """Gait enforcing reward term for quadrupeds.
+-
+-    This reward penalizes contact timing differences between selected foot pairs defined in
+-    :attr:`synced_feet_pair_names` to bias the policy towards a desired gait, i.e trotting,
+-    bounding, or pacing. Note that this reward is only for quadrupedal gaits with two pairs
+-    of synchronized feet.
+-    """
+-
+-    def __init__(self, cfg: RewardTermCfg, env: ManagerBasedRLEnv):
+-        """Initialize the term.
+-
+-        Args:
+-            cfg: The configuration of the reward.
+-            env: The RL environment instance.
+-        """
+-        super().__init__(cfg, env)
+-        self.std: float = cfg.params["std"]
+-        self.max_err: float = cfg.params["max_err"]
+-        self.velocity_threshold: float = cfg.params["velocity_threshold"]
+-        self.contact_sensor: ContactSensor = env.scene.sensors[cfg.params["sensor_cfg"].name]
+-        self.asset: Articulation = env.scene[cfg.params["asset_cfg"].name]
+-        # match foot body names with corresponding foot body ids
+-        synced_feet_pair_names = cfg.params["synced_feet_pair_names"]
+-        if (
+-            len(synced_feet_pair_names) != 2
+-            or len(synced_feet_pair_names[0]) != 2
+-            or len(synced_feet_pair_names[1]) != 2
+-        ):
+-            raise ValueError("This reward only supports gaits with two pairs of synchronized feet, like trotting.")
+-        synced_feet_pair_0 = self.contact_sensor.find_bodies(synced_feet_pair_names[0])[0]
+-        synced_feet_pair_1 = self.contact_sensor.find_bodies(synced_feet_pair_names[1])[0]
+-        self.synced_feet_pairs = [synced_feet_pair_0, synced_feet_pair_1]
+-
+-    def __call__(
+-        self,
+-        env: ManagerBasedRLEnv,
+-        std: float,
+-        max_err: float,
+-        velocity_threshold: float,
+-        synced_feet_pair_names,
+-        asset_cfg: SceneEntityCfg,
+-        sensor_cfg: SceneEntityCfg,
+-    ) -> torch.Tensor:
+-        """Compute the reward.
+-
+-        This reward is defined as a multiplication between six terms where two of them enforce pair feet
+-        being in sync and the other four rewards if all the other remaining pairs are out of sync
+-
+-        Args:
+-            env: The RL environment instance.
+-        Returns:
+-            The reward value.
+-        """
+-        # for synchronous feet, the contact (air) times of two feet should match
+-        sync_reward_0 = self._sync_reward_func(self.synced_feet_pairs[0][0], self.synced_feet_pairs[0][1])
+-        sync_reward_1 = self._sync_reward_func(self.synced_feet_pairs[1][0], self.synced_feet_pairs[1][1])
+-        sync_reward = sync_reward_0 * sync_reward_1
+-        # for asynchronous feet, the contact time of one foot should match the air time of the other one
+-        async_reward_0 = self._async_reward_func(self.synced_feet_pairs[0][0], self.synced_feet_pairs[1][0])
+-        async_reward_1 = self._async_reward_func(self.synced_feet_pairs[0][1], self.synced_feet_pairs[1][1])
+-        async_reward_2 = self._async_reward_func(self.synced_feet_pairs[0][0], self.synced_feet_pairs[1][1])
+-        async_reward_3 = self._async_reward_func(self.synced_feet_pairs[1][0], self.synced_feet_pairs[0][1])
+-        async_reward = async_reward_0 * async_reward_1 * async_reward_2 * async_reward_3
+-        # only enforce gait if cmd > 0
+-        cmd = torch.norm(env.command_manager.get_command("base_velocity"), dim=1)
+-        body_vel = torch.linalg.norm(self.asset.data.root_lin_vel_b[:, :2], dim=1)
+-        return torch.where(
+-            torch.logical_or(cmd > 0.0, body_vel > self.velocity_threshold), sync_reward * async_reward, 0.0
+-        )
+-
+-    """
+-    Helper functions.
+-    """
+-
+-    def _sync_reward_func(self, foot_0: int, foot_1: int) -> torch.Tensor:
+-        """Reward synchronization of two feet."""
+-        air_time = self.contact_sensor.data.current_air_time
+-        contact_time = self.contact_sensor.data.current_contact_time
+-        # penalize the difference between the most recent air time and contact time of synced feet pairs.
+-        se_air = torch.clip(torch.square(air_time[:, foot_0] - air_time[:, foot_1]), max=self.max_err**2)
+-        se_contact = torch.clip(torch.square(contact_time[:, foot_0] - contact_time[:, foot_1]), max=self.max_err**2)
+-        return torch.exp(-(se_air + se_contact) / self.std)
+-
+-    def _async_reward_func(self, foot_0: int, foot_1: int) -> torch.Tensor:
+-        """Reward anti-synchronization of two feet."""
+-        air_time = self.contact_sensor.data.current_air_time
+-        contact_time = self.contact_sensor.data.current_contact_time
+-        # penalize the difference between opposing contact modes air time of feet 1 to contact time of feet 2
+-        # and contact time of feet 1 to air time of feet 2) of feet pairs that are not in sync with each other.
+-        se_act_0 = torch.clip(torch.square(air_time[:, foot_0] - contact_time[:, foot_1]), max=self.max_err**2)
+-        se_act_1 = torch.clip(torch.square(contact_time[:, foot_0] - air_time[:, foot_1]), max=self.max_err**2)
+-        return torch.exp(-(se_act_0 + se_act_1) / self.std)
+-
+-
+-def foot_clearance_reward(
+-    env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, target_height: float, std: float, tanh_mult: float
+-) -> torch.Tensor:
+-    """Reward the swinging feet for clearing a specified height off the ground"""
+-    asset: RigidObject = env.scene[asset_cfg.name]
+-    foot_z_target_error = torch.square(asset.data.body_pos_w[:, asset_cfg.body_ids, 2] - target_height)
+-    foot_velocity_tanh = torch.tanh(tanh_mult * torch.norm(asset.data.body_lin_vel_w[:, asset_cfg.body_ids, :2], dim=2))
+-    reward = foot_z_target_error * foot_velocity_tanh
+-    return torch.exp(-torch.sum(reward, dim=1) / std)
+-
+-
+-##
+-# Regularization Penalties
+-##
+-
+-
+-def action_smoothness_penalty(env: ManagerBasedRLEnv) -> torch.Tensor:
+-    """Penalize large instantaneous changes in the network action output"""
+-    return torch.linalg.norm((env.action_manager.action - env.action_manager.prev_action), dim=1)
+-
+-
+-def air_time_variance_penalty(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg) -> torch.Tensor:
+-    """Penalize variance in the amount of time each foot spends in the air/on the ground relative to each other"""
+-    # extract the used quantities (to enable type-hinting)
+-    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+-    if contact_sensor.cfg.track_air_time is False:
+-        raise RuntimeError("Activate ContactSensor's track_air_time!")
+-    # compute the reward
+-    last_air_time = contact_sensor.data.last_air_time[:, sensor_cfg.body_ids]
+-    last_contact_time = contact_sensor.data.last_contact_time[:, sensor_cfg.body_ids]
+-    return torch.var(torch.clip(last_air_time, max=0.5), dim=1) + torch.var(
+-        torch.clip(last_contact_time, max=0.5), dim=1
+-    )
+-
+-
+-# ! look into simplifying the kernel here; it's a little oddly complex
+-def base_motion_penalty(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+-    """Penalize base vertical and roll/pitch velocity"""
+-    # extract the used quantities (to enable type-hinting)
+-    asset: RigidObject = env.scene[asset_cfg.name]
+-    return 0.8 * torch.square(asset.data.root_lin_vel_b[:, 2]) + 0.2 * torch.sum(
+-        torch.abs(asset.data.root_ang_vel_b[:, :2]), dim=1
+-    )
+-
+-
+-def base_orientation_penalty(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+-    """Penalize non-flat base orientation
+-
+-    This is computed by penalizing the xy-components of the projected gravity vector.
+-    """
+-    # extract the used quantities (to enable type-hinting)
+-    asset: RigidObject = env.scene[asset_cfg.name]
+-    return torch.linalg.norm((asset.data.projected_gravity_b[:, :2]), dim=1)
+-
+-
+-def foot_slip_penalty(
+-    env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, sensor_cfg: SceneEntityCfg, threshold: float
+-) -> torch.Tensor:
+-    """Penalize foot planar (xy) slip when in contact with the ground"""
+-    asset: RigidObject = env.scene[asset_cfg.name]
+-    # extract the used quantities (to enable type-hinting)
+-    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+-
+-    # check if contact force is above threshold
+-    net_contact_forces = contact_sensor.data.net_forces_w_history
+-    is_contact = torch.max(torch.norm(net_contact_forces[:, :, sensor_cfg.body_ids], dim=-1), dim=1)[0] > threshold
+-    foot_planar_velocity = torch.linalg.norm(asset.data.body_lin_vel_w[:, asset_cfg.body_ids, :2], dim=2)
+-
+-    reward = is_contact * foot_planar_velocity
+-    return torch.sum(reward, dim=1)
+-
+-
+-def joint_acceleration_penalty(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+-    """Penalize joint accelerations on the articulation."""
+-    # extract the used quantities (to enable type-hinting)
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    return torch.linalg.norm((asset.data.joint_acc), dim=1)
+-
+-
+-def joint_position_penalty(
+-    env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg, stand_still_scale: float, velocity_threshold: float
+-) -> torch.Tensor:
+-    """Penalize joint position error from default on the articulation."""
+-    # extract the used quantities (to enable type-hinting)
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    cmd = torch.linalg.norm(env.command_manager.get_command("base_velocity"), dim=1)
+-    body_vel = torch.linalg.norm(asset.data.root_lin_vel_b[:, :2], dim=1)
+-    reward = torch.linalg.norm((asset.data.joint_pos - asset.data.default_joint_pos), dim=1)
+-    return torch.where(torch.logical_or(cmd > 0.0, body_vel > velocity_threshold), reward, stand_still_scale * reward)
+-
+-
+-def joint_torques_penalty(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+-    """Penalize joint torques on the articulation."""
+-    # extract the used quantities (to enable type-hinting)
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    return torch.linalg.norm((asset.data.applied_torque), dim=1)
+-
+-
+-def joint_velocity_penalty(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg) -> torch.Tensor:
+-    """Penalize joint velocities on the articulation."""
+-    # extract the used quantities (to enable type-hinting)
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    return torch.linalg.norm((asset.data.joint_vel), dim=1)
+-
+-
+-def base_height_below(
+-    env: ManagerBasedRLEnv,
+-    minimum_height: float,
+-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+-) -> torch.Tensor:
+-    """Terminate when the base is too low to represent a usable standing/walking state."""
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    return asset.data.root_pos_w[:, 2] < minimum_height
+-
+-
+-def base_tilt_over(
+-    env: ManagerBasedRLEnv,
+-    max_projected_gravity_xy: float = 0.68,
+-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+-) -> torch.Tensor:
+-    """Terminate when roll/pitch tilt is too large to be useful for this early straight-line task."""
+-    asset: Articulation = env.scene[asset_cfg.name]
+-    tilt = torch.linalg.norm(asset.data.projected_gravity_b[:, :2], dim=1)
+-    return tilt > max_projected_gravity_xy
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_track/bennett_rl_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_track/bennett_rl_env_cfg.py
+index 5f2c2e4..8dacbf1 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_track/bennett_rl_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_track/bennett_rl_env_cfg.py
+@@ -15,7 +15,7 @@ from isaaclab.scene import InteractiveSceneCfg
+ from isaaclab.terrains import TerrainImporterCfg
+ from isaaclab.utils import configclass
+ 
+-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V3
++from bennett_rl.assets.robots.bennett import BENNETT_CFG_V5
+ 
+ from . import mdp
+ 
+@@ -33,7 +33,7 @@ QUAD_TRACE_JOINTS = [
+ 
+ 
+ def _make_fixed_bennett_cfg() -> ArticulationCfg:
+-    robot_cfg = BENNETT_CFG_V3.copy()
++    robot_cfg = BENNETT_CFG_V5.copy()
+     robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
+     robot_cfg.spawn.articulation_props.fix_root_link = True
+     return robot_cfg
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/__init__.py
+deleted file mode 100644
+index 0a88947..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/__init__.py
++++ /dev/null
+@@ -1,53 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-import gymnasium as gym
+-
+-from . import agents
+-
+-##
+-# Register Gym environments.
+-##
+-
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity-Flat-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettQuadVelocityFlatEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityFlatPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity-Flat-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettQuadVelocityFlatEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityFlatPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity-Rough-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:BennettQuadVelocityRoughEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityRoughPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity-Rough-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:BennettQuadVelocityRoughEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityRoughPPORunnerCfg",
+-    },
+-)
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/agents/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/agents/__init__.py
+deleted file mode 100644
+index a597dfa..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/agents/__init__.py
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+\ No newline at end of file
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/agents/rsl_rl_ppo_cfg.py
+deleted file mode 100644
+index 7a90103..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/agents/rsl_rl_ppo_cfg.py
++++ /dev/null
+@@ -1,54 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from isaaclab.utils import configclass
+-
+-from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, RslRlPpoAlgorithmCfg
+-
+-
+-@configclass
+-class BennettQuadVelocityRoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+-    num_steps_per_env = 24
+-    max_iterations = 1500
+-    save_interval = 50
+-    experiment_name = "Bennett_quad_velocity_rough"
+-    policy = RslRlPpoActorCriticCfg(
+-        init_noise_std=1.0,
+-        actor_obs_normalization=False,
+-        critic_obs_normalization=False,
+-        actor_hidden_dims=[512, 256, 128],
+-        critic_hidden_dims=[512, 256, 128],
+-        activation="elu",
+-    )
+-    algorithm = RslRlPpoAlgorithmCfg(
+-        value_loss_coef=1.0,
+-        use_clipped_value_loss=True,
+-        clip_param=0.2,
+-        entropy_coef=0.01,
+-        num_learning_epochs=5,
+-        num_mini_batches=4,
+-        learning_rate=1.0e-3,
+-        schedule="adaptive",
+-        gamma=0.99,
+-        lam=0.95,
+-        desired_kl=0.01,
+-        max_grad_norm=1.0,
+-    )
+-
+-
+-@configclass
+-class BennettQuadVelocityFlatPPORunnerCfg(BennettQuadVelocityRoughPPORunnerCfg):
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.max_iterations = 1000
+-        self.experiment_name = "Bennett_quad_velocity_flat"
+-        self.policy.actor_hidden_dims = [128, 128, 128]
+-        self.policy.critic_hidden_dims = [128, 128, 128]
+-
+-
+-PPORunnerCfg = BennettQuadVelocityFlatPPORunnerCfg
+-BennettGo2RoughPPORunnerCfg = BennettQuadVelocityRoughPPORunnerCfg
+-BennettGo2FlatPPORunnerCfg = BennettQuadVelocityFlatPPORunnerCfg
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/bennett_rl_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/bennett_rl_env_cfg.py
+deleted file mode 100644
+index 3ccc1c9..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/bennett_rl_env_cfg.py
++++ /dev/null
+@@ -1,7 +0,0 @@
+-"""Compatibility exports for the Bennett quadruped velocity tasks.
+-
+-The actual task configs live in ``rough_env_cfg.py`` and ``flat_env_cfg.py``.
+-"""
+-
+-from .flat_env_cfg import BennettQuadVelocityFlatEnvCfg, BennettQuadVelocityFlatEnvCfg_PLAY
+-from .rough_env_cfg import BennettQuadVelocityRoughEnvCfg, BennettQuadVelocityRoughEnvCfg_PLAY
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/flat_env_cfg.py
+deleted file mode 100644
+index 39d87ba..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/flat_env_cfg.py
++++ /dev/null
+@@ -1,36 +0,0 @@
+-from isaaclab.utils import configclass
+-
+-from .rough_env_cfg import BennettQuadVelocityRoughEnvCfg
+-
+-
+-@configclass
+-class BennettQuadVelocityFlatEnvCfg(BennettQuadVelocityRoughEnvCfg):
+-    """Bennett quadruped velocity-tracking locomotion task on flat terrain."""
+-
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.rewards.flat_orientation_l2.weight = -2.5
+-        self.rewards.feet_air_time.weight = 0.25
+-
+-        self.scene.terrain.terrain_type = "plane"
+-        self.scene.terrain.terrain_generator = None
+-        self.scene.height_scanner = None
+-        self.observations.policy.height_scan = None
+-        self.curriculum.terrain_levels = None
+-
+-
+-@configclass
+-class BennettQuadVelocityFlatEnvCfg_PLAY(BennettQuadVelocityFlatEnvCfg):
+-    def __post_init__(self) -> None:
+-        super().__post_init__()
+-
+-        self.scene.num_envs = 50
+-        self.scene.env_spacing = 2.5
+-        self.observations.policy.enable_corruption = False
+-        self.events.base_external_force_torque = None
+-        self.events.push_robot = None
+-
+-
+-BennettGo2FlatEnvCfg = BennettQuadVelocityFlatEnvCfg
+-BennettGo2FlatEnvCfg_PLAY = BennettQuadVelocityFlatEnvCfg_PLAY
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/mdp/__init__.py
+deleted file mode 100644
+index 966d4a3..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/mdp/__init__.py
++++ /dev/null
+@@ -1,10 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-"""This sub-module contains the functions that are specific to the environment."""
+-
+-from isaaclab.envs.mdp import *  # noqa: F401, F403
+-
+-from .rewards import *  # noqa: F401, F403
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/mdp/rewards.py
+deleted file mode 100644
+index ecd3bb4..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/mdp/rewards.py
++++ /dev/null
+@@ -1,4 +0,0 @@
+-"""Custom MDP terms for Bennett quadruped velocity tasks.
+-
+-Currently this package uses Isaac Lab's built-in locomotion velocity MDP terms.
+-"""
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/rough_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/rough_env_cfg.py
+deleted file mode 100644
+index 04d4eb5..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity/rough_env_cfg.py
++++ /dev/null
+@@ -1,102 +0,0 @@
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.utils import configclass
+-
+-from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import LocomotionVelocityRoughEnvCfg
+-
+-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V1
+-
+-
+-ACTIVE_JOINTS = [
+-    "FL_thigh",
+-    "FL_calf",
+-    "FR_thigh",
+-    "FR_calf",
+-    "RL_thigh",
+-    "RL_calf",
+-    "RR_thigh",
+-    "RR_calf",
+-]
+-
+-
+-@configclass
+-class BennettQuadVelocityRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
+-    """Bennett quadruped velocity-tracking locomotion task on rough terrain.
+-
+-    This is a velocity-command policy task. The policy outputs normalized joint-position actions for the eight
+-    actuated thigh/calf joints; Isaac Lab applies them through the Bennett DCMotorCfg PD actuator model. It is not a
+-    hardware MIT-command runner.
+-    """
+-
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.decimation = 4
+-        self.sim.dt = 1.0 / 200.0
+-
+-        self.scene.robot = BENNETT_CFG_V1.replace(prim_path="{ENV_REGEX_NS}/Robot")
+-        self.scene.height_scanner.prim_path = "{ENV_REGEX_NS}/Robot/base"
+-
+-        self.actions.joint_pos.joint_names = ACTIVE_JOINTS
+-        self.actions.joint_pos.scale = 0.25
+-
+-        # Sim2Real-oriented observation shape: no direct base linear velocity observation.
+-        # old: inherited LocomotionVelocityRoughEnvCfg policy.base_lin_vel.
+-        self.observations.policy.base_lin_vel = None
+-        self.observations.policy.joint_pos.params["asset_cfg"] = SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS)
+-        self.observations.policy.joint_vel.params["asset_cfg"] = SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS)
+-
+-        # Scale down rough terrains for Bennett's small body/leg dimensions.
+-        self.scene.terrain.terrain_generator.sub_terrains["boxes"].grid_height_range = (0.025, 0.1)
+-        self.scene.terrain.terrain_generator.sub_terrains["random_rough"].noise_range = (0.01, 0.06)
+-        self.scene.terrain.terrain_generator.sub_terrains["random_rough"].noise_step = 0.01
+-
+-        self.events.push_robot = None
+-        self.events.add_base_mass.params["mass_distribution_params"] = (-1.0, 3.0)
+-        self.events.add_base_mass.params["asset_cfg"].body_names = "base"
+-        self.events.base_external_force_torque.params["asset_cfg"].body_names = "base"
+-        self.events.reset_robot_joints.params["position_range"] = (1.0, 1.0)
+-        self.events.reset_base.params = {
+-            "pose_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "yaw": (0.0, 0.0)},
+-            "velocity_range": {
+-                "x": (0.0, 0.0),
+-                "y": (0.0, 0.0),
+-                "z": (0.0, 0.0),
+-                "roll": (0.0, 0.0),
+-                "pitch": (0.0, 0.0),
+-                "yaw": (0.0, 0.0),
+-            },
+-        }
+-        self.events.base_com = None
+-
+-        # old: self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_foot"
+-        self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_1"
+-        self.rewards.feet_air_time.weight = 0.01
+-        self.rewards.undesired_contacts = None
+-        self.rewards.dof_torques_l2.weight = -0.0002
+-        self.rewards.track_lin_vel_xy_exp.weight = 1.5
+-        self.rewards.track_ang_vel_z_exp.weight = 0.75
+-        self.rewards.dof_acc_l2.weight = -2.5e-7
+-
+-        self.terminations.base_contact.params["sensor_cfg"].body_names = "base"
+-
+-
+-@configclass
+-class BennettQuadVelocityRoughEnvCfg_PLAY(BennettQuadVelocityRoughEnvCfg):
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.scene.num_envs = 50
+-        self.scene.env_spacing = 2.5
+-        self.scene.terrain.max_init_terrain_level = None
+-        if self.scene.terrain.terrain_generator is not None:
+-            self.scene.terrain.terrain_generator.num_rows = 5
+-            self.scene.terrain.terrain_generator.num_cols = 5
+-            self.scene.terrain.terrain_generator.curriculum = False
+-
+-        self.observations.policy.enable_corruption = False
+-        self.events.base_external_force_torque = None
+-        self.events.push_robot = None
+-
+-
+-BennettGo2RoughEnvCfg = BennettQuadVelocityRoughEnvCfg
+-BennettGo2RoughEnvCfg_PLAY = BennettQuadVelocityRoughEnvCfg_PLAY
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/__init__.py
+deleted file mode 100644
+index 21faa81..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/__init__.py
++++ /dev/null
+@@ -1,53 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-import gymnasium as gym
+-
+-from . import agents
+-
+-##
+-# Register Gym environments.
+-##
+-
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity1-Flat-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettQuadVelocityFlatEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityFlatPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity1-Flat-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettQuadVelocityFlatEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityFlatPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity1-Rough-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:BennettQuadVelocityRoughEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityRoughPPORunnerCfg",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-QuadVelocity1-Rough-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.rough_env_cfg:BennettQuadVelocityRoughEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettQuadVelocityRoughPPORunnerCfg",
+-    },
+-)
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/agents/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/agents/__init__.py
+deleted file mode 100644
+index a597dfa..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/agents/__init__.py
++++ /dev/null
+@@ -1,4 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+\ No newline at end of file
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/agents/rsl_rl_ppo_cfg.py
+deleted file mode 100644
+index d655814..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/agents/rsl_rl_ppo_cfg.py
++++ /dev/null
+@@ -1,55 +0,0 @@
+-# Copyright (c) 2022-2025, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from isaaclab.utils import configclass
+-
+-from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, RslRlPpoAlgorithmCfg
+-
+-
+-@configclass
+-class BennettQuadVelocityRoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+-    num_steps_per_env = 24
+-    max_iterations = 1500
+-    save_interval = 50
+-    experiment_name = "Bennett_quad_velocity1_rough"
+-    policy = RslRlPpoActorCriticCfg(
+-        init_noise_std=1.0,
+-        actor_obs_normalization=False,
+-        critic_obs_normalization=False,
+-        actor_hidden_dims=[512, 256, 128],
+-        critic_hidden_dims=[512, 256, 128],
+-        activation="elu",
+-    )
+-    algorithm = RslRlPpoAlgorithmCfg(
+-        value_loss_coef=1.0,
+-        use_clipped_value_loss=True,
+-        clip_param=0.2,
+-        entropy_coef=0.01,
+-        num_learning_epochs=5,
+-        num_mini_batches=4,
+-        learning_rate=1.0e-3,
+-        schedule="adaptive",
+-        gamma=0.99,
+-        lam=0.95,
+-        desired_kl=0.01,
+-        max_grad_norm=1.0,
+-    )
+-
+-
+-@configclass
+-class BennettQuadVelocityFlatPPORunnerCfg(BennettQuadVelocityRoughPPORunnerCfg):
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.max_iterations = 1000
+-        self.save_interval = 100
+-        self.experiment_name = "Bennett_quad_velocity1_flat"
+-        self.policy.actor_hidden_dims = [256, 256, 128]
+-        self.policy.critic_hidden_dims = [256, 256, 128]
+-
+-
+-PPORunnerCfg = BennettQuadVelocityFlatPPORunnerCfg
+-BennettGo2RoughPPORunnerCfg = BennettQuadVelocityRoughPPORunnerCfg
+-BennettGo2FlatPPORunnerCfg = BennettQuadVelocityFlatPPORunnerCfg
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/bennett_rl_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/bennett_rl_env_cfg.py
+deleted file mode 100644
+index 3ccc1c9..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/bennett_rl_env_cfg.py
++++ /dev/null
+@@ -1,7 +0,0 @@
+-"""Compatibility exports for the Bennett quadruped velocity tasks.
+-
+-The actual task configs live in ``rough_env_cfg.py`` and ``flat_env_cfg.py``.
+-"""
+-
+-from .flat_env_cfg import BennettQuadVelocityFlatEnvCfg, BennettQuadVelocityFlatEnvCfg_PLAY
+-from .rough_env_cfg import BennettQuadVelocityRoughEnvCfg, BennettQuadVelocityRoughEnvCfg_PLAY
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/flat_env_cfg.py
+deleted file mode 100644
+index 8c9e636..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/flat_env_cfg.py
++++ /dev/null
+@@ -1,52 +0,0 @@
+-from isaaclab.managers import RewardTermCfg as RewTerm
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.utils import configclass
+-
+-from . import mdp
+-from .rough_env_cfg import BennettQuadVelocityRoughEnvCfg
+-
+-
+-@configclass
+-class BennettQuadVelocityFlatEnvCfg(BennettQuadVelocityRoughEnvCfg):
+-    """Bennett quadruped velocity-tracking locomotion task on flat terrain."""
+-
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.rewards.flat_orientation_l2.weight = -2.5
+-        # 2026-06-30_20-38-20 used 0.05. Raise it for the reported foot-dragging behavior.
+-        self.rewards.feet_air_time.weight = 0.15
+-        self.rewards.feet_clearance = RewTerm(
+-            func=mdp.feet_clearance,
+-            weight=0.35,
+-            params={
+-                "command_name": "base_velocity",
+-                "target_height": 0.055,
+-                "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_1"),
+-                "asset_cfg": SceneEntityCfg("robot", body_names=".*_1"),
+-                "contact_threshold": 1.0,
+-                "command_threshold": 0.05,
+-            },
+-        )
+-
+-        self.scene.terrain.terrain_type = "plane"
+-        self.scene.terrain.terrain_generator = None
+-        self.scene.height_scanner = None
+-        self.observations.policy.height_scan = None
+-        self.curriculum.terrain_levels = None
+-
+-
+-@configclass
+-class BennettQuadVelocityFlatEnvCfg_PLAY(BennettQuadVelocityFlatEnvCfg):
+-    def __post_init__(self) -> None:
+-        super().__post_init__()
+-
+-        self.scene.num_envs = 50
+-        self.scene.env_spacing = 2.5
+-        self.observations.policy.enable_corruption = False
+-        self.events.base_external_force_torque = None
+-        self.events.push_robot = None
+-
+-
+-BennettGo2FlatEnvCfg = BennettQuadVelocityFlatEnvCfg
+-BennettGo2FlatEnvCfg_PLAY = BennettQuadVelocityFlatEnvCfg_PLAY
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/mdp/__init__.py
+deleted file mode 100644
+index 966d4a3..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/mdp/__init__.py
++++ /dev/null
+@@ -1,10 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-"""This sub-module contains the functions that are specific to the environment."""
+-
+-from isaaclab.envs.mdp import *  # noqa: F401, F403
+-
+-from .rewards import *  # noqa: F401, F403
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/mdp/rewards.py
+deleted file mode 100644
+index 43e5590..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/mdp/rewards.py
++++ /dev/null
+@@ -1,46 +0,0 @@
+-"""Custom MDP terms for Bennett quadruped velocity tasks."""
+-
+-from __future__ import annotations
+-
+-from typing import TYPE_CHECKING
+-
+-import torch
+-
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.sensors import ContactSensor
+-
+-if TYPE_CHECKING:
+-    from isaaclab.envs import ManagerBasedRLEnv
+-
+-
+-def feet_clearance(
+-    env: ManagerBasedRLEnv,
+-    command_name: str,
+-    target_height: float,
+-    sensor_cfg: SceneEntityCfg,
+-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+-    contact_threshold: float = 1.0,
+-    command_threshold: float = 0.05,
+-) -> torch.Tensor:
+-    """Reward swing feet for clearing the ground on flat terrain.
+-
+-    This term complements ``feet_air_time``: air-time encourages a foot to leave contact,
+-    while this term rewards the feet that are currently out of contact for reaching a
+-    useful height. It is disabled for near-zero velocity commands.
+-    """
+-
+-    asset = env.scene[asset_cfg.name]
+-    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+-
+-    contacts = (
+-        contact_sensor.data.net_forces_w_history[:, :, sensor_cfg.body_ids, :].norm(dim=-1).max(dim=1)[0]
+-        > contact_threshold
+-    )
+-    swing_feet = ~contacts
+-    foot_height = asset.data.body_pos_w[:, asset_cfg.body_ids, 2] - env.scene.env_origins[:, 2].unsqueeze(1)
+-    clearance = torch.clamp(foot_height / max(target_height, 1.0e-6), min=0.0, max=1.0)
+-
+-    swing_count = torch.clamp(torch.sum(swing_feet.float(), dim=1), min=1.0)
+-    reward = torch.sum(clearance * swing_feet.float(), dim=1) / swing_count
+-    moving = torch.norm(env.command_manager.get_command(command_name)[:, :2], dim=1) > command_threshold
+-    return reward * moving.float()
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/rough_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/rough_env_cfg.py
+deleted file mode 100644
+index 1609d58..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_velocity1/rough_env_cfg.py
++++ /dev/null
+@@ -1,120 +0,0 @@
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.utils import configclass
+-
+-from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import LocomotionVelocityRoughEnvCfg
+-
+-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V1
+-
+-
+-ACTIVE_JOINTS = [
+-    "FL_thigh",
+-    "FL_calf",
+-    "FR_thigh",
+-    "FR_calf",
+-    "RL_thigh",
+-    "RL_calf",
+-    "RR_thigh",
+-    "RR_calf",
+-]
+-
+-
+-@configclass
+-class BennettQuadVelocityRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
+-    """Bennett quadruped velocity-tracking locomotion task on rough terrain.
+-
+-    This is a velocity-command policy task. The policy outputs normalized joint-position actions for the eight
+-    actuated thigh/calf joints; Isaac Lab applies them through the Bennett DCMotorCfg PD actuator model. It is not a
+-    hardware MIT-command runner.
+-    """
+-
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.decimation = 4
+-        self.sim.dt = 1.0 / 200.0
+-
+-        self.scene.robot = BENNETT_CFG_V1.replace(prim_path="{ENV_REGEX_NS}/Robot")
+-        self.scene.height_scanner.prim_path = "{ENV_REGEX_NS}/Robot/base"
+-
+-        self.actions.joint_pos.joint_names = ACTIVE_JOINTS
+-        self.actions.joint_pos.scale = 0.25
+-
+-        # Match the flat run at logs/rsl_rl/Bennett_quad_velocity_flat/2026-06-30_20-38-20.
+-        self.commands.base_velocity.resampling_time_range = (10.0, 10.0)
+-        self.commands.base_velocity.heading_command = False
+-        self.commands.base_velocity.rel_standing_envs = 0.0
+-        self.commands.base_velocity.rel_heading_envs = 0.0
+-        self.commands.base_velocity.ranges.lin_vel_x = (0.08, 0.16)
+-        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
+-        self.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0)
+-
+-        # Sim2Real-oriented observation shape: no direct base linear velocity observation.
+-        # old: inherited LocomotionVelocityRoughEnvCfg policy.base_lin_vel.
+-        self.observations.policy.base_lin_vel = None
+-        self.observations.policy.joint_pos.params["asset_cfg"] = SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS)
+-        self.observations.policy.joint_vel.params["asset_cfg"] = SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS)
+-
+-        # Scale down rough terrains for Bennett's small body/leg dimensions.
+-        self.scene.terrain.terrain_generator.sub_terrains["boxes"].grid_height_range = (0.025, 0.1)
+-        self.scene.terrain.terrain_generator.sub_terrains["random_rough"].noise_range = (0.01, 0.06)
+-        self.scene.terrain.terrain_generator.sub_terrains["random_rough"].noise_step = 0.01
+-
+-        self.events.physics_material.params["static_friction_range"] = (0.8, 0.8)
+-        self.events.physics_material.params["dynamic_friction_range"] = (0.6, 0.6)
+-        self.events.physics_material.params["restitution_range"] = (0.0, 0.0)
+-        self.events.push_robot = None
+-        self.events.add_base_mass = None
+-        self.events.base_external_force_torque.params["asset_cfg"].body_names = "base"
+-        self.events.base_external_force_torque.params["force_range"] = (0.0, 0.0)
+-        self.events.base_external_force_torque.params["torque_range"] = (0.0, 0.0)
+-        self.events.reset_robot_joints.params["position_range"] = (1.0, 1.0)
+-        self.events.reset_base.params = {
+-            "pose_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "yaw": (0.0, 0.0)},
+-            "velocity_range": {
+-                "x": (0.0, 0.0),
+-                "y": (0.0, 0.0),
+-                "z": (0.0, 0.0),
+-                "roll": (0.0, 0.0),
+-                "pitch": (0.0, 0.0),
+-                "yaw": (0.0, 0.0),
+-            },
+-        }
+-        self.events.base_com = None
+-
+-        # old: self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_foot"
+-        self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_1"
+-        self.rewards.feet_air_time.weight = 0.05
+-        self.rewards.undesired_contacts = None
+-        self.rewards.dof_torques_l2.weight = -2.0e-5
+-        self.rewards.track_lin_vel_xy_exp.weight = 2.0
+-        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.10
+-        self.rewards.track_ang_vel_z_exp.weight = 0.5
+-        self.rewards.track_ang_vel_z_exp.params["std"] = 0.25
+-        self.rewards.lin_vel_z_l2.weight = -2.0
+-        self.rewards.ang_vel_xy_l2.weight = -0.3
+-        self.rewards.dof_acc_l2.weight = -2.5e-7
+-        self.rewards.action_rate_l2.weight = -0.02
+-
+-        self.terminations.base_contact.params["sensor_cfg"].body_names = "base"
+-
+-
+-@configclass
+-class BennettQuadVelocityRoughEnvCfg_PLAY(BennettQuadVelocityRoughEnvCfg):
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.scene.num_envs = 1
+-        self.scene.env_spacing = 2.5
+-        self.scene.terrain.max_init_terrain_level = None
+-        if self.scene.terrain.terrain_generator is not None:
+-            self.scene.terrain.terrain_generator.num_rows = 5
+-            self.scene.terrain.terrain_generator.num_cols = 5
+-            self.scene.terrain.terrain_generator.curriculum = False
+-
+-        self.observations.policy.enable_corruption = False
+-        self.events.base_external_force_torque = None
+-        self.events.push_robot = None
+-
+-
+-BennettGo2RoughEnvCfg = BennettQuadVelocityRoughEnvCfg
+-BennettGo2RoughEnvCfg_PLAY = BennettQuadVelocityRoughEnvCfg_PLAY
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl1/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl1/flat_env_cfg.py
+index d54e8dc..e8cc0e2 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl1/flat_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl1/flat_env_cfg.py
+@@ -1,5 +1,7 @@
+-"""Flat-ground Bennett crawl1 environment copied from the last known walking crawl baseline."""
+-# 基线来源：logs/rsl_rl/Bennett_quad_crawl_flat31/2026-07-01_13-38-58
++# 保留
++# 训练的还可以，真机迁移后，走的比较笨重，晃动比较大，需要进一步调参。
++
++
+ 
+ # 开头导入 Isaac Lab 的配置类、传感器、terrain、robot asset，以及本任务自己的 mdp。
+ import isaaclab.sim as sim_utils
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/__init__.py
+index f54b753..2d6a8be 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/__init__.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/__init__.py
+@@ -9,23 +9,23 @@ from . import agents
+ 
+ 
+ gym.register(
+-    id="Isaac-BennettRL-Flat-Crawl1-v0",
++    id="Isaac-BennettRL-Flat-Crawl2-v0",
+     entry_point="isaaclab.envs:ManagerBasedRLEnv",
+     disable_env_checker=True,
+     kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettCrawl1FlatEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettCrawl1FlatPPORunnerCfg",
++        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettCrawl2FlatEnvCfg",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettCrawl2FlatPPORunnerCfg",
+         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+     },
+ )
+ 
+ gym.register(
+-    id="Isaac-BennettRL-Flat-Crawl1-Play-v0",
++    id="Isaac-BennettRL-Flat-Crawl2-Play-v0",
+     entry_point="isaaclab.envs:ManagerBasedRLEnv",
+     disable_env_checker=True,
+     kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettCrawl1FlatEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettCrawl1FlatPPORunnerCfg",
++        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettCrawl2FlatEnvCfg_PLAY",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettCrawl2FlatPPORunnerCfg",
+         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+     },
+ )
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/agents/rsl_rl_ppo_cfg.py
+index d9ebac8..1e18ad2 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/agents/rsl_rl_ppo_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/agents/rsl_rl_ppo_cfg.py
+@@ -1,4 +1,4 @@
+-"""RSL-RL PPO configuration for Bennett crawl1."""
++"""RSL-RL PPO configuration for Bennett crawl2."""
+ 
+ from isaaclab.utils import configclass
+ 
+@@ -6,11 +6,11 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
+ 
+ 
+ @configclass
+-class BennettCrawl1FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
++class BennettCrawl2FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+     num_steps_per_env = 100          # 0.02s * 100 = 2.0s = 一个完整步态周期（0.5Hz）
+     max_iterations = 2000
+     save_interval = 50
+-    experiment_name = "quad_leg_xu/quad_leg_crawl1"
++    experiment_name = "quad_leg_xu/quad_leg_crawl2"
+     policy = RslRlPpoActorCriticCfg(
+         init_noise_std=1.0,          # 更高的初始探索噪声
+         actor_obs_normalization=False, # 观测已通过 clip/scale 归一化，不需要网络内再归一化
+@@ -35,4 +35,4 @@ class BennettCrawl1FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+     )
+ 
+ 
+-PPORunnerCfg = BennettCrawl1FlatPPORunnerCfg
++PPORunnerCfg = BennettCrawl2FlatPPORunnerCfg
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/flat_env_cfg.py
+index d54e8dc..c4c4718 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/flat_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/flat_env_cfg.py
+@@ -1,5 +1,4 @@
+-"""Flat-ground Bennett crawl1 environment copied from the last known walking crawl baseline."""
+-# 基线来源：logs/rsl_rl/Bennett_quad_crawl_flat31/2026-07-01_13-38-58
++# 走的效果比之前好些，但是脚底打滑，但是可能是刚度的问题，有点僵硬，所以改在4了
+ 
+ # 开头导入 Isaac Lab 的配置类、传感器、terrain、robot asset，以及本任务自己的 mdp。
+ import isaaclab.sim as sim_utils
+@@ -66,13 +65,13 @@ CRAWL_VX = 0.10 #定义前进速度目标
+ TARGET_BASE_HEIGHT = 0.32 #约束 base 高度，防止趴低后用撑杆式步态取巧
+ COMMAND_DEADBAND = 0.025  #速度绝对值小于该阈值时，训练成四脚站立不摆腿
+ STANDING_COMMAND_PROB = 0.35  #显式零速度采样比例：让 policy 学会“不按键=不动”
+-FRICTION_STATIC_RANGE = (0.6, 1.3)  #随机摩擦
+-FRICTION_DYNAMIC_RANGE = (0.5, 1.1)
+-BASE_MASS_SCALE_RANGE = (0.90, 1.10)    #成功 run 的随机 base 质量范围
+-BASE_COM_RANGE = {"x": (-0.02, 0.02), "y": (-0.02, 0.02), "z": (-0.01, 0.01)}
++FRICTION_STATIC_RANGE = (0.45, 1.60)  #随机摩擦
++FRICTION_DYNAMIC_RANGE = (0.40, 1.35)
++BASE_MASS_SCALE_RANGE = (0.85, 1.15)    #成功 run 的随机 base 质量范围上轻微加宽
++BASE_COM_RANGE = {"x": (-0.03, 0.03), "y": (-0.03, 0.03), "z": (-0.015, 0.015)}
+ # BASE_COM_RANGE = {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "z": (-0.02, 0.02)}
+-ACTUATOR_STIFFNESS_SCALE_RANGE = (0.80, 1.20)
+-ACTUATOR_DAMPING_SCALE_RANGE = (0.70, 1.30)
++ACTUATOR_STIFFNESS_SCALE_RANGE = (0.75, 1.25)
++ACTUATOR_DAMPING_SCALE_RANGE = (0.65, 1.40)
+ 
+ 
+ # Robot 配置
+@@ -301,8 +300,8 @@ class EventCfg: #重置配置
+         mode="reset",
+         params={
+             "asset_cfg": SceneEntityCfg("robot", body_names=BASE_BODY),
+-            "force_range": (-3.0, 3.0),
+-            "torque_range": (-0.5, 0.5),
++            "force_range": (-4.0, 4.0),
++            "torque_range": (-0.7, 0.7),
+         },
+     )
+ 
+@@ -310,14 +309,14 @@ class EventCfg: #重置配置
+         func=mdp.reset_root_state_uniform,
+         mode="reset",
+         params={
+-            "pose_range": {"x": (-0.03, 0.03), "y": (-0.03, 0.03), "yaw": (-0.10, 0.10)},
++            "pose_range": {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "yaw": (-0.12, 0.12)},
+             "velocity_range": {
+-                "x": (-0.05, 0.05),
+-                "y": (-0.05, 0.05),
++                "x": (-0.07, 0.07),
++                "y": (-0.07, 0.07),
+                 "z": (0.0, 0.0),
+                 "roll": (-0.05, 0.05),
+                 "pitch": (-0.05, 0.05),
+-                "yaw": (-0.05, 0.05),
++                "yaw": (-0.07, 0.07),
+             },
+         },
+     )
+@@ -327,7 +326,7 @@ class EventCfg: #重置配置
+         mode="reset",
+         params={
+             "asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True),
+-            "position_range": (-0.05, 0.05),  #小范围随机初始关节偏移，防止完全对称过拟合
++            "position_range": (-0.06, 0.06),  #小范围随机初始关节偏移，防止完全对称过拟合
+             "velocity_range": (0.0, 0.0),
+         },
+     )
+@@ -335,8 +334,8 @@ class EventCfg: #重置配置
+     push_robot = EventTerm( #训练中随机轻推，增加鲁棒性
+         func=mdp.push_by_setting_velocity,
+         mode="interval",
+-        params={"velocity_range": {"x": (-0.45, 0.45), "y": (-0.35, 0.35), "yaw": (-0.25, 0.25)}},
+-        interval_range_s=(6.0, 12.0),
++        params={"velocity_range": {"x": (-0.55, 0.55), "y": (-0.45, 0.45), "yaw": (-0.35, 0.35)}},
++        interval_range_s=(5.0, 10.0),
+     )
+ 
+ 
+@@ -452,11 +451,12 @@ class RewardsCfg:   #奖励配置
+     pitch_l1 = RewTerm(func=mdp.pitch_l1, weight=-5.0)   #俯仰重锤！10°→-0.87/步，15°→-1.29/步
+     base_ang_vel_xy = RewTerm(func=mdp.base_ang_vel_xy_l2, weight=-0.3)    #允许行走时轻微晃动
+     lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)     #不要上下乱跳
+-    lateral_yaw_vel = RewTerm(func=mdp.lateral_yaw_vel_l2, weight=-0.5)    #别横移/乱转
+-    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.02)  #适度平滑（太大会让腿不敢抬）
++    lateral_yaw_vel = RewTerm(func=mdp.lateral_yaw_vel_l2, weight=-1.0)    #别横移/乱转
++    straight_path_y = RewTerm(func=mdp.root_y_position_l2, weight=-1.0)    #约束世界 y 偏移，减少走着走着路线偏掉
++    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.04)  #适度平滑（太大会让腿不敢抬）
+     joint_vel = RewTerm(   #关节速度惩罚（减轻，不压制必要的快速摆腿）
+         func=mdp.joint_vel_l2,
+-        weight=-1.0e-3,
++        weight=-1.5e-3,
+         params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True)},
+     )
+     torques = RewTerm(  #别用太大力矩
+@@ -482,7 +482,7 @@ class TerminationsCfg:
+ 
+ 
+ @configclass
+-class BennettCrawl1FlatEnvCfg(ManagerBasedRLEnvCfg):
++class BennettCrawl2FlatEnvCfg(ManagerBasedRLEnvCfg):
+     """Flat crawl environment with scheduler-conditioned observations."""
+ 
+     scene: BennettQuadCrawlFlatSceneCfg = BennettQuadCrawlFlatSceneCfg(
+@@ -510,7 +510,7 @@ class BennettCrawl1FlatEnvCfg(ManagerBasedRLEnvCfg):
+ 
+ 
+ @configclass
+-class BennettCrawl1FlatEnvCfg_PLAY(BennettCrawl1FlatEnvCfg):
++class BennettCrawl2FlatEnvCfg_PLAY(BennettCrawl2FlatEnvCfg):
+     def __post_init__(self) -> None:
+         super().__post_init__()
+         self.scene.num_envs = 5
+@@ -520,5 +520,5 @@ class BennettCrawl1FlatEnvCfg_PLAY(BennettCrawl1FlatEnvCfg):
+ 
+ 
+ 
+-#  python .\scripts\rsl_rl\train.py --task Isaac-BennettRL-Flat-Crawl1-v0 --headless
+-#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-Flat-Crawl1-Play-v0 --video --keyboard --checkpoint
++#  python .\scripts\rsl_rl\train.py --task Isaac-BennettRL-Flat-Crawl2-v0 --headless
++#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-Flat-Crawl2-Play-v0 --video --keyboard --checkpoint 
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/mdp/rewards.py
+index 9f2e4af..092b196 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/mdp/rewards.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl2/mdp/rewards.py
+@@ -76,6 +76,16 @@ def lateral_yaw_vel_l2(
+     return torch.square(asset.data.root_lin_vel_b[:, 1]) + torch.square(asset.data.root_ang_vel_b[:, 2])
+ 
+ 
++def root_y_position_l2(
++    env: ManagerBasedRLEnv,
++    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
++) -> torch.Tensor:
++    """Penalize lateral world-position drift away from each env origin."""
++    asset: Articulation = env.scene[asset_cfg.name]
++    y_offset = asset.data.root_pos_w[:, 1] - env.scene.env_origins[:, 1]
++    return torch.square(y_offset)
++
++
+ def base_ang_vel_xy_l2(
+     env: ManagerBasedRLEnv,
+     asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/__init__.py
+index f54b753..061fff6 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/__init__.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/__init__.py
+@@ -9,23 +9,23 @@ from . import agents
+ 
+ 
+ gym.register(
+-    id="Isaac-BennettRL-Flat-Crawl1-v0",
++    id="Isaac-BennettRL-Flat-Crawl3-v0",
+     entry_point="isaaclab.envs:ManagerBasedRLEnv",
+     disable_env_checker=True,
+     kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettCrawl1FlatEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettCrawl1FlatPPORunnerCfg",
++        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettCrawl3FlatEnvCfg",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettCrawl3FlatPPORunnerCfg",
+         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+     },
+ )
+ 
+ gym.register(
+-    id="Isaac-BennettRL-Flat-Crawl1-Play-v0",
++    id="Isaac-BennettRL-Flat-Crawl3-Play-v0",
+     entry_point="isaaclab.envs:ManagerBasedRLEnv",
+     disable_env_checker=True,
+     kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettCrawl1FlatEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettCrawl1FlatPPORunnerCfg",
++        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettCrawl3FlatEnvCfg_PLAY",
++        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettCrawl3FlatPPORunnerCfg",
+         "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+     },
+ )
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/agents/rsl_rl_ppo_cfg.py
+index d9ebac8..c7d68e8 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/agents/rsl_rl_ppo_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/agents/rsl_rl_ppo_cfg.py
+@@ -1,4 +1,4 @@
+-"""RSL-RL PPO configuration for Bennett crawl1."""
++"""RSL-RL PPO configuration for Bennett crawl3."""
+ 
+ from isaaclab.utils import configclass
+ 
+@@ -6,11 +6,11 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
+ 
+ 
+ @configclass
+-class BennettCrawl1FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+-    num_steps_per_env = 100          # 0.02s * 100 = 2.0s = 一个完整步态周期（0.5Hz）
++class BennettCrawl3FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
++    num_steps_per_env = 300          # 150Hz 下 300 step = 2.0s = 一个完整步态周期（0.5Hz）
+     max_iterations = 2000
+     save_interval = 50
+-    experiment_name = "quad_leg_xu/quad_leg_crawl1"
++    experiment_name = "quad_leg_xu/quad_leg_crawl3"
+     policy = RslRlPpoActorCriticCfg(
+         init_noise_std=1.0,          # 更高的初始探索噪声
+         actor_obs_normalization=False, # 观测已通过 clip/scale 归一化，不需要网络内再归一化
+@@ -35,4 +35,4 @@ class BennettCrawl1FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+     )
+ 
+ 
+-PPORunnerCfg = BennettCrawl1FlatPPORunnerCfg
++PPORunnerCfg = BennettCrawl3FlatPPORunnerCfg
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/flat_env_cfg.py
+index d54e8dc..03c5687 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/flat_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/flat_env_cfg.py
+@@ -1,5 +1,4 @@
+-"""Flat-ground Bennett crawl1 environment copied from the last known walking crawl baseline."""
+-# 基线来源：logs/rsl_rl/Bennett_quad_crawl_flat31/2026-07-01_13-38-58
++# 相较于2，只把频率改成了150Hz，完全不行
+ 
+ # 开头导入 Isaac Lab 的配置类、传感器、terrain、robot asset，以及本任务自己的 mdp。
+ import isaaclab.sim as sim_utils
+@@ -66,13 +65,13 @@ CRAWL_VX = 0.10 #定义前进速度目标
+ TARGET_BASE_HEIGHT = 0.32 #约束 base 高度，防止趴低后用撑杆式步态取巧
+ COMMAND_DEADBAND = 0.025  #速度绝对值小于该阈值时，训练成四脚站立不摆腿
+ STANDING_COMMAND_PROB = 0.35  #显式零速度采样比例：让 policy 学会“不按键=不动”
+-FRICTION_STATIC_RANGE = (0.6, 1.3)  #随机摩擦
+-FRICTION_DYNAMIC_RANGE = (0.5, 1.1)
+-BASE_MASS_SCALE_RANGE = (0.90, 1.10)    #成功 run 的随机 base 质量范围
+-BASE_COM_RANGE = {"x": (-0.02, 0.02), "y": (-0.02, 0.02), "z": (-0.01, 0.01)}
++FRICTION_STATIC_RANGE = (0.45, 1.60)  #随机摩擦
++FRICTION_DYNAMIC_RANGE = (0.40, 1.35)
++BASE_MASS_SCALE_RANGE = (0.85, 1.15)    #成功 run 的随机 base 质量范围上轻微加宽
++BASE_COM_RANGE = {"x": (-0.03, 0.03), "y": (-0.03, 0.03), "z": (-0.015, 0.015)}
+ # BASE_COM_RANGE = {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "z": (-0.02, 0.02)}
+-ACTUATOR_STIFFNESS_SCALE_RANGE = (0.80, 1.20)
+-ACTUATOR_DAMPING_SCALE_RANGE = (0.70, 1.30)
++ACTUATOR_STIFFNESS_SCALE_RANGE = (0.75, 1.25)
++ACTUATOR_DAMPING_SCALE_RANGE = (0.65, 1.40)
+ 
+ 
+ # Robot 配置
+@@ -301,8 +300,8 @@ class EventCfg: #重置配置
+         mode="reset",
+         params={
+             "asset_cfg": SceneEntityCfg("robot", body_names=BASE_BODY),
+-            "force_range": (-3.0, 3.0),
+-            "torque_range": (-0.5, 0.5),
++            "force_range": (-4.0, 4.0),
++            "torque_range": (-0.7, 0.7),
+         },
+     )
+ 
+@@ -310,14 +309,14 @@ class EventCfg: #重置配置
+         func=mdp.reset_root_state_uniform,
+         mode="reset",
+         params={
+-            "pose_range": {"x": (-0.03, 0.03), "y": (-0.03, 0.03), "yaw": (-0.10, 0.10)},
++            "pose_range": {"x": (-0.04, 0.04), "y": (-0.04, 0.04), "yaw": (-0.12, 0.12)},
+             "velocity_range": {
+-                "x": (-0.05, 0.05),
+-                "y": (-0.05, 0.05),
++                "x": (-0.07, 0.07),
++                "y": (-0.07, 0.07),
+                 "z": (0.0, 0.0),
+                 "roll": (-0.05, 0.05),
+                 "pitch": (-0.05, 0.05),
+-                "yaw": (-0.05, 0.05),
++                "yaw": (-0.07, 0.07),
+             },
+         },
+     )
+@@ -327,7 +326,7 @@ class EventCfg: #重置配置
+         mode="reset",
+         params={
+             "asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True),
+-            "position_range": (-0.05, 0.05),  #小范围随机初始关节偏移，防止完全对称过拟合
++            "position_range": (-0.06, 0.06),  #小范围随机初始关节偏移，防止完全对称过拟合
+             "velocity_range": (0.0, 0.0),
+         },
+     )
+@@ -335,8 +334,8 @@ class EventCfg: #重置配置
+     push_robot = EventTerm( #训练中随机轻推，增加鲁棒性
+         func=mdp.push_by_setting_velocity,
+         mode="interval",
+-        params={"velocity_range": {"x": (-0.45, 0.45), "y": (-0.35, 0.35), "yaw": (-0.25, 0.25)}},
+-        interval_range_s=(6.0, 12.0),
++        params={"velocity_range": {"x": (-0.55, 0.55), "y": (-0.45, 0.45), "yaw": (-0.35, 0.35)}},
++        interval_range_s=(5.0, 10.0),
+     )
+ 
+ 
+@@ -452,11 +451,12 @@ class RewardsCfg:   #奖励配置
+     pitch_l1 = RewTerm(func=mdp.pitch_l1, weight=-5.0)   #俯仰重锤！10°→-0.87/步，15°→-1.29/步
+     base_ang_vel_xy = RewTerm(func=mdp.base_ang_vel_xy_l2, weight=-0.3)    #允许行走时轻微晃动
+     lin_vel_z = RewTerm(func=mdp.lin_vel_z_l2, weight=-0.5)     #不要上下乱跳
+-    lateral_yaw_vel = RewTerm(func=mdp.lateral_yaw_vel_l2, weight=-0.5)    #别横移/乱转
+-    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.02)  #适度平滑（太大会让腿不敢抬）
++    lateral_yaw_vel = RewTerm(func=mdp.lateral_yaw_vel_l2, weight=-1.0)    #别横移/乱转
++    straight_path_y = RewTerm(func=mdp.root_y_position_l2, weight=-1.0)    #约束世界 y 偏移，减少走着走着路线偏掉
++    action_rate = RewTerm(func=mdp.action_rate_l2, weight=-0.04)  #适度平滑（太大会让腿不敢抬）
+     joint_vel = RewTerm(   #关节速度惩罚（减轻，不压制必要的快速摆腿）
+         func=mdp.joint_vel_l2,
+-        weight=-1.0e-3,
++        weight=-1.5e-3,
+         params={"asset_cfg": SceneEntityCfg("robot", joint_names=ACTUATED_JOINTS, preserve_order=True)},
+     )
+     torques = RewTerm(  #别用太大力矩
+@@ -482,7 +482,7 @@ class TerminationsCfg:
+ 
+ 
+ @configclass
+-class BennettCrawl1FlatEnvCfg(ManagerBasedRLEnvCfg):
++class BennettCrawl3FlatEnvCfg(ManagerBasedRLEnvCfg):
+     """Flat crawl environment with scheduler-conditioned observations."""
+ 
+     scene: BennettQuadCrawlFlatSceneCfg = BennettQuadCrawlFlatSceneCfg(
+@@ -497,7 +497,7 @@ class BennettCrawl1FlatEnvCfg(ManagerBasedRLEnvCfg):
+ 
+     def __post_init__(self) -> None:
+         self.decimation = 4
+-        self.sim.dt = 0.005
++        self.sim.dt = 1.0 / 600.0
+         self.episode_length_s = 20.0
+         self.viewer.eye = (1.8, -2.4, 1.2)
+         self.viewer.lookat = (0.0, 0.0, 0.2)
+@@ -510,7 +510,7 @@ class BennettCrawl1FlatEnvCfg(ManagerBasedRLEnvCfg):
+ 
+ 
+ @configclass
+-class BennettCrawl1FlatEnvCfg_PLAY(BennettCrawl1FlatEnvCfg):
++class BennettCrawl3FlatEnvCfg_PLAY(BennettCrawl3FlatEnvCfg):
+     def __post_init__(self) -> None:
+         super().__post_init__()
+         self.scene.num_envs = 5
+@@ -520,5 +520,5 @@ class BennettCrawl1FlatEnvCfg_PLAY(BennettCrawl1FlatEnvCfg):
+ 
+ 
+ 
+-#  python .\scripts\rsl_rl\train.py --task Isaac-BennettRL-Flat-Crawl1-v0 --headless
+-#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-Flat-Crawl1-Play-v0 --video --keyboard --checkpoint
++#  python .\scripts\rsl_rl\train.py --task Isaac-BennettRL-Flat-Crawl3-v0 --headless
++#  python .\scripts\rsl_rl\play.py --task Isaac-BennettRL-Flat-Crawl3-Play-v0 --video --keyboard --checkpoint
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/mdp/rewards.py
+index 9f2e4af..092b196 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/mdp/rewards.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_crawl3/mdp/rewards.py
+@@ -76,6 +76,16 @@ def lateral_yaw_vel_l2(
+     return torch.square(asset.data.root_lin_vel_b[:, 1]) + torch.square(asset.data.root_ang_vel_b[:, 2])
+ 
+ 
++def root_y_position_l2(
++    env: ManagerBasedRLEnv,
++    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
++) -> torch.Tensor:
++    """Penalize lateral world-position drift away from each env origin."""
++    asset: Articulation = env.scene[asset_cfg.name]
++    y_offset = asset.data.root_pos_w[:, 1] - env.scene.env_origins[:, 1]
++    return torch.square(y_offset)
++
++
+ def base_ang_vel_xy_l2(
+     env: ManagerBasedRLEnv,
+     asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/__init__.py
+deleted file mode 100644
+index 6be16e8..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/__init__.py
++++ /dev/null
+@@ -1,31 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers.
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-import gymnasium as gym
+-
+-from . import agents
+-
+-
+-gym.register(
+-    id="Isaac-BennettRL-Flat-Walk3-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettWalk3FlatEnvCfg",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettWalk3FlatPPORunnerCfg",
+-        "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+-    },
+-)
+-
+-gym.register(
+-    id="Isaac-BennettRL-Flat-Walk3-Play-v0",
+-    entry_point="isaaclab.envs:ManagerBasedRLEnv",
+-    disable_env_checker=True,
+-    kwargs={
+-        "env_cfg_entry_point": f"{__name__}.flat_env_cfg:BennettWalk3FlatEnvCfg_PLAY",
+-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:BennettWalk3FlatPPORunnerCfg",
+-        "skrl_cfg_entry_point": f"{agents.__name__}:skrl_flat_ppo_cfg.yaml",
+-    },
+-)
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/agents/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/agents/__init__.py
+deleted file mode 100644
+index 8b13789..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/agents/__init__.py
++++ /dev/null
+@@ -1 +0,0 @@
+-
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/agents/rsl_rl_ppo_cfg.py
+deleted file mode 100644
+index 1df9391..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/agents/rsl_rl_ppo_cfg.py
++++ /dev/null
+@@ -1,39 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers.
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from isaaclab.utils import configclass
+-from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, RslRlPpoAlgorithmCfg
+-
+-
+-@configclass
+-class BennettWalk3FlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
+-    num_steps_per_env = 24
+-    max_iterations = 50000
+-    save_interval = 50
+-    experiment_name = "quad_leg_xu/quad_leg_walk3"
+-
+-    policy = RslRlPpoActorCriticCfg(
+-        init_noise_std=1.0,
+-        actor_obs_normalization=False,
+-        critic_obs_normalization=False,
+-        actor_hidden_dims=[128, 128, 128],
+-        critic_hidden_dims=[128, 128, 128],
+-        activation="elu",
+-    )
+-
+-    algorithm = RslRlPpoAlgorithmCfg(
+-        value_loss_coef=1.0,
+-        use_clipped_value_loss=True,
+-        clip_param=0.2,
+-        entropy_coef=0.005,
+-        num_learning_epochs=5,
+-        num_mini_batches=4,
+-        learning_rate=1.0e-3,
+-        schedule="adaptive",
+-        gamma=0.99,
+-        lam=0.95,
+-        desired_kl=0.01,
+-        max_grad_norm=1.0,
+-    )
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/flat_env_cfg.py
+deleted file mode 100644
+index 524be04..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/flat_env_cfg.py
++++ /dev/null
+@@ -1,227 +0,0 @@
+-# Copyright (c) 2022-2026, The Isaac Lab Project Developers.
+-# All rights reserved.
+-#
+-# SPDX-License-Identifier: BSD-3-Clause
+-
+-from isaaclab.managers import ObservationTermCfg as ObsTerm
+-from isaaclab.managers import RewardTermCfg as RewTerm
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.managers import TerminationTermCfg as DoneTerm
+-from isaaclab.utils import configclass
+-from isaaclab_tasks.manager_based.locomotion.velocity.velocity_env_cfg import LocomotionVelocityRoughEnvCfg
+-import isaaclab_tasks.manager_based.locomotion.velocity.mdp as mdp
+-
+-from bennett_rl.assets.robots.bennett import BENNETT_CFG_V1
+-
+-from .mdp import rewards as walk_rewards
+-
+-
+-ACTIVE_JOINTS = [
+-    "FL_thigh",
+-    "FL_calf",
+-    "FR_thigh",
+-    "FR_calf",
+-    "RL_thigh",
+-    "RL_calf",
+-    "RR_thigh",
+-    "RR_calf",
+-]
+-
+-FOOT_BODIES = ["FL_1", "FR_1", "RL_1", "RR_1"]
+-WALK_CYCLE_TIME = 2.2
+-WALK_DUTY_FACTOR = 0.76
+-WALK_SWING_OFFSETS = (0.25, 0.75, 0.0, 0.5)
+-WALK_TARGET_AIR_TIME = WALK_CYCLE_TIME * (1.0 - WALK_DUTY_FACTOR)
+-
+-
+-@configclass
+-class BennettWalk3FlatEnvCfg(LocomotionVelocityRoughEnvCfg):
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        robot_cfg = BENNETT_CFG_V1.copy()
+-        robot_cfg.prim_path = "{ENV_REGEX_NS}/Robot"
+-        robot_cfg.init_state.pos = (0.0, 0.0, 0.35)
+-        robot_cfg.actuators["base_legs"].effort_limit = 10.0
+-        robot_cfg.actuators["base_legs"].saturation_effort = 12.0
+-        robot_cfg.actuators["base_legs"].stiffness = 36.0
+-        robot_cfg.actuators["base_legs"].damping = 2.8
+-        self.scene.robot = robot_cfg
+-
+-        self.decimation = 4
+-        self.actions.joint_pos.joint_names = ACTIVE_JOINTS
+-        self.actions.joint_pos.scale = 0.22
+-        self.actions.joint_pos.use_default_offset = True
+-        self.actions.joint_pos.preserve_order = False
+-
+-        self.observations.policy.base_lin_vel = None
+-        self.observations.policy.joint_pos.params["asset_cfg"] = SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS)
+-        self.observations.policy.joint_vel.params["asset_cfg"] = SceneEntityCfg("robot", joint_names=ACTIVE_JOINTS)
+-        self.observations.policy.gait_phase = ObsTerm(
+-            func=walk_rewards.gait_phase_sin_cos,
+-            params={"cycle_time": WALK_CYCLE_TIME},
+-        )
+-
+-        self.scene.terrain.terrain_type = "plane"
+-        self.scene.terrain.terrain_generator = None
+-        self.scene.terrain.max_init_terrain_level = None
+-        self.scene.height_scanner = None
+-        self.observations.policy.height_scan = None
+-        self.curriculum.terrain_levels = None
+-
+-        self._configure_events()
+-        self._configure_commands()
+-        self._configure_rewards()
+-        self._configure_terminations()
+-
+-    def _configure_events(self):
+-        self.events.physics_material.params["static_friction_range"] = (0.65, 1.05)
+-        self.events.physics_material.params["dynamic_friction_range"] = (0.45, 0.85)
+-        self.events.physics_material.params["restitution_range"] = (0.0, 0.0)
+-        self.events.add_base_mass.params["asset_cfg"].body_names = "base"
+-        self.events.add_base_mass.params["mass_distribution_params"] = (-0.8, 2.0)
+-        self.events.base_com.params["asset_cfg"].body_names = "base"
+-        self.events.base_com.params["com_range"] = {
+-            "x": (-0.015, 0.015),
+-            "y": (-0.015, 0.015),
+-            "z": (-0.005, 0.005),
+-        }
+-        self.events.base_external_force_torque.params["asset_cfg"].body_names = "base"
+-        self.events.base_external_force_torque.params["force_range"] = (0.0, 0.0)
+-        self.events.base_external_force_torque.params["torque_range"] = (-0.0, 0.0)
+-        self.events.push_robot.interval_range_s = (12.0, 18.0)
+-        self.events.push_robot.params["velocity_range"] = {
+-            "x": (-0.10, 0.10),
+-            "y": (-0.08, 0.08),
+-        }
+-        self.events.reset_base.params = {
+-            "pose_range": {"x": (0, 0), "y": (0, 0), "yaw": (0.0, 0.0)},
+-            "velocity_range": {
+-                "x": (0.0, 0.0),
+-                "y": (0.0, 0.0),
+-                "z": (0.0, 0.0),
+-                "roll": (0.0, 0.0),
+-                "pitch": (0.0, 0.0),
+-                "yaw": (0.0, 0.0),
+-            },
+-        }
+-        self.events.reset_robot_joints.params["position_range"] = (1.0, 1.0)
+-        self.events.reset_robot_joints.params["velocity_range"] = (0.0, 0.0)
+-
+-    def _configure_commands(self):
+-        self.commands.base_velocity.resampling_time_range = (10.0, 10.0)
+-        self.commands.base_velocity.debug_vis = True
+-        self.commands.base_velocity.heading_command = True
+-        self.commands.base_velocity.heading_control_stiffness = 0.4
+-        self.commands.base_velocity.rel_standing_envs = 0.02
+-        self.commands.base_velocity.rel_heading_envs = 1.0
+-        self.commands.base_velocity.ranges.lin_vel_x = (0.08, 0.18)
+-        self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
+-        self.commands.base_velocity.ranges.ang_vel_z = (0.0, 0.0)
+-        self.commands.base_velocity.ranges.heading = (0.0, 0.0)
+-
+-    def _configure_rewards(self):
+-        self.rewards.track_lin_vel_xy_exp.weight = 1.6
+-        self.rewards.track_lin_vel_xy_exp.params["std"] = 0.18
+-        self.rewards.track_ang_vel_z_exp.weight = 0.75
+-        self.rewards.track_ang_vel_z_exp.params["std"] = 0.5
+-        self.rewards.lin_vel_z_l2.weight = -2.0
+-        self.rewards.ang_vel_xy_l2.weight = -0.10
+-        self.rewards.dof_torques_l2.weight = -0.0003
+-        self.rewards.dof_acc_l2.weight = -1.0e-6
+-        self.rewards.action_rate_l2.weight = -0.06
+-        self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*_1"
+-        self.rewards.feet_air_time.params["threshold"] = 0.12
+-        self.rewards.feet_air_time.weight = 0.0
+-        self.rewards.undesired_contacts = RewTerm(
+-            func=mdp.undesired_contacts,
+-            weight=-1.0,
+-            params={
+-                "sensor_cfg": SceneEntityCfg("contact_forces", body_names=[".*_2", ".*_thigh", ".*_calf"]),
+-                "threshold": 1.0,
+-            },
+-        )
+-        self.rewards.flat_orientation_l2.weight = -2.5
+-        self.rewards.pitch_l1 = RewTerm(
+-            func=walk_rewards.pitch_l1,
+-            weight=-5.0,
+-        )
+-        self.rewards.dof_pos_limits.weight = 0.0
+-        self.rewards.base_height_l2 = RewTerm(
+-            func=mdp.base_height_l2,
+-            weight=-7.0,
+-            params={"target_height": 0.36},
+-        )
+-        self.rewards.feet_slide = RewTerm(
+-            func=mdp.feet_slide,
+-            weight=-0.12,
+-            params={
+-                "sensor_cfg": SceneEntityCfg("contact_forces", body_names=".*_1"),
+-                "asset_cfg": SceneEntityCfg("robot", body_names=".*_1"),
+-            },
+-        )
+-        self.rewards.walk_contact_phase = RewTerm(
+-            func=walk_rewards.walk_contact_phase,
+-            weight=1.4,
+-            params={
+-                "command_name": "base_velocity",
+-                "sensor_cfg": SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True),
+-                "cycle_time": WALK_CYCLE_TIME,
+-                "duty_factor": WALK_DUTY_FACTOR,
+-                "swing_offsets": WALK_SWING_OFFSETS,
+-                "contact_force_threshold": 1.0,
+-            },
+-        )
+-        self.rewards.walk_swing_foot_clearance = RewTerm(
+-            func=walk_rewards.walk_swing_foot_clearance,
+-            weight=0.45,
+-            params={
+-                "command_name": "base_velocity",
+-                "sensor_cfg": SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True),
+-                "asset_cfg": SceneEntityCfg("robot", body_names=FOOT_BODIES, preserve_order=True),
+-                "cycle_time": WALK_CYCLE_TIME,
+-                "duty_factor": WALK_DUTY_FACTOR,
+-                "swing_offsets": WALK_SWING_OFFSETS,
+-                "target_height": 0.065,
+-                "contact_force_threshold": 1.0,
+-            },
+-        )
+-        self.rewards.foot_lateral_position_l2 = RewTerm(
+-            func=walk_rewards.foot_lateral_position_l2,
+-            weight=-0.9,
+-            params={
+-                "asset_cfg": SceneEntityCfg("robot", body_names=FOOT_BODIES, preserve_order=True),
+-                "target_abs_y": 0.25,
+-                "target_y_by_foot": (0.25, -0.25, 0.28, -0.28),
+-            },
+-        )
+-        self.rewards.walk_air_time_target_l2 = RewTerm(
+-            func=walk_rewards.feet_air_time_target_l2,
+-            weight=-1.4,
+-            params={
+-                "command_name": "base_velocity",
+-                "sensor_cfg": SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True),
+-                "target_air_time": WALK_TARGET_AIR_TIME,
+-            },
+-        )
+-
+-    def _configure_terminations(self):
+-        self.terminations.base_contact.params["sensor_cfg"].body_names = "base"
+-        self.terminations.base_contact.params["threshold"] = 1.0
+-        self.terminations.root_height = DoneTerm(
+-            func=mdp.root_height_below_minimum,
+-            params={"minimum_height": 0.22},
+-        )
+-
+-
+-@configclass
+-class BennettWalk3FlatEnvCfg_PLAY(BennettWalk3FlatEnvCfg):
+-    def __post_init__(self):
+-        super().__post_init__()
+-
+-        self.scene.num_envs = 5
+-        self.scene.env_spacing = 2.5
+-        self.observations.policy.enable_corruption = False
+-        self.events.base_com = None
+-        self.events.base_external_force_torque = None
+-        self.events.push_robot = None
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/mdp/__init__.py
+deleted file mode 100644
+index 8b13789..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/mdp/__init__.py
++++ /dev/null
+@@ -1 +0,0 @@
+-
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/mdp/rewards.py
+deleted file mode 100644
+index 7fe9f46..0000000
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_xu/quad_leg_walk3/mdp/rewards.py
++++ /dev/null
+@@ -1,137 +0,0 @@
+-from __future__ import annotations
+-
+-import math
+-from typing import TYPE_CHECKING
+-
+-import torch
+-
+-from isaaclab.managers import SceneEntityCfg
+-from isaaclab.sensors import ContactSensor
+-from isaaclab.utils.math import quat_apply_inverse, yaw_quat
+-
+-if TYPE_CHECKING:
+-    from isaaclab.envs import ManagerBasedRLEnv
+-
+-
+-def _phase(env: ManagerBasedRLEnv, cycle_time: float | torch.Tensor) -> torch.Tensor:
+-    return torch.remainder(env.episode_length_buf.float() * env.step_dt / cycle_time, 1.0)
+-
+-
+-def _desired_walk_stance(
+-    env: ManagerBasedRLEnv,
+-    cycle_time: float,
+-    duty_factor: float,
+-    swing_offsets: tuple[float, float, float, float],
+-) -> torch.Tensor:
+-    phase = _phase(env, cycle_time)
+-    swing_fraction = 1.0 - duty_factor
+-    offsets = torch.tensor(swing_offsets, device=phase.device, dtype=phase.dtype)
+-    local_phase = torch.remainder(phase[:, None] - offsets[None, :], 1.0)
+-    desired_swing = local_phase < swing_fraction
+-    return ~desired_swing
+-
+-
+-def gait_phase_sin_cos(env: ManagerBasedRLEnv, cycle_time: float) -> torch.Tensor:
+-    phase = _phase(env, cycle_time)
+-    return torch.stack((torch.sin(2.0 * math.pi * phase), torch.cos(2.0 * math.pi * phase)), dim=1)
+-
+-
+-def walk_contact_phase(
+-    env: ManagerBasedRLEnv,
+-    command_name: str,
+-    sensor_cfg: SceneEntityCfg,
+-    cycle_time: float,
+-    duty_factor: float,
+-    swing_offsets: tuple[float, float, float, float],
+-    contact_force_threshold: float,
+-) -> torch.Tensor:
+-    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+-    contact_force = contact_sensor.data.net_forces_w_history[:, :, sensor_cfg.body_ids, :].norm(dim=-1).max(dim=1)[0]
+-    in_contact = contact_force > contact_force_threshold
+-    desired_stance = _desired_walk_stance(env, cycle_time, duty_factor, swing_offsets)
+-
+-    contact_match = torch.where(desired_stance, in_contact, ~in_contact)
+-    reward = contact_match.float().mean(dim=1)
+-
+-    command = env.command_manager.get_command(command_name)
+-    reward *= (torch.norm(command[:, :2], dim=1) > 0.05).float()
+-    return reward
+-
+-
+-def walk_swing_foot_clearance(
+-    env: ManagerBasedRLEnv,
+-    command_name: str,
+-    sensor_cfg: SceneEntityCfg,
+-    asset_cfg: SceneEntityCfg,
+-    cycle_time: float,
+-    duty_factor: float,
+-    swing_offsets: tuple[float, float, float, float],
+-    target_height: float,
+-    contact_force_threshold: float,
+-) -> torch.Tensor:
+-    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+-    contact_force = contact_sensor.data.net_forces_w_history[:, :, sensor_cfg.body_ids, :].norm(dim=-1).max(dim=1)[0]
+-    in_contact = contact_force > contact_force_threshold
+-    desired_swing = ~_desired_walk_stance(env, cycle_time, duty_factor, swing_offsets)
+-
+-    asset = env.scene[asset_cfg.name]
+-    foot_height = asset.data.body_pos_w[:, asset_cfg.body_ids, 2] - env.scene.env_origins[:, 2].unsqueeze(1)
+-    clearance = torch.clamp(foot_height / target_height, min=0.0, max=1.0)
+-    valid_swing = desired_swing & ~in_contact
+-    reward = torch.sum(clearance * valid_swing.float(), dim=1) / torch.clamp(
+-        torch.sum(desired_swing.float(), dim=1), min=1.0
+-    )
+-
+-    command = env.command_manager.get_command(command_name)
+-    reward *= (torch.norm(command[:, :2], dim=1) > 0.05).float()
+-    return reward
+-
+-
+-def feet_air_time_target_l2(
+-    env: ManagerBasedRLEnv,
+-    command_name: str,
+-    sensor_cfg: SceneEntityCfg,
+-    target_air_time: float,
+-) -> torch.Tensor:
+-    contact_sensor: ContactSensor = env.scene.sensors[sensor_cfg.name]
+-    first_contact = contact_sensor.compute_first_contact(env.step_dt)[:, sensor_cfg.body_ids].float()
+-    last_air_time = contact_sensor.data.last_air_time[:, sensor_cfg.body_ids]
+-
+-    air_time_error = torch.square(last_air_time - target_air_time)
+-    penalty = torch.sum(air_time_error * first_contact, dim=1) / torch.clamp(
+-        torch.sum(first_contact, dim=1), min=1.0
+-    )
+-
+-    command = env.command_manager.get_command(command_name)
+-    penalty *= (torch.norm(command[:, :2], dim=1) > 0.05).float()
+-    return penalty
+-
+-
+-def pitch_l1(
+-    env: ManagerBasedRLEnv,
+-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+-) -> torch.Tensor:
+-    """Penalize base pitch (forward/backward tilt) using L1 norm.
+-
+-    L1 gives a stronger signal than L2 for moderate pitch,
+-    which helps keep the body level during slow walking.
+-    """
+-    asset = env.scene[asset_cfg.name]
+-    return torch.abs(asset.data.projected_gravity_b[:, 0])
+-
+-
+-def foot_lateral_position_l2(
+-    env: ManagerBasedRLEnv,
+-    asset_cfg: SceneEntityCfg,
+-    target_abs_y: float,
+-    target_y_by_foot: tuple[float, float, float, float] | None = None,
+-) -> torch.Tensor:
+-    asset = env.scene[asset_cfg.name]
+-    rel_pos_w = asset.data.body_pos_w[:, asset_cfg.body_ids, :] - asset.data.root_pos_w[:, None, :]
+-    yaw = yaw_quat(asset.data.root_quat_w)[:, None, :].expand(-1, rel_pos_w.shape[1], -1)
+-    rel_pos_b = quat_apply_inverse(yaw.reshape(-1, 4), rel_pos_w.reshape(-1, 3)).reshape_as(rel_pos_w)
+-
+-    if target_y_by_foot is None:
+-        target_y_by_foot = (target_abs_y, -target_abs_y, target_abs_y, -target_abs_y)
+-    target_y = torch.tensor(target_y_by_foot, device=rel_pos_b.device, dtype=rel_pos_b.dtype)
+-    return torch.sum(torch.square(rel_pos_b[:, :, 1] - target_y), dim=1)

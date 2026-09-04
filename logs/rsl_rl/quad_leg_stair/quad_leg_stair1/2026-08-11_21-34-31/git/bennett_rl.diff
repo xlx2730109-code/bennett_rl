@@ -1,0 +1,148 @@
+--- git status ---
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/README.md
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/flat_env_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/__init__.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/rewards.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_gravel/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_stair/
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/README.md b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/README.md
+index 71edfed..794d46d 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/README.md
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/README.md
+@@ -24,9 +24,11 @@ or PPO configuration.
+   varies from `0.68` to `0.60`, and swing height is `0.045 m`.
+ - At the `0.20 m/s` command midpoint the schedule is `0.85 Hz`, about 15%
+   slower and 18% longer per cycle than the previous `1.00 Hz` schedule.
+-- A body-frame front/rear stance-width penalty allows `0.40/0.39 m` (neutral
+-  is about `0.36 m`) and keeps a live gradient across larger unsafe spreads.
+-  It does not prescribe individual footholds.
++- Every foot uses the same body-frame outward soft boundary of `0.23 m`:
++  roughly the measured `0.18 m` neutral half-width plus a `0.05 m` dynamic
++  margin. The interior has zero cost; each `0.05 m` of excess is normalized
++  before squaring, so unsafe splay is strongly penalized without terminating
++  an episode or prescribing an exact foothold.
+ - A worst-swing-foot clearance shortfall term requires every scheduled foot
+   to reach at least 75% of the existing smooth `0.045 m` profile. This closes
+   the mean-reward loophole where one diagonal foot could remain planted while
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/flat_env_cfg.py
+index 16eddfe..7cefdf7 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/flat_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/flat_env_cfg.py
+@@ -373,17 +373,19 @@ class QuadLegSlope4FlatEnvCfg(LocomotionVelocityRoughEnvCfg):
+                 **GAIT_PARAMS,
+             },
+         )
+-        self.rewards.feet_lateral_stance_width_excess_l2 = RewTerm(
+-            func=mdp.feet_lateral_stance_width_excess_l2,
+-            weight=-6.0,
++        self.rewards.feet_lateral_boundary_excess_l2 = RewTerm(
++            func=mdp.feet_lateral_boundary_excess_l2,
++            weight=-0.25,
+             params={
+                 "asset_cfg": foot_cfg,
+-                # Body-frame front/rear pair widths. Neutral measurements are
+-                # about 0.36 m; the margin preserves uphill balance correction.
+-                "max_pair_width": (0.40, 0.39),
+-                # Keep the gradient active across the observed ~0.55 m front
+-                # stance instead of saturating after only 0.10 m of excess.
+-                "max_excess": 0.25,
++                # All four feet use one body-frame outward boundary. The
++                # measured neutral half-width is about 0.18 m; add the
++                # user-selected 0.05 m dynamic margin.
++                "max_outward_y": 0.23,
++                # Normalize each 0.05 m of excess before squaring so a large
++                # violation is expensive while the boundary interior is free.
++                "penalty_band": 0.05,
++                "max_normalized_excess": 4.0,
+             },
+         )
+         self.rewards.minimum_support_contacts = RewTerm(
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/__init__.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/__init__.py
+index 96bd42b..61b1a16 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/__init__.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/__init__.py
+@@ -23,7 +23,7 @@ from .rewards import (
+     base_height_above_feet_l2,
+     commanded_straight_lateral_yaw_vel_l2,
+     commanded_yaw_error_l2,
+-    feet_lateral_stance_width_excess_l2,
++    feet_lateral_boundary_excess_l2,
+     minimum_support_contacts_l2,
+     moving_touchdown_impact_l2,
+     trot_contact_match,
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/rewards.py
+index 4d5829d..1c48b51 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/rewards.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_slope/quad_leg_slope4/mdp/rewards.py
+@@ -529,20 +529,28 @@ def trot_stance_feet_slide(
+     return torch.clamp(torch.sum(slide, dim=1), max=float(max_value))
+ 
+ 
+-def feet_lateral_stance_width_excess_l2(
++def feet_lateral_boundary_excess_l2(
+     env: ManagerBasedRLEnv,
+     asset_cfg: SceneEntityCfg,
+-    max_pair_width: tuple[float, float],
+-    max_excess: float,
++    max_outward_y: float,
++    penalty_band: float,
++    max_normalized_excess: float,
+ ) -> torch.Tensor:
+-    """Penalize excessive front/rear stance width in the robot body frame.
++    """Apply one strong outward soft boundary to all four body-frame feet.
+ 
+-    Pair width directly catches a single foot splaying outward without forcing
+-    this linkage's asymmetric neutral footholds to individual target positions.
++    The admissible region has exactly zero cost. Beyond the common boundary,
++    the normalized quadratic cost grows rapidly but remains bounded for PPO
++    numerical stability.
+     """
+ 
+-    if len(asset_cfg.body_ids) != 4 or len(max_pair_width) != 2:
+-        raise ValueError("Expected FL, FR, RL, RR feet and front/rear width limits.")
++    if len(asset_cfg.body_ids) != 4:
++        raise ValueError("Expected ordered FL, FR, RL, RR foot bodies.")
++    if float(max_outward_y) <= 0.0:
++        raise ValueError("max_outward_y must be positive.")
++    if float(penalty_band) <= 0.0:
++        raise ValueError("penalty_band must be positive.")
++    if float(max_normalized_excess) <= 0.0:
++        raise ValueError("max_normalized_excess must be positive.")
+ 
+     asset: Articulation = env.scene[asset_cfg.name]
+     foot_pos_w = asset.data.body_pos_w[:, asset_cfg.body_ids]
+@@ -558,15 +566,14 @@ def feet_lateral_stance_width_excess_l2(
+         relative_pos_w.reshape(-1, 3),
+     ).reshape(num_envs, num_feet, 3)
+ 
+-    front_width = torch.abs(foot_pos_b[:, 0, 1] - foot_pos_b[:, 1, 1])
+-    rear_width = torch.abs(foot_pos_b[:, 2, 1] - foot_pos_b[:, 3, 1])
+-    pair_width = torch.stack((front_width, rear_width), dim=1)
+-    limits = foot_pos_b.new_tensor(max_pair_width)
+-    excess = torch.clamp(
+-        torch.relu(pair_width - limits),
+-        max=float(max_excess),
++    # Ordered feet are FL, FR, RL, RR: left is +Y and right is -Y.
++    outward_sign = foot_pos_b.new_tensor((1.0, -1.0, 1.0, -1.0))
++    outward_y = foot_pos_b[:, :, 1] * outward_sign
++    normalized_excess = torch.clamp(
++        torch.relu(outward_y - float(max_outward_y)) / float(penalty_band),
++        max=float(max_normalized_excess),
+     )
+-    return torch.sum(torch.square(excess), dim=1)
++    return torch.sum(torch.square(normalized_excess), dim=1)
+ 
+ 
+ def minimum_support_contacts_l2(

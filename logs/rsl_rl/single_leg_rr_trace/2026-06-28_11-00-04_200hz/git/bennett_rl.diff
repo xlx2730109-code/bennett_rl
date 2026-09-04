@@ -1,0 +1,286 @@
+--- git status ---
+On branch master
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	deleted:    "Notes/\346\226\207\344\273\266\345\244\271\347\273\223\346\236\204.md"
+	modified:   scripts/rsl_rl/__pycache__/cli_args.cpython-311.pyc
+	modified:   scripts/rsl_rl/__pycache__/play.cpython-311.pyc
+	modified:   scripts/rsl_rl/__pycache__/train.cpython-311.pyc
+	modified:   scripts/rsl_rl/play.py
+	modified:   scripts/rsl_rl/train.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.A_xu/
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git "a/Notes/\346\226\207\344\273\266\345\244\271\347\273\223\346\236\204.md" "b/Notes/\346\226\207\344\273\266\345\244\271\347\273\223\346\236\204.md"
+deleted file mode 100644
+index 58a752b..0000000
+--- "a/Notes/\346\226\207\344\273\266\345\244\271\347\273\223\346\236\204.md"
++++ /dev/null
+@@ -1,86 +0,0 @@
+-# Bennett RL 文件夹结构
+-
+-```text
+-bennett_rl/
+-  README.md                                  # isaaclab --new 默认说明
+-  pyproject.toml                             # ruff/pyright 等仓库工具配置
+-  .gitignore                                 # Git 忽略规则
+-  .vscode/
+-    settings.json                            # env_isaaclab、Pylance 路径、文件隐藏
+-    extensions.json                          # 推荐 VS Code 扩展
+-    tasks.json                               # VS Code task
+-    tools/setup_vscode.py                    # VS Code/Isaac 路径辅助脚本
+-  Notes/
+-    文件夹结构.md                             # 当前文件，项目结构速查
+-  scripts/
+-    list_envs.py                             # 列出已注册任务
+-    zero_agent.py                            # 零动作测试环境创建
+-    random_agent.py                          # 随机动作测试 action/scene
+-    rsl_rl/
+-      train.py                               # RSL-RL 训练入口
+-      play.py                                # RSL-RL 播放、导出入口
+-      cli_args.py                            # RSL-RL 命令行参数
+-      eval_bennett_torque.py                 # 四足策略扭矩/功率/足端统计
+-      plot_bennett_torque_eval.py            # torque eval 结果画图
+-  source/
+-    bennett_rl/
+-      setup.py                               # pip install -e source/bennett_rl
+-      pyproject.toml                         # Python 包构建配置
+-      config/extension.toml                  # Omniverse/Isaac extension 信息和依赖
+-      docs/CHANGELOG.rst                     # 默认 changelog
+-      bennett_rl/
+-        __init__.py                          # 导入 tasks 和 UI example
+-        ui_extension_example.py              # Omniverse UI 示例，RL 基本不用
+-        assets/
+-          __init__.py                        # assets 包入口
+-          robots/
+-            __init__.py                      # robot config 导出
+-            bennett.py                       # Bennett ArticulationCfg、初始姿态、actuator
+-            Urdf_Bennett_1/
+-              urdf/Urdf_Bennett_1.usd        # Isaac Lab 实际加载的机器人模型
+-              urdf/Urdf_Bennett_1.urdf       # 原始 URDF
+-              urdf/Urdf_Bennett_1.csv        # CAD/URDF 导出信息
+-              meshes/*.STL                   # 机器人几何
+-              config/                        # URDF 导出附带配置
+-              launch/                        # ROS/Gazebo 导出附带文件，训练基本不用
+-        tasks/
+-          __init__.py                        # 自动导入任务包，触发 gym.register
+-          manager_based/
+-            __init__.py                      # manager_based 包入口
+-            bennett_rl/                      # isaaclab --new 模板任务，当前仍接近 cartpole 示例
+-            single_leg/                      # Bennett RR 单腿固定基座轨迹跟踪
+-              __init__.py                    # 注册 Isaac-Bennett-SingleLeg-RR-Trace-v0
+-              bennett_rl_env_cfg.py          # 单腿场景、动作、观测、奖励、终止
+-              agents/
+-                __init__.py                  # agents 包入口
+-                rsl_rl_ppo_cfg.py            # 单腿 PPO 配置
+-              mdp/
+-                __init__.py                  # 导出官方 MDP + 自定义 MDP
+-                rewards.py                   # 单腿参考轨迹、reward、自定义 action term
+-            quad_velocity/                   # Bennett 四足速度指令 locomotion
+-              __init__.py                    # 注册 Flat/Rough/Play 任务 ID
+-              flat_env_cfg.py                # 平地速度任务
+-              rough_env_cfg.py               # 粗糙地形速度任务
+-              bennett_rl_env_cfg.py          # 兼容导出，实际配置在 flat/rough
+-              agents/rsl_rl_ppo_cfg.py       # 四足速度 PPO 配置
+-              mdp/rewards.py                 # 当前占位，主要用官方 velocity MDP
+-            quad_track/                      # 预留：四足轨迹跟随，当前未完整迁移
+-```
+-
+-## 任务和机器人配置关系
+-
+-```text
+-assets/robots/bennett.py                     # 只定义机器人和任务专用默认姿态
+-tasks/manager_based/*/*_env_cfg.py           # 决定这个任务用哪个机器人配置
+-tasks/manager_based/*/__init__.py            # 决定 --task 的任务名
+-tasks/manager_based/*/agents/rsl_rl_ppo_cfg.py # 决定训练超参数和日志目录名
+-```
+-
+-`bennett.py` 里建议用“任务专用别名”固定姿态，例如：
+-
+-```python
+-BENNETT_SINGLE_LEG_RR_TRACE_CFG = BENNETT_CFG_V3
+-BENNETT_QUAD_VELOCITY_CFG = BENNETT_CFG_V3
+-```
+-
+-这样每个任务只导入自己的配置，不需要每次训练前手动改 `BENNETT_CFG`。
+diff --git a/scripts/rsl_rl/__pycache__/cli_args.cpython-311.pyc b/scripts/rsl_rl/__pycache__/cli_args.cpython-311.pyc
+index 49f3b9d..57fd359 100644
+Binary files a/scripts/rsl_rl/__pycache__/cli_args.cpython-311.pyc and b/scripts/rsl_rl/__pycache__/cli_args.cpython-311.pyc differ
+diff --git a/scripts/rsl_rl/__pycache__/play.cpython-311.pyc b/scripts/rsl_rl/__pycache__/play.cpython-311.pyc
+index 5f502eb..203f898 100644
+Binary files a/scripts/rsl_rl/__pycache__/play.cpython-311.pyc and b/scripts/rsl_rl/__pycache__/play.cpython-311.pyc differ
+diff --git a/scripts/rsl_rl/__pycache__/train.cpython-311.pyc b/scripts/rsl_rl/__pycache__/train.cpython-311.pyc
+index b05216d..d96b29e 100644
+Binary files a/scripts/rsl_rl/__pycache__/train.cpython-311.pyc and b/scripts/rsl_rl/__pycache__/train.cpython-311.pyc differ
+diff --git a/scripts/rsl_rl/play.py b/scripts/rsl_rl/play.py
+index 59292f9..89b0a10 100644
+--- a/scripts/rsl_rl/play.py
++++ b/scripts/rsl_rl/play.py
+@@ -16,7 +16,18 @@ import cli_args  # isort: skip
+ # add argparse arguments
+ parser = argparse.ArgumentParser(description="Train an RL agent with RSL-RL.")
+ parser.add_argument("--video", action="store_true", default=False, help="Record videos during training.")
+-parser.add_argument("--video_length", type=int, default=200, help="Length of the recorded video (in steps).")
++parser.add_argument(
++    "--video_length",
++    type=int,
++    default=None,
++    help="Length of the recorded video in environment steps. Overrides --video_seconds when set.",
++)
++parser.add_argument(
++    "--video_seconds",
++    type=float,
++    default=20.0,
++    help="Length of each recorded video in simulated seconds when --video_length is not set.",
++)
+ parser.add_argument(
+     "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations."
+ )
+@@ -226,6 +237,12 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
+ 
+     # wrap for video recording
+     if args_cli.video:
++        if args_cli.video_length is None:
++            args_cli.video_length = max(1, int(round(args_cli.video_seconds / dt)))
++            print(
++                f"[INFO] Auto video_length={args_cli.video_length} steps "
++                f"for {args_cli.video_seconds:g}s videos (step_dt={dt})."
++            )
+         video_kwargs = {
+             "video_folder": os.path.join(log_dir, "videos", "play"),
+             "step_trigger": lambda step: step == 0,
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py
+index a4b30b2..4b62925 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/agents/rsl_rl_ppo_cfg.py
+@@ -11,8 +11,8 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
+ @configclass
+ class BennettSingleLegTracePPORunnerCfg(RslRlOnPolicyRunnerCfg):
+     num_steps_per_env = 24
+-    max_iterations = 800
+-    save_interval = 50
++    max_iterations = 1500
++    save_interval = 100
+     experiment_name = "single_leg_rr_trace"
+     policy = RslRlPpoActorCriticCfg(
+         init_noise_std=0.5,
+@@ -42,7 +42,7 @@ class BennettSingleLegTracePPORunnerCfg(RslRlOnPolicyRunnerCfg):
+ class BennettSingleLegTrace50HzPPORunnerCfg(BennettSingleLegTracePPORunnerCfg):
+     """PPO config for the 50 Hz single-leg trace task."""
+ 
+-    experiment_name = "single_leg_rr_trace_50hz"   
++    experiment_name = "single_leg_rr_trace"   
+ 
+ 
+ @configclass
+@@ -54,7 +54,8 @@ class BennettSingleLegTrace250HzPPORunnerCfg(BennettSingleLegTracePPORunnerCfg):
+     """
+ 
+     num_steps_per_env = 120
+-    experiment_name = "single_leg_rr_trace_250hz"
++    # experiment_name = "single_leg_rr_trace_250hz"
++    experiment_name = "single_leg_rr_trace"
+ 
+ 
+ PPORunnerCfg = BennettSingleLegTrace50HzPPORunnerCfg
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py
+index 1b74772..6550fe5 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/single_leg_rr_trace/bennett_rl_env_cfg.py
+@@ -81,7 +81,7 @@ class ActionsCfg: # RR_thigh/RR_calf 两个动作，带限速
+         controlled_joint_names=RR_TRACE_JOINTS,
+         hold_joint_names=ACTIVE_LEG_JOINTS,
+         scale=math.radians(20.0),
+-        max_joint_speed=math.radians(35.0),
++        max_joint_speed=math.radians(60.0),
+     )
+ 
+ 
+@@ -133,7 +133,7 @@ class EventCfg: # reset 腿关节
+ class RewardsCfg:   #作用：生成Bennett机器人的奖励配置：tracking、速度、action_rate、torque
+     """Rewards for smooth RR single-leg reference tracking."""
+ 
+-    alive = RewTerm(func=mdp.is_alive, weight=0.1)
++    alive = RewTerm(func=mdp.is_alive, weight=0.1)  #
+     track_reference = RewTerm(
+         func=mdp.single_leg_track_reference_exp,
+         weight=5.0,
+@@ -158,9 +158,8 @@ class TerminationsCfg: # 只按时间结束
+ 
+     time_out = DoneTerm(func=mdp.time_out, time_out=True)
+ 
+-
+ @configclass
+-class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 默认 50Hz，老入口
++class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 默认 50Hz，老入口，作用是生成Bennett机器人的环境配置
+     scene: SingleLegTraceSceneCfg = SingleLegTraceSceneCfg(num_envs=4096, env_spacing=1.5, clone_in_fabric=False)  
+     observations: ObservationsCfg = ObservationsCfg()
+     actions: ActionsCfg = ActionsCfg()
+@@ -170,11 +169,21 @@ class BennettSingleLegTraceEnvCfg(ManagerBasedRLEnvCfg): # 默认 50Hz，老入
+     terminations: TerminationsCfg = TerminationsCfg()
+ 
+     def __post_init__(self) -> None:
+-        self.decimation = 4
++        # self.decimation = 6 #50Hz
++        # self.sim.dt = 1.0 / 300 #50Hz
++
++        # self.decimation = 5 #100Hz
++        # self.sim.dt = 1.0 / 500 #100Hz
++
++        # self.decimation = 4 #150Hz
++        # self.sim.dt = 1.0 / 600 #150Hz
++
++        self.decimation = 3 #200Hz
++        self.sim.dt = 1.0 / 600 #200Hz
++
+         self.episode_length_s = 8.0
+         self.viewer.eye = (1.8, -2.4, 1.2)
+         self.viewer.lookat = (0.0, 0.0, 0.2)
+-        self.sim.dt = 1.0 / 200.0
+         self.sim.render_interval = self.decimation
+ 
+ 
+@@ -198,7 +207,7 @@ class BennettSingleLegTrace250HzEnvCfg(BennettSingleLegTraceEnvCfg):  # 明确 2
+ class BennettSingleLegTraceEnvCfg_PLAY(BennettSingleLegTrace50HzEnvCfg):
+     def __post_init__(self) -> None:
+         super().__post_init__()
+-        self.scene.num_envs = 16
++        self.scene.num_envs = 1
+         self.scene.env_spacing = 1.5
+ 
+ 
+@@ -212,14 +221,15 @@ class BennettSingleLegTrace50HzEnvCfg_PLAY(BennettSingleLegTraceEnvCfg_PLAY):
+ class BennettSingleLegTrace250HzEnvCfg_PLAY(BennettSingleLegTrace250HzEnvCfg):
+     def __post_init__(self) -> None:
+         super().__post_init__()
+-        self.scene.num_envs = 16
++        self.scene.num_envs = 1
+         self.scene.env_spacing = 1.5
+ 
+ 
+ 
+ # python .\scripts\zero_agent.py --task=Isaac-Bennett-SingleLeg-RR-Trace-50Hz-v0 --num_envs=8
+-
+-
++# python .\scripts\rsl_rl\train.py --task=Isaac-Bennett-SingleLeg-RR-Trace-50Hz-v0 --headless
++# python .\scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-Play-v0 --video --checkpoint
++# tensorboard --logdir
+ 
+ 
+ 
+@@ -242,4 +252,4 @@ class BennettSingleLegTrace250HzEnvCfg_PLAY(BennettSingleLegTrace250HzEnvCfg):
+ # 播放版本
+ #   BennettSingleLegTraceEnvCfg_PLAY
+ #   BennettSingleLegTrace50HzEnvCfg_PLAY
+-#   BennettSingleLegTrace250HzEnvCfg_PLAY
+\ No newline at end of file
++#   BennettSingleLegTrace250HzEnvCfg_PLAY
