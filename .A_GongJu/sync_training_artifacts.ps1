@@ -1,3 +1,14 @@
+# 训练结果同步工具：
+# 扫描 logs/rsl_rl/
+# 每个训练目录只选择编号最大的 model_*.pt
+# 排除其他中间 checkpoint
+# 加入视频、TensorBoard、YAML、diff、exported/policy.pt、ONNX
+# 不改文件名、不移动文件、不删除本地模型
+# 不会自动执行 commit 和 push
+
+
+
+
 param(
     [string]$LogsRoot = "logs/rsl_rl"
 )

@@ -12,6 +12,7 @@ from isaaclab.app import AppLauncher
 
 # local imports
 import cli_args  # isort: skip
+from endpoint_trajectory_export import export_endpoint_trajectory  # isort: skip
 
 # add argparse arguments
 parser = argparse.ArgumentParser(description="Train an RL agent with RSL-RL.")
@@ -25,8 +26,8 @@ parser.add_argument(
 parser.add_argument(
     "--video_seconds",
     type=float,
-    default=20.0,
-    help="Length of each recorded video in simulated seconds when --video_length is not set.",
+    default=30.0,
+    help="Length of each recorded video in simulated seconds when --video_length is not set. Defaults to 30 seconds.",
 )
 parser.add_argument(
     "--video_output_dir",
@@ -51,6 +52,13 @@ parser.add_argument(
     type=str,
     default=None,
     help="Exact robot body used by --endpoint_trail. Defaults to RR_foot for V4, otherwise RR_2.",
+)
+parser.add_argument(
+    "--endpoint_bodies",
+    type=str,
+    nargs="+",
+    default=None,
+    help="One or more exact robot bodies to draw with separate coloured trails.",
 )
 parser.add_argument(
     "--endpoint_trail_points",
@@ -301,9 +309,12 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     raw_env = env.unwrapped
 
     endpoint_robot = None
-    endpoint_marker = None
-    endpoint_body_id = None
-    endpoint_trail: list[torch.Tensor] = []
+    endpoint_markers: list[VisualizationMarkers] = []
+    endpoint_body_ids: list[int] = []
+    endpoint_trails: list[list[torch.Tensor]] = []
+    endpoint_trajectory_samples: list[tuple[float, int, torch.Tensor]] = []
+    endpoint_trajectory_segment = 0
+    endpoint_output_dir = log_dir
     endpoint_trail_stride = args_cli.endpoint_trail_stride
     if args_cli.endpoint_trail:
         if raw_env.num_envs != 1:
@@ -318,52 +329,66 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             raise ValueError("Endpoint marker radii must be greater than zero.")
 
         endpoint_robot = raw_env.scene["robot"]
-        endpoint_body_name = args_cli.endpoint_body
-        if endpoint_body_name is None:
-            endpoint_body_name = "RR_foot" if "V4-50Hz" in args_cli.task else "RR_2"
-        endpoint_body_ids, resolved_endpoint_body_names = endpoint_robot.find_bodies(
-            [endpoint_body_name], preserve_order=True
-        )
-        if len(endpoint_body_ids) != 1:
-            raise RuntimeError(
-                f"Failed to resolve endpoint body '{endpoint_body_name}': {resolved_endpoint_body_names}"
-            )
-        endpoint_body_id = endpoint_body_ids[0]
+        if args_cli.endpoint_body is not None and args_cli.endpoint_bodies is not None:
+            raise ValueError("Use either --endpoint_body or --endpoint_bodies, not both.")
+        endpoint_body_names = args_cli.endpoint_bodies
+        if endpoint_body_names is None:
+            endpoint_body_name = args_cli.endpoint_body
+            if endpoint_body_name is None:
+                endpoint_body_name = "RR_foot" if "V4-50Hz" in args_cli.task else "RR_2"
+            endpoint_body_names = [endpoint_body_name]
 
-        marker_cfg = POSITION_GOAL_MARKER_CFG.copy()
-        marker_cfg.prim_path = "/Visuals/RslRlEndpointTrail"
-        marker_cfg.markers["target_far"].radius = args_cli.endpoint_trail_radius
-        marker_cfg.markers["target_far"].visual_material = sim_utils.PreviewSurfaceCfg(
-            diffuse_color=(0.0, 1.0, 0.0)
+        resolved_body_ids, resolved_endpoint_body_names = endpoint_robot.find_bodies(
+            endpoint_body_names, preserve_order=True
         )
-        marker_cfg.markers["target_near"].radius = args_cli.endpoint_radius
-        marker_cfg.markers["target_near"].visual_material = sim_utils.PreviewSurfaceCfg(
-            diffuse_color=(0.0, 1.0, 0.0)
+        if len(resolved_body_ids) != len(endpoint_body_names):
+            raise RuntimeError(
+                f"Failed to resolve all endpoint bodies {endpoint_body_names}: {resolved_endpoint_body_names}"
+            )
+        endpoint_body_ids = list(resolved_body_ids)
+        endpoint_trails = [[] for _ in endpoint_body_ids]
+
+        trail_colours = (
+            (0.0, 1.0, 0.0),
+            (0.0, 0.55, 1.0),
+            (1.0, 0.75, 0.0),
+            (1.0, 0.0, 0.65),
         )
-        endpoint_marker = VisualizationMarkers(marker_cfg)
+        for body_index, _ in enumerate(endpoint_body_ids):
+            colour = trail_colours[body_index % len(trail_colours)]
+            marker_cfg = POSITION_GOAL_MARKER_CFG.copy()
+            marker_cfg.prim_path = f"/Visuals/RslRlEndpointTrail/Body{body_index}"
+            marker_cfg.markers["target_far"].radius = args_cli.endpoint_trail_radius
+            marker_cfg.markers["target_far"].visual_material = sim_utils.PreviewSurfaceCfg(diffuse_color=colour)
+            marker_cfg.markers["target_near"].radius = args_cli.endpoint_radius
+            marker_cfg.markers["target_near"].visual_material = sim_utils.PreviewSurfaceCfg(diffuse_color=colour)
+            endpoint_markers.append(VisualizationMarkers(marker_cfg))
         print(
-            f"[INFO] Enabled endpoint trail: body={resolved_endpoint_body_names[0]}, "
+            f"[INFO] Enabled endpoint trails: bodies={resolved_endpoint_body_names}, "
             f"points={args_cli.endpoint_trail_points}, stride={endpoint_trail_stride}."
         )
 
     # wrap for video recording
     if args_cli.video:
         if args_cli.video_length is None:
-            args_cli.video_length = max(1, int(round(args_cli.video_seconds / dt)))
+            # RecordVideo omits the initial wrapper step, so add one step to obtain
+            # the requested number of output frames (for example, 1500 frames at 50 Hz for 30 s).
+            args_cli.video_length = max(1, int(round(args_cli.video_seconds / dt)) + 1)
             print(
                 f"[INFO] Auto video_length={args_cli.video_length} steps "
                 f"for {args_cli.video_seconds:g}s videos (step_dt={dt})."
             )
+        endpoint_output_dir = (
+            os.path.abspath(args_cli.video_output_dir)
+            if args_cli.video_output_dir is not None
+            else os.path.join(
+                log_dir,
+                "videos",
+                f"play_with_trail_{int(round(1.0 / dt))}hz" if args_cli.endpoint_trail else "play",
+            )
+        )
         video_kwargs = {
-            "video_folder": (
-                os.path.abspath(args_cli.video_output_dir)
-                if args_cli.video_output_dir is not None
-                else os.path.join(
-                    log_dir,
-                    "videos",
-                    f"play_with_trail_{int(round(1.0 / dt))}hz" if args_cli.endpoint_trail else "play",
-                )
-            ),
+            "video_folder": endpoint_output_dir,
             "step_trigger": lambda step: step == 0,
             "video_length": args_cli.video_length,
             "fps": int(1 / dt),
@@ -392,20 +417,33 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             command_term.is_heading_env[:] = False
 
     def _update_endpoint_trail(step_index: int, dones: torch.Tensor | None = None):
-        if endpoint_robot is None or endpoint_marker is None or endpoint_body_id is None:
+        nonlocal endpoint_trajectory_segment
+        if endpoint_robot is None or not endpoint_markers or not endpoint_body_ids:
             return
         if dones is not None and bool(torch.any(dones).item()):
-            endpoint_trail.clear()
+            for endpoint_trail in endpoint_trails:
+                endpoint_trail.clear()
+            endpoint_trajectory_segment += 1
 
-        endpoint_pos_w = endpoint_robot.data.body_pos_w[:, endpoint_body_id].clone()
-        if step_index % endpoint_trail_stride == 0:
-            endpoint_trail.append(endpoint_pos_w)
-            del endpoint_trail[: max(0, len(endpoint_trail) - args_cli.endpoint_trail_points)]
+        endpoint_positions_w = endpoint_robot.data.body_pos_w[0, endpoint_body_ids].clone()
+        endpoint_trajectory_samples.append(
+            (step_index * dt, endpoint_trajectory_segment, endpoint_positions_w.detach().cpu())
+        )
 
-        marker_positions = torch.cat([*endpoint_trail, endpoint_pos_w], dim=0)
-        marker_indices = torch.zeros(marker_positions.shape[0], device=endpoint_robot.device, dtype=torch.long)
-        marker_indices[-1] = 1
-        endpoint_marker.visualize(marker_positions, marker_indices=marker_indices)
+        for endpoint_position_w, endpoint_marker, endpoint_trail in zip(
+            endpoint_positions_w, endpoint_markers, endpoint_trails, strict=True
+        ):
+            endpoint_pos_w = endpoint_position_w.unsqueeze(0)
+            if step_index % endpoint_trail_stride == 0:
+                endpoint_trail.append(endpoint_pos_w)
+                del endpoint_trail[: max(0, len(endpoint_trail) - args_cli.endpoint_trail_points)]
+
+            marker_positions = torch.cat([*endpoint_trail, endpoint_pos_w], dim=0)
+            marker_indices = torch.zeros(
+                marker_positions.shape[0], device=endpoint_robot.device, dtype=torch.long
+            )
+            marker_indices[-1] = 1
+            endpoint_marker.visualize(marker_positions, marker_indices=marker_indices)
 
     print(f"[INFO]: Loading model checkpoint from: {resume_path}")
     # load previously trained model
@@ -472,6 +510,13 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         sleep_time = dt - (time.time() - start_time)
         if (args_cli.real_time or args_cli.video) and sleep_time > 0:
             time.sleep(sleep_time)
+
+    if endpoint_trajectory_samples:
+        csv_path, html_path = export_endpoint_trajectory(
+            endpoint_output_dir, resolved_endpoint_body_names, endpoint_trajectory_samples
+        )
+        print(f"[INFO] Exported endpoint trajectory CSV: {csv_path}")
+        print(f"[INFO] Exported interactive 3-D trajectory: {html_path}")
 
     # close the simulator
     env.close()

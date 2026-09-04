@@ -24,7 +24,7 @@ from . import mdp
 RR_TRACE_JOINTS = ["RR_thigh", "RR_calf"]  
 ACTIVE_LEG_JOINTS = [
     "FL_thigh",
-    "FL_calf",
+    "FL_calf", #  左前小腿
     "FR_thigh",
     "FR_calf",
     "RL_thigh",
