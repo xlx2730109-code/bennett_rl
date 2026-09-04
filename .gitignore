@@ -55,7 +55,11 @@ _build
 
 # RL-Games
 **/runs/*
-**/logs/*
+# Keep new checkpoints, exported policies, configs, and source diffs under logs.
+# Exclude only bulky playback videos and TensorBoard event streams.
+**/logs/**/videos/
+**/logs/**/*.mp4
+**/logs/**/events.out.tfevents.*
 **/recordings/*
 
 # Pre-Trained Checkpoints
