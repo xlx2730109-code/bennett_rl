@@ -1,0 +1,179 @@
+<mujoco model="bennett_3">
+  <compiler angle="radian" meshdir="meshes/"/>
+
+  <!-- 500Hz 物理步进,Newton 求解器保证并联闭环稳定 -->
+  <option timestep="0.002" iterations="50" solver="Newton" tolerance="1e-10">
+    <flag energy="disable" contact="enable"/>
+  </option>
+
+  <default>
+    <joint damping="0.001" armature="0.01" frictionloss="0.05" limited="true"/>
+    <geom contype="1" conaffinity="15" condim="3" solref="0.005 1" friction="0.9 0.2 0.2" group="1"/>
+    <motor ctrllimited="true"/>
+    <default class="leg_joint_param">
+      <joint range="-3.14 3.14" stiffness="0"/>
+    </default>
+  </default>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="120" elevation="-20"/>
+  </visual>
+
+  <asset>
+    <mesh name="base" file="base.STL"/>
+    <mesh name="FL_thigh" file="FL_thigh.STL"/><mesh name="FL_calf" file="FL_calf.STL"/>
+    <mesh name="FL_1" file="FL_1.STL"/><mesh name="FL_2" file="FL_2.STL"/>
+    <mesh name="FR_thigh" file="FR_thigh.STL"/><mesh name="FR_calf" file="FR_calf.STL"/>
+    <mesh name="FR_1" file="FR_1.STL"/><mesh name="FR_2" file="FR_2.STL"/>
+    <mesh name="RL_thigh" file="RL_thigh.STL"/><mesh name="RL_calf" file="RL_calf.STL"/>
+    <mesh name="RL_1" file="RL_1.STL"/><mesh name="RL_2" file="RL_2.STL"/>
+    <mesh name="RR_thigh" file="RR_thigh.STL"/><mesh name="RR_calf" file="RR_calf.STL"/>
+    <mesh name="RR_1" file="RR_1.STL"/><mesh name="RR_2" file="RR_2.STL"/>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4"
+             rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="1 1" reflectance="0.2"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
+    <geom name="floor" size="0 0 0.25" type="plane" material="groundplane"/>
+
+    <body name="base" pos="0 0 0.32" quat="1 0 0 0">
+      <inertial pos="-0.210715 -0.0680962 -0.0135514" quat="-3.40516e-05 0.707107 2.27661e-05 0.707107" mass="2.23805" diaginertia="0.00523971 0.00367854 0.00272898"/>
+      <site name="imu" size="0.01" pos="0 0 0" quat="1 0 0 0"/>
+      <geom type="mesh" rgba="0.752941 0.752941 0.752941 1" mesh="base"/>
+
+      <!-- ============ FL leg ============ -->
+      <body name="FL_thigh">
+        <inertial pos="0.0154971 0.0493223 0.000379828" quat="0.666759 0.246432 -0.29191 0.639915" mass="0.62755" diaginertia="0.000491534 0.000294989 0.000255722"/>
+        <joint name="FL_thigh" pos="0 0 0" axis="0 0.707107 0.707107" class="leg_joint_param" range="-0.80 0.80"/>
+        <geom type="mesh" rgba="0.776471 0.756863 0.737255 1" mesh="FL_thigh"/>
+        <body name="FL_calf" pos="0 0.0357089 0.0357089">
+          <inertial pos="-0.0304084 0.0559013 -0.0425169" quat="0.553489 0.435524 -0.118006 0.700031" mass="0.305947" diaginertia="0.000133011 0.000109205 4.98735e-05"/>
+          <joint name="FL_calf" pos="0 0 0" axis="0 -0.707107 -0.707107" class="leg_joint_param" range="-0.90 0.55"/>
+          <geom type="mesh" rgba="0.866667 0.909804 1 1" mesh="FL_calf"/>
+        </body>
+        <body name="FL_1" pos="0.0601104 0.158804 -0.0819561">
+          <inertial pos="-0.0284158 0.00124878 -0.124508" quat="0.4945 0.103444 0.0870478 0.858598" mass="0.19724" diaginertia="0.000108509 0.00010756 2.33294e-05"/>
+          <joint name="FL_1" pos="0 0 0" axis="-0.836516 0.512047 0.19506" class="leg_joint_param"/>
+          <geom type="mesh" rgba="0.866667 0.909804 1 1" mesh="FL_1"/>
+          <body name="FL_2" pos="-0.0601104 -0.00113083 -0.17046">
+            <inertial pos="-0.0309012 0.00313712 0.0601483" quat="0.985849 -0.0339179 -0.147191 0.0727004" mass="0.188622" diaginertia="0.000100335 9.58963e-05 2.37791e-05"/>
+            <joint name="FL_2" pos="0 0 0" axis="0 0.99835 -0.0574284" class="leg_joint_param"/>
+            <geom type="mesh" rgba="0.776471 0.756863 0.737255 1" mesh="FL_2"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ============ FR leg ============ -->
+      <body name="FR_thigh" pos="0 -0.136476 0">
+        <inertial pos="-0.015376 -0.0492451 0.000478646" quat="0.666762 -0.24645 0.291896 0.639912" mass="0.628452" diaginertia="0.000491525 0.000294992 0.000255734"/>
+        <joint name="FR_thigh" pos="0 0 0" axis="0 -0.707107 0.707107" class="leg_joint_param" range="-0.80 0.80"/>
+        <geom type="mesh" rgba="0.898039 0.917647 0.929412 1" mesh="FR_thigh"/>
+        <body name="FR_calf" pos="0 -0.0357089 0.0357089">
+          <inertial pos="0.0304083 -0.0559011 -0.042517" quat="0.118006 0.700031 -0.55349 0.435523" mass="0.305947" diaginertia="0.000133011 0.000109205 4.98736e-05"/>
+          <joint name="FR_calf" pos="0 0 0" axis="0 0.707107 -0.707107" class="leg_joint_param" range="-0.90 0.55"/>
+          <geom type="mesh" rgba="0.776471 0.756863 0.737255 1" mesh="FR_calf"/>
+        </body>
+        <body name="FR_1" pos="-0.0601104 -0.158804 -0.0819561">
+          <inertial pos="0.0279638 -0.00138137 -0.12293" quat="0.434851 -0.109134 -0.0797872 0.890297" mass="0.201028" diaginertia="0.000108828 0.000107639 2.37156e-05"/>
+          <joint name="FR_1" pos="0 0 0" axis="0.836516 -0.512047 0.19506" class="leg_joint_param"/>
+          <geom type="mesh" rgba="0.866667 0.909804 1 1" mesh="FR_1"/>
+          <body name="FR_2" pos="0.0601104 0.00113083 -0.17046">
+            <inertial pos="0.0309012 -0.00313713 0.0601485" quat="0.985849 0.0339182 0.147191 0.0727028" mass="0.188622" diaginertia="0.000100335 9.58963e-05 2.37793e-05"/>
+            <joint name="FR_2" pos="0 0 0" axis="0 -0.99835 -0.0574284" class="leg_joint_param"/>
+            <geom type="mesh" rgba="0.776471 0.756863 0.737255 1" mesh="FR_2"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ============ RL leg ============ -->
+      <body name="RL_thigh" pos="-0.422 0 0">
+        <inertial pos="0.0154074 0.0493569 0.000402484" quat="0.66676 0.246431 -0.291911 0.639915" mass="0.629053" diaginertia="0.00049154 0.000295013 0.000255746"/>
+        <joint name="RL_thigh" pos="0 0 0" axis="0 0.707107 0.707107" class="leg_joint_param" range="-0.80 0.80"/>
+        <geom type="mesh" rgba="0.898039 0.917647 0.929412 1" mesh="RL_thigh"/>
+        <body name="RL_calf" pos="0 0.0357089 0.0357089">
+          <inertial pos="-0.0304083 0.0559011 -0.042517" quat="0.55349 0.435523 -0.118006 0.700031" mass="0.305947" diaginertia="0.000133011 0.000109205 4.98736e-05"/>
+          <joint name="RL_calf" pos="0 0 0" axis="0 -0.707107 -0.707107" class="leg_joint_param" range="-0.90 0.55"/>
+          <geom type="mesh" rgba="0.866667 0.909804 1 1" mesh="RL_calf"/>
+        </body>
+        <body name="RL_1" pos="0.0601104 0.158804 -0.0819561">
+          <inertial pos="-0.0279638 0.00138137 -0.12293" quat="0.434851 0.109134 0.0797872 0.890297" mass="0.201028" diaginertia="0.000108828 0.000107639 2.37156e-05"/>
+          <joint name="RL_1" pos="0 0 0" axis="-0.836516 0.512047 0.19506" class="leg_joint_param"/>
+          <geom type="mesh" rgba="1 1 1 1" mesh="RL_1"/>
+          <body name="RL_2" pos="-0.0601104 -0.00113083 -0.17046">
+            <inertial pos="-0.0309012 0.00313713 0.0601485" quat="0.985849 -0.0339182 -0.147191 0.0727028" mass="0.188622" diaginertia="0.000100335 9.58963e-05 2.37793e-05"/>
+            <joint name="RL_2" pos="0 0 0" axis="0 0.99835 -0.0574284" class="leg_joint_param"/>
+            <geom type="mesh" rgba="0.866667 0.909804 1 1" mesh="RL_2"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ============ RR leg ============ -->
+      <body name="RR_thigh" pos="-0.422 -0.136476 0">
+        <inertial pos="-0.0154075 -0.0493569 0.00040256" quat="0.66676 -0.246432 0.29191 0.639915" mass="0.629053" diaginertia="0.00049154 0.000295013 0.000255746"/>
+        <joint name="RR_thigh" pos="0 0 0" axis="0 -0.707107 0.707107" class="leg_joint_param" range="-0.80 0.80"/>
+        <geom type="mesh" rgba="0.898039 0.917647 0.929412 1" mesh="RR_thigh"/>
+        <body name="RR_calf" pos="0 -0.0357089 0.0357089">
+          <inertial pos="0.0304083 -0.0559011 -0.042517" quat="0.118006 0.700031 -0.55349 0.435523" mass="0.305947" diaginertia="0.000133011 0.000109205 4.98736e-05"/>
+          <joint name="RR_calf" pos="0 0 0" axis="0 0.707107 -0.707107" class="leg_joint_param" range="-0.90 0.55"/>
+          <geom type="mesh" rgba="0.776471 0.756863 0.737255 1" mesh="RR_calf"/>
+        </body>
+        <body name="RR_1" pos="-0.0601104 -0.158804 -0.0819561">
+          <inertial pos="0.0279638 -0.00138137 -0.12293" quat="0.434852 -0.109134 -0.0797872 0.890296" mass="0.201028" diaginertia="0.000108828 0.000107639 2.37156e-05"/>
+          <joint name="RR_1" pos="0 0 0" axis="0.836516 -0.512047 0.19506" class="leg_joint_param"/>
+          <geom type="mesh" rgba="1 1 1 1" mesh="RR_1"/>
+          <body name="RR_2" pos="0.0601104 0.00113083 -0.17046">
+            <inertial pos="0.0309012 -0.00313712 0.0601483" quat="0.985849 0.0339179 0.147191 0.0727004" mass="0.188622" diaginertia="0.000100335 9.58963e-05 2.37791e-05"/>
+            <joint name="RR_2" pos="0 0 0" axis="0 -0.99835 -0.0574284" class="leg_joint_param"/>
+            <geom type="mesh" rgba="0.776471 0.756863 0.737255 1" mesh="RR_2"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- 并联人字形:小腿末端与平行连杆(1-2)在踝点焊合成闭环 -->
+  <equality>
+    <connect body1="FR_calf" body2="FR_2" anchor="0.0601104 -0.123095 -0.117665" solref="0.01 1"/>
+    <connect body1="FL_calf" body2="FL_2" anchor="-0.0601104 0.123095 -0.117665" solref="0.01 1"/>
+    <connect body1="RR_calf" body2="RR_2" anchor="0.0601104 -0.123095 -0.117665" solref="0.01 1"/>
+    <connect body1="RL_calf" body2="RL_2" anchor="-0.0601104 0.123095 -0.117665" solref="0.01 1"/>
+  </equality>
+
+  <!-- 8 个驱动关节:位置 PD 增益对齐训练(刚度28, 阻尼2),力矩上限8Nm -->
+  <actuator>
+    <position name="FL_thigh" joint="FL_thigh" gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.80 0.80"/>
+    <position name="FL_calf"  joint="FL_calf"  gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.90 0.55"/>
+    <position name="FR_thigh" joint="FR_thigh" gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.80 0.80"/>
+    <position name="FR_calf"  joint="FR_calf"  gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.90 0.55"/>
+    <position name="RL_thigh" joint="RL_thigh" gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.80 0.80"/>
+    <position name="RL_calf"  joint="RL_calf"  gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.90 0.55"/>
+    <position name="RR_thigh" joint="RR_thigh" gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.80 0.80"/>
+    <position name="RR_calf"  joint="RR_calf"  gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.90 0.55"/>
+  </actuator>
+
+  <!-- 并联连杆间的内接触不应产生;排除基座/大腿/小腿/1/2 彼此 -->
+  <contact>
+    <exclude body1="base" body2="FR_calf"/><exclude body1="base" body2="FL_calf"/>
+    <exclude body1="base" body2="RR_calf"/><exclude body1="base" body2="RL_calf"/>
+    <exclude body1="base" body2="FR_1"/><exclude body1="base" body2="FL_1"/>
+    <exclude body1="base" body2="RR_1"/><exclude body1="base" body2="RL_1"/>
+    <exclude body1="base" body2="FR_thigh"/><exclude body1="base" body2="FL_thigh"/>
+    <exclude body1="base" body2="RR_thigh"/><exclude body1="base" body2="RL_thigh"/>
+    <exclude body1="base" body2="FR_2"/><exclude body1="base" body2="FL_2"/>
+    <exclude body1="base" body2="RR_2"/><exclude body1="base" body2="RL_2"/>
+    <exclude body1="FR_thigh" body2="FR_1"/><exclude body1="FL_thigh" body2="FL_1"/>
+    <exclude body1="RR_thigh" body2="RR_1"/><exclude body1="RL_thigh" body2="RL_1"/>
+    <exclude body1="FL_thigh" body2="FL_calf"/><exclude body1="FR_thigh" body2="FR_calf"/>
+    <exclude body1="RR_thigh" body2="RR_calf"/><exclude body1="RL_thigh" body2="RL_calf"/>
+    <exclude body1="FL_thigh" body2="FL_2"/><exclude body1="FR_thigh" body2="FR_2"/>
+    <exclude body1="RR_thigh" body2="RR_2"/><exclude body1="RL_thigh" body2="RL_2"/>
+    <exclude body1="RL_1" body2="RL_calf"/><exclude body1="RR_1" body2="RR_calf"/>
+    <exclude body1="RR_2" body2="RR_calf"/><exclude body1="RL_2" body2="RL_calf"/>
+    <exclude body1="FL_2" body2="FL_calf"/><exclude body1="FR_2" body2="FR_calf"/>
+  </contact>
+</mujoco>
