@@ -1,4 +1,11 @@
-"""Task contract for the quad_leg_trot1 diagonal-trot policy (50 -> 8)."""
+"""Task contract for the quad_leg_trot1 diagonal-trot policy (50 -> 8).
+
+Pointed at the faithful Urdf_Bennett_3 model (bennett_1.xml), NOT the old
+bennett_3.xml. The trot1 policy observes the full 50-D contract: base + command +
+joint + action PLUS the commanded-trot gait block (phase/duty/...), so
+``obs_mode="trot"`` must stay and the ``gait`` dict below must be populated.
+The action side is the same 8-joint, scale=0.20, clip=JOINT_TARGET_LIMITS plant.
+"""
 
 import pathlib
 
@@ -42,7 +49,7 @@ GAIT = {
 
 config = TaskConfig(
     task="quad_leg_trot1",
-    model=str(_SIM / "models" / "bennett_3" / "bennett_3.xml"),
+    model=str(_SIM / "models" / "bennett_1" / "bennett_1.xml"),
     policy=str(_SIM / "policies" / "quad_leg_trot1" / "policy.pt"),
     actuated_joints=ACTUATED_JOINTS,
     default_joint_pos=DEFAULT_JOINT_POS,

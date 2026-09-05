@@ -6,7 +6,15 @@ the base + command + joint + action block (33 dims), which we build with
 ``obs_mode="plain"``. The gait is *emergent* (driven in training by
 ``feet_air_time``), so there is no ``gait`` dict here at all.
 
-Pointed at the newest free_gait3 export (the trained, walking-well policy).
+Pointed at the faithful Urdf_Bennett_3 model (bennett_1.xml) and the newest
+free_gait3 export (the trained, walking-well policy).
+
+``init_base_pos`` is 0.33, NOT the training value 0.30: at 0.30 the foot mesh
+bottom sinks ~2.2 mm below the floor in the default pose (legs can't lift to
+step, base only crawls +0.03); at 0.33 the feet have full clearance and the
+policy walks out a clean +0.59 / 3 s.  The base height feeds only the initial z
+-- ``default_joint_pos`` is a relative offset, so the 33-D obs contract is
+unaffected.  See sim2sim-model-mapping memory.
 """
 
 import pathlib
@@ -44,12 +52,25 @@ DEFAULT_JOINT_POS = np.array([
 
 # actions.joint_pos: scale=0.20, clip=JOINT_TARGET_LIMITS (same as trot1)
 ACTION_SCALE = 0.20
+
+# Training-matched velocity command (mdp.UniformVelocityCommandCfg in flat_env_cfg.py:
+# ranges, resampling_time_range, rel_standing_envs=0.05, heading_command=False).
+# --cmd_play resamples (vx, vy, wz) from these every 4-7s so the replay moves in
+# all directions exactly like the training play video (lateral vy=+-0.25 included).
+COMMAND = {
+    "lin_vel_x": (-0.35, 0.35),
+    "lin_vel_y": (-0.25, 0.25),
+    "ang_vel_z": (-0.60, 0.60),
+    "resampling_time_range": (4.0, 7.0),
+    "standing_frac": 0.05,
+    "heading": False,
+}
 CLIP_LOW = np.array([-0.80, -0.90, -0.80, -0.90, -0.80, -0.90, -0.80, -0.90], dtype=np.float32)
 CLIP_HIGH = np.array([0.80, 0.55, 0.80, 0.55, 0.80, 0.55, 0.80, 0.55], dtype=np.float32)
 
 config = TaskConfig(
     task="quad_leg_free_gait3",
-    model=str(_SIM / "models" / "bennett_3" / "bennett_3.xml"),
+    model=str(_SIM / "models" / "bennett_1" / "bennett_1.xml"),
     policy=str(_newest_policy(_LOG / "quad_leg_free_gait3")),
     actuated_joints=ACTUATED_JOINTS,
     default_joint_pos=DEFAULT_JOINT_POS,
@@ -62,5 +83,8 @@ config = TaskConfig(
     obs_mode="plain",        # 33-D base+command+joint+action, no gait block
     num_obs=33,
     num_actions=8,
-    init_base_pos=(0.0, 0.0, 0.36),
+    # 0.30 时脚 mesh 底部陷入地面 ~2.2mm(默认关节下)导致无法离地换步;0.33 才有间隙。
+    # base z 只影响初始高度,default_joint_pos 是相对偏移,不改 33 维 obs 合同。
+    init_base_pos=(0.0, 0.0, 0.33),
+    command=COMMAND,   # --cmd_play:复现训练 UniformVelocityCommand 重采样(含侧向 vy)
 )

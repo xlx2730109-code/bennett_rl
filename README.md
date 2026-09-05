@@ -1,23 +1,23 @@
-单腿轨迹跟踪。
+# 单腿轨迹跟踪。
 
-运行命令：
-录制视频：
+# 运行命令：
+# 录制视频：
 python scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-V4-50Hz-Play-v0 --checkpoint "模型路径\model_80.pt" --video --endpoint_trail --headless
 注：--endpoint_trail 为单腿足端轨迹显示
 
 python .\scripts\rsl_rl\play.py --task Isaac-Bennett-QuadLeg-Track-Play-v0 --video --checkpoint logs\rsl_rl\quad_leg_track\2026-06-29_15-16-03\model_1499.pt --endpoint_trail --endpoint_bodies FL_2 FR_2 RL_2 RR_2
-单腿轨迹：
+# 单腿轨迹：
 --endpoint_trail --endpoint_body RR_2
-也可以省略 --endpoint_body RR_2，旧模型默认就是 RR_2：
+# 也可以省略 --endpoint_body RR_2，旧模型默认就是 RR_2：
 --endpoint_trail
-旧模型四腿轨迹：
+# 旧模型四腿轨迹：
 --endpoint_trail --endpoint_bodies FL_2 FR_2 RL_2 RR_2
-新模型四腿轨迹：
+# 新模型四腿轨迹：
 --endpoint_trail --endpoint_bodies FL_foot FR_foot RL_foot RR_foot
 
 
 
-单腿轨迹生成与联调 → 单腿轨迹强化学习跟踪 → 四腿协调轨迹强化学习跟踪。
+# 单腿轨迹生成与联调 → 单腿轨迹强化学习跟踪 → 四腿协调轨迹强化学习跟踪。
 
 | 对比项           | 单腿轨迹生成与联调`single_leg_rr_jct`                                  | 单腿轨迹跟踪`single_leg_rr_trace` | 四腿协调轨迹跟踪`quad_leg_track`     |
 | ---------------- | ------------------------------------------------------------------------ | ----------------------------------- | -------------------------------------- |

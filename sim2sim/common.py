@@ -31,3 +31,4 @@ class TaskConfig:
     num_actions: int = 8
     ep_len_s: float = 20.0
     init_base_pos: tuple = (0.0, 0.0, 0.36)
+    command: Optional[dict] = None  # training-matched velocity-command sampler (used by --cmd_play)

@@ -94,18 +94,28 @@ JOINT_NAMES = (
     "RR_calf",
 )
 FOOT_NAMES = ("FL_foot", "FR_foot", "RL_foot", "RR_foot")
-SCENARIOS = (
-    ("stand", (0.0, 0.0, 0.0)),
-    ("forward_slow", (0.06, 0.0, 0.0)),
-    ("forward_nominal", (0.14, 0.0, 0.0)),
-    ("backward_slow", (-0.06, 0.0, 0.0)),
-    ("backward_nominal", (-0.14, 0.0, 0.0)),
-    ("yaw_left", (0.0, 0.0, 0.25)),
-    ("yaw_right", (0.0, 0.0, -0.25)),
-    ("forward_yaw", (0.10, 0.0, 0.25)),
-    ("backward_yaw", (-0.10, 0.0, 0.25)),
-    ("lateral_left", (0.0, 0.08, 0.0)),
-)
+# Full omnidirectional matrix for free_gait3 (training ranges vx +-0.35,
+# vy +-0.25, wz +-0.60): six directions x three speeds + a stand baseline.
+def _matrix():
+    speeds = {
+        "slow": 0.25, "mid": 0.57, "fast": 0.91,   # fractions of the training range
+    }
+    dirs = {
+        "forward":       lambda s: (0.35 * s, 0.0, 0.0),
+        "backward":      lambda s: (-0.35 * s, 0.0, 0.0),
+        "lateral_left":  lambda s: (0.0, 0.25 * s, 0.0),
+        "lateral_right": lambda s: (0.0, -0.25 * s, 0.0),
+        "yaw_left":      lambda s: (0.0, 0.0, 0.60 * s),
+        "yaw_right":     lambda s: (0.0, 0.0, -0.60 * s),
+    }
+    rows = [("stand", (0.0, 0.0, 0.0))]
+    for d_name, d_fn in dirs.items():
+        for s_name, s_frac in speeds.items():
+            rows.append((f"{d_name}_{s_name}", d_fn(s_frac)))
+    return tuple(rows)
+
+
+SCENARIOS = _matrix()
 
 
 def _vector_columns(prefix: str, names: tuple[str, ...]) -> list[str]:
@@ -302,8 +312,9 @@ def main(env_cfg, agent_cfg) -> None:
                         _set_velocity_command(raw_env, command)
                         obs = env.get_observations()
                         policy_obs = _policy_observation(obs)
-                        if policy_obs.shape[-1] != 50:
-                            raise RuntimeError(f"Expected 50 policy observations, got {tuple(policy_obs.shape)}")
+                        obs_dim = int(policy_obs.shape[-1])
+                        if obs_dim not in (33, 50):
+                            raise RuntimeError(f"Expected 33 (plain) or 50 (trot) policy observations, got {tuple(policy_obs.shape)}")
                         # Keep simulator stepping outside ``inference_mode``.
                         # Isaac Lab updates cached state tensors in-place during
                         # reset; turning those tensors into inference tensors
@@ -329,12 +340,21 @@ def main(env_cfg, agent_cfg) -> None:
                             contact_sensor.data.net_forces_w[0, contact_foot_ids], dim=1
                         )
                         mechanical_power = torch.sum(torch.abs(joint_torque * joint_vel)).item()
-                        phase_sin = float(policy_obs[0, 33])
-                        phase_cos = float(policy_obs[0, 34])
-                        gait_phase = math.atan2(phase_sin, phase_cos) / (2.0 * math.pi)
-                        if gait_phase < 0.0:
-                            gait_phase += 1.0
-                        desired_contacts = _tensor_values(policy_obs[0, 43:47])
+                        if obs_dim == 50:
+                            # trot: gait block lives at fixed offsets in the observation
+                            phase_sin = float(policy_obs[0, 33])
+                            phase_cos = float(policy_obs[0, 34])
+                            gait_phase = math.atan2(phase_sin, phase_cos) / (2.0 * math.pi)
+                            if gait_phase < 0.0:
+                                gait_phase += 1.0
+                            desired_contacts = _tensor_values(policy_obs[0, 43:47])
+                        else:
+                            # plain (free_gait): no clock -> no phase; derive the
+                            # contact state from the measured vertical foot force.
+                            gait_phase = float("nan")
+                            desired_contacts = [
+                                1.0 if f > 5.0 else 0.0 for f in foot_force.detach().tolist()
+                            ]
 
                         row = [
                             scenario_name,

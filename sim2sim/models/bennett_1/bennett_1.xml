@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<mujoco model="bennett_1">
+  <compiler angle="radian" meshdir="meshes/"/>
+  <option timestep="0.002" iterations="50" solver="Newton" tolerance="1e-10">
+    <flag energy="disable" contact="enable"/>
+  </option>
+  <default>
+    <joint damping="0.001" armature="0.01" frictionloss="0.05" limited="true"/>
+    <geom contype="2" conaffinity="1" condim="3" solref="0.005 1" friction="0.9 0.2 0.2" group="1"/>
+    <motor ctrllimited="true"/>
+  </default>
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="120" elevation="-20"/>
+  </visual>
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4"
+             rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="1 1" reflectance="0.2"/>
+    <mesh name="base" file="base.STL"/>
+    <mesh name="FL_thigh" file="FL_thigh.STL"/>
+    <mesh name="FL_calf" file="FL_calf.STL"/>
+    <mesh name="FL_1" file="FL_1.STL"/>
+    <mesh name="FL_2" file="FL_2.STL"/>
+    <mesh name="FL_3" file="FL_3.STL"/>
+    <mesh name="FL_foot" file="FL_foot.STL"/>
+    <mesh name="FR_thigh" file="FR_thigh.STL"/>
+    <mesh name="FR_calf" file="FR_calf.STL"/>
+    <mesh name="FR_1" file="FR_1.STL"/>
+    <mesh name="FR_2" file="FR_2.STL"/>
+    <mesh name="FR_3" file="FR_3.STL"/>
+    <mesh name="FR_foot" file="FR_foot.STL"/>
+    <mesh name="RL_thigh" file="RL_thigh.STL"/>
+    <mesh name="RL_calf" file="RL_calf.STL"/>
+    <mesh name="RL_1" file="RL_1.STL"/>
+    <mesh name="RL_2" file="RL_2.STL"/>
+    <mesh name="RL_3" file="RL_3.STL"/>
+    <mesh name="RL_foot" file="RL_foot.STL"/>
+    <mesh name="RR_thigh" file="RR_thigh.STL"/>
+    <mesh name="RR_calf" file="RR_calf.STL"/>
+    <mesh name="RR_1" file="RR_1.STL"/>
+    <mesh name="RR_2" file="RR_2.STL"/>
+    <mesh name="RR_3" file="RR_3.STL"/>
+    <mesh name="RR_foot" file="RR_foot.STL"/>
+  </asset>
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
+    <geom name="floor" size="0 0 0.25" type="plane" material="groundplane" contype="1" conaffinity="2"/>
+    <body name="base" pos="0 0 0.30" quat="1 0 0 0">
+      <inertial pos="-8.458e-05 2.27e-06 -0.00590153"
+        quat="1 -0.000356871 4.91602e-05 -9.78852e-05" mass="4.22141"
+        diaginertia="0.0151101 0.131957 0.142524"/>
+      <joint name="floating_base_joint" type="free"/>
+      <site name="imu" size="0.01" pos="0 0 0" quat="1 0 0 0" group="5"/>
+      <geom type="mesh" contype="2" conaffinity="1" mesh="base"/>
+      <body name="FL_thigh" pos="0.211101 0.0681715 0.0115336" quat="1 0 0 0">
+        <inertial pos="-0.00998474 0.0402255 0.00855455" quat="0.0928218 0.697783 0.049391 0.124479" mass="0.99385" diaginertia="0.000796766 0.00355979 0.00394166"/>
+        <geom type="mesh" contype="2" conaffinity="1" mesh="FL_thigh"/>
+        <joint name="FL_thigh" pos="0 0 0" axis="0 0.707107 0.707107" range="-0.8 0.8"/>
+        <body name="FL_calf" pos="0 0.0357089 0.0357089" quat="1 0 0 0">
+          <inertial pos="0.0306492 0.0563089 -0.0428729" quat="0.217327 -0.099568 -0.678916 0.155927" mass="0.309712" diaginertia="6.46082e-05 0.00154754 0.00157892"/>
+          <geom type="mesh" contype="2" conaffinity="1" mesh="FL_calf"/>
+          <joint name="FL_calf" pos="0 0 0" axis="0 0.707107 0.707107" range="-0.9 0.55"/>
+          <body name="FL_3" pos="0.0601104 0.123095 -0.117665" quat="1 0 0 0">
+            <inertial pos="-0.0290582 0.00219818 -0.110015" quat="0.788595 -0.159874 0.577627 0.137501" mass="0.191315" diaginertia="2.40161e-05 9.57887e-05 0.000102248"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="FL_3"/>
+            <joint name="FL_3" pos="0 0 0" axis="-0.836516 0.512047 0.19506" range="-3.14 3.14"/>
+          </body>
+        </body>
+        <body name="FL_1" pos="-0.0601104 0.158804 -0.0819561" quat="1 0 0 0">
+          <inertial pos="0.0224586 0.00257728 -0.101219" quat="0.737948 -0.295312 0.574139 0.196436" mass="0.162243" diaginertia="1.71815e-05 0.00064792 0.000649418"/>
+          <geom type="mesh" contype="2" conaffinity="1" mesh="FL_1"/>
+          <joint name="FL_1" pos="0 0 0" axis="0.836516 0.512047 0.19506" range="-3.14 3.14"/>
+          <body name="FL_2" pos="0.0601104 -0.00113083 -0.17046" quat="1 0 0 0">
+            <inertial pos="0.0310521 0.00332905 0.0604445" quat="0.57074 0.0980391 0.795646 -0.177742" mass="0.191315" diaginertia="3.10741e-05 0.000770218 0.000772248"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="FL_2"/>
+            <joint name="FL_2" pos="0 0 0" axis="0 -0.99835 0.0574284" range="-3.14 3.14"/>
+          </body>
+          <body name="FL_foot" pos="0.0498505 -0.00336961 -0.209379" quat="1 0 0 0">
+            <inertial pos="-0.00097458 0.00020888 0.00363116" quat="0.657143 -0.218875 0.118131 -0.291931" mass="0.072" diaginertia="1.29055e-05 1.52828e-05 1.52917e-05"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="FL_foot"/>
+          </body>
+        </body>
+      </body>
+      <body name="FR_thigh" pos="0.211 -0.068238 0.011738" quat="1 0 0 0">
+        <inertial pos="-0.00998474 -0.0402255 0.00855455" quat="0.697783 0.0928218 -0.124479 -0.049391" mass="0.99385" diaginertia="0.000796766 0.00355979 0.00394166"/>
+        <geom type="mesh" contype="2" conaffinity="1" mesh="FR_thigh"/>
+        <joint name="FR_thigh" pos="0 0 0" axis="0 -0.707107 0.707107" range="-0.8 0.8"/>
+        <body name="FR_calf" pos="0 -0.0357089 0.0357089" quat="1 0 0 0">
+          <inertial pos="0.0306492 -0.0563089 -0.0428729" quat="0.618911 0.41244 -0.295917 -0.109221" mass="0.309712" diaginertia="6.46082e-05 0.00154754 0.00157892"/>
+          <geom type="mesh" contype="2" conaffinity="1" mesh="FR_calf"/>
+          <joint name="FR_calf" pos="0 0 0" axis="0 0.707107 -0.707107" range="-0.9 0.55"/>
+          <body name="FR_3" pos="0.0601104 -0.123095 -0.117665" quat="1 0 0 0">
+            <inertial pos="-0.029058 -0.00202844 -0.110005" quat="0.788594 0.159875 0.577627 -0.137502" mass="0.191315" diaginertia="2.40162e-05 9.57887e-05 0.000102248"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="FR_3"/>
+            <joint name="FR_3" pos="0 0 0" axis="-0.836516 -0.512047 0.19506" range="-3.14 3.14"/>
+          </body>
+        </body>
+        <body name="FR_1" pos="-0.0601104 -0.158804 -0.0819561" quat="1 0 0 0">
+          <inertial pos="0.0224586 -0.00257728 -0.101219" quat="0.737948 0.295312 0.574139 -0.196436" mass="0.162243" diaginertia="1.71815e-05 0.00064792 0.000649418"/>
+          <geom type="mesh" contype="2" conaffinity="1" mesh="FR_1"/>
+          <joint name="FR_1" pos="0 0 0" axis="0.836516 -0.512047 0.19506" range="-3.14 3.14"/>
+          <body name="FR_2" pos="0.0601104 0.00113083 -0.17046" quat="1 0 0 0">
+            <inertial pos="0.0310524 -0.00315929 0.0604544" quat="0.566303 -0.121059 0.787137 0.212277" mass="0.191315" diaginertia="3.10855e-05 0.000769959 0.000772465"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="FR_2"/>
+            <joint name="FR_2" pos="0 0 0" axis="0 -0.99835 -0.0574284" range="-3.14 3.14"/>
+          </body>
+          <body name="FR_foot" pos="0.0498505 0.00336961 -0.209379" quat="1 0 0 0">
+            <inertial pos="-0.00097458 -0.00020888 0.00363116" quat="0.218875 -0.657143 -0.291931 0.118131" mass="0.072" diaginertia="1.29055e-05 1.52828e-05 1.52917e-05"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="FR_foot"/>
+          </body>
+        </body>
+      </body>
+      <body name="RL_thigh" pos="-0.211 0.068238 0.011738" quat="1 0 0 0">
+        <inertial pos="-0.00998481 0.0402256 0.0085546" quat="0.0928216 0.697783 0.0493913 0.124479" mass="0.99385" diaginertia="0.000796765 0.0035598 0.00394167"/>
+        <geom type="mesh" contype="2" conaffinity="1" mesh="RL_thigh"/>
+        <joint name="RL_thigh" pos="0 0 0" axis="0 0.707107 0.707107" range="-0.8 0.8"/>
+        <body name="RL_calf" pos="0 0.0357089 0.0357089" quat="1 0 0 0">
+          <inertial pos="0.0306493 0.056309 -0.0428728" quat="0.21738 -0.0995747 -0.678905 0.155957" mass="0.309712" diaginertia="6.46017e-05 0.00154757 0.00157893"/>
+          <geom type="mesh" contype="2" conaffinity="1" mesh="RL_calf"/>
+          <joint name="RL_calf" pos="0 0 0" axis="0 0.707107 0.707107" range="-0.9 0.55"/>
+          <body name="RL_3" pos="0.0601104 0.123095 -0.117665" quat="1 0 0 0">
+            <inertial pos="-0.0290581 0.00219815 -0.110015" quat="0.788594 -0.159876 0.577626 0.137502" mass="0.191315" diaginertia="2.40162e-05 9.57887e-05 0.000102248"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="RL_3"/>
+            <joint name="RL_3" pos="0 0 0" axis="-0.836516 0.512047 0.19506" range="-3.14 3.14"/>
+          </body>
+        </body>
+        <body name="RL_1" pos="-0.0601104 0.158804 -0.0819561" quat="1 0 0 0">
+          <inertial pos="0.0224586 0.00257728 -0.101219" quat="0.737948 -0.295312 0.574139 0.196436" mass="0.162243" diaginertia="1.71815e-05 0.00064792 0.000649418"/>
+          <geom type="mesh" contype="2" conaffinity="1" mesh="RL_1"/>
+          <joint name="RL_1" pos="0 0 0" axis="0.836516 0.512047 0.19506" range="-3.14 3.14"/>
+          <body name="RL_2" pos="0.0601104 -0.00113083 -0.17046" quat="1 0 0 0">
+            <inertial pos="0.0310521 0.00332905 0.0604445" quat="0.570817 0.0976 0.795781 -0.17713" mass="0.191315" diaginertia="3.10752e-05 0.00077022 0.000772255"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="RL_2"/>
+            <joint name="RL_2" pos="0 0 0" axis="0 -0.99835 0.0574284" range="-3.14 3.14"/>
+          </body>
+          <body name="RL_foot" pos="0.0498505 -0.00336961 -0.209379" quat="1 0 0 0">
+            <inertial pos="-0.00097458 0.00020888 0.00363116" quat="0.657143 -0.218875 0.118131 -0.291931" mass="0.072" diaginertia="1.29055e-05 1.52828e-05 1.52917e-05"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="RL_foot"/>
+          </body>
+        </body>
+      </body>
+      <body name="RR_thigh" pos="-0.211 -0.068238 0.011738" quat="1 0 0 0">
+        <inertial pos="-0.00998481 -0.0402256 0.0085546" quat="0.697783 0.0928216 -0.124479 -0.0493913" mass="0.99385" diaginertia="0.000796765 0.0035598 0.00394167"/>
+        <geom type="mesh" contype="2" conaffinity="1" mesh="RR_thigh"/>
+        <joint name="RR_thigh" pos="0 0 0" axis="0 -0.707107 0.707107" range="-0.8 0.8"/>
+        <body name="RR_calf" pos="0 -0.0357089 0.0357089" quat="1 0 0 0">
+          <inertial pos="0.0306493 -0.056309 -0.0428728" quat="0.618939 0.412373 -0.295852 -0.109222" mass="0.309712" diaginertia="6.46017e-05 0.00154757 0.00157893"/>
+          <geom type="mesh" contype="2" conaffinity="1" mesh="RR_calf"/>
+          <joint name="RR_calf" pos="0 0 0" axis="0 0.707107 -0.707107" range="-0.9 0.55"/>
+          <body name="RR_3" pos="0.0601104 -0.123095 -0.117665" quat="1 0 0 0">
+            <inertial pos="-0.0290579 -0.00202843 -0.110005" quat="0.788595 0.159872 0.577627 -0.1375" mass="0.191315" diaginertia="2.40161e-05 9.57887e-05 0.000102248"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="RR_3"/>
+            <joint name="RR_3" pos="0 0 0" axis="-0.836516 -0.512047 0.19506" range="-3.14 3.14"/>
+          </body>
+        </body>
+        <body name="RR_1" pos="-0.0601104 -0.158804 -0.0819561" quat="1 0 0 0">
+          <inertial pos="0.0224586 -0.00257728 -0.101219" quat="0.737948 0.295312 0.574139 -0.196436" mass="0.162243" diaginertia="1.71815e-05 0.00064792 0.000649418"/>
+          <geom type="mesh" contype="2" conaffinity="1" mesh="RR_1"/>
+          <joint name="RR_1" pos="0 0 0" axis="0.836516 -0.512047 0.19506" range="-3.14 3.14"/>
+          <body name="RR_2" pos="0.0601104 0.00113083 -0.17046" quat="1 0 0 0">
+            <inertial pos="0.0310521 -0.00332905 0.0604445" quat="0.570817 -0.0976 0.795781 0.17713" mass="0.191315" diaginertia="3.10752e-05 0.00077022 0.000772255"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="RR_2"/>
+            <joint name="RR_2" pos="0 0 0" axis="0 -0.99835 -0.0574284" range="-3.14 3.14"/>
+          </body>
+          <body name="RR_foot" pos="0.0498505 0.00336961 -0.209379" quat="1 0 0 0">
+            <inertial pos="-0.00097458 -0.00020888 0.00363116" quat="0.218875 -0.657143 -0.291931 0.118131" mass="0.072" diaginertia="1.29055e-05 1.52828e-05 1.52917e-05"/>
+            <geom type="mesh" contype="2" conaffinity="1" mesh="RR_foot"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <actuator>
+    <position name="FL_thigh" joint="FL_thigh" gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.80 0.80"/>
+    <position name="FL_calf"  joint="FL_calf"  gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.90 0.55"/>
+    <position name="FR_thigh" joint="FR_thigh" gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.80 0.80"/>
+    <position name="FR_calf"  joint="FR_calf"  gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.90 0.55"/>
+    <position name="RL_thigh" joint="RL_thigh" gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.80 0.80"/>
+    <position name="RL_calf"  joint="RL_calf"  gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.90 0.55"/>
+    <position name="RR_thigh" joint="RR_thigh" gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.80 0.80"/>
+    <position name="RR_calf"  joint="RR_calf"  gear="1" kp="28" kv="2" forcerange="-8 8" ctrllimited="true" ctrlrange="-0.90 0.55"/>
+  </actuator>
+
+  <equality>
+    <connect body1="FL_3" body2="FL_2" anchor="-0.0289418 0.00268795 -0.0876585" solref="0.01 1"/>
+    <connect body1="FR_3" body2="FR_2" anchor="-0.0334567 0.0156048 -0.0764966" solref="0.01 1"/>
+    <connect body1="RL_3" body2="RL_2" anchor="-0.0289418 0.00268795 -0.0876585" solref="0.01 1"/>
+    <connect body1="RR_3" body2="RR_2" anchor="-0.0334567 0.0156048 -0.0764966" solref="0.01 1"/>
+  </equality>
+</mujoco>

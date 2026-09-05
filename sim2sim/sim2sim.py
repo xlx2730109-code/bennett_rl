@@ -342,7 +342,8 @@ class MujocoRunner:
 
     # ---------------- endpoint trail overlay ---------------- #
     def enable_endpoint_trail(self, bodies, points, stride, marker_r, trail_r):
-        """Draw each endpoint body (e.g. foot `*_2`) as a coloured marker plus a
+        """Draw each endpoint body (e.g. foot `*_foot`, the fixed child of `_1`)
+        as a coloured marker plus a
         position trail sampled every ``stride`` control steps.  This is the MuJoCo
         viewer equivalent of ``play.py --endpoint_trail``: coloured lifecycle
         markers written into the passive viewer's ``user_scn`` on top of the sim.
@@ -393,7 +394,7 @@ class MujocoRunner:
     def info_report(self):
         b = self.data.xpos[self.base_id]
         foot = [mj.mj_name2id(self.model, mj.mjtObj.mjOBJ_BODY, n)
-                for n in ("FL_2", "FR_2", "RL_2", "RR_2")]
+                for n in ("FL_foot", "FR_foot", "RL_foot", "RR_foot")]
         fz = [self.data.xpos[i][2] for i in foot]
         return {"base": (round(b[0], 3), round(b[1], 3), round(b[2], 3)),
                 "feet_z": [round(z, 3) for z in fz]}
@@ -487,6 +488,52 @@ class Keyboard:
         return v[0], v[1], v[2]
 
 
+class CommandReplaySampler:
+    """Reproduce Isaac Lab ``mdp.UniformVelocityCommandCfg`` for a scripted replay.
+
+    Every ``resampling_time_range`` seconds (uniform) a fresh (vx, vy, wz) command
+    is drawn uniformly from the training command ranges; with probability
+    ``standing_frac`` it is instead the zero (stand-still) command.  ``heading``
+    is False, so the 3rd component is a raw yaw-RATE -- exactly the command block
+    the bridge sends, so the replay feeds the policy the same velocity_command obs
+    it saw in training.
+
+    This is what makes a ``--cmd_play`` replay move in ALL directions, including the
+    lateral ``lin_vel_y`` that free_gait3 trained on (vy=+-0.25), instead of the
+    fixed forward-only (0.30, 0, 0) that the old headless smoke test used.
+    """
+
+    def __init__(self, spec, step_dt, rng=None):
+        spec = spec or {}
+        self.rng = rng or np.random.default_rng()
+        self.step_dt = float(step_dt)
+        self.standing = float(spec.get("standing_frac", spec.get("standing", 0.0)))
+        self.resample_range = tuple(spec.get("resampling_time_range", (1.0, 1.0)))
+        self.heading = bool(spec.get("heading", False))
+        # accept either a flat dict of ranges or a nested {"ranges": {...}}
+        self.ranges = spec.get("ranges", spec)
+        self._next = 0
+        self._cmd = (0.0, 0.0, 0.0)
+
+    def _draw(self, step):
+        r = self.ranges
+        if self.rng.random() < self.standing:
+            self._cmd = (0.0, 0.0, 0.0)
+        else:
+            vx = self.rng.uniform(*r.get("lin_vel_x", (-0.30, 0.30)))
+            vy = self.rng.uniform(*r.get("lin_vel_y", (0.0, 0.0)))
+            wz = self.rng.uniform(*r.get("ang_vel_z", (0.0, 0.0)))
+            self._cmd = (float(vx), float(vy), float(wz))
+        t = float(self.rng.uniform(*self.resample_range))
+        self._next = step + max(1, int(round(t / self.step_dt)))
+        return self._cmd
+
+    def step(self, step):
+        if step >= self._next:
+            return self._draw(step)
+        return self._cmd
+
+
 # ---------------------------------------------------------------------------- #
 #  Main
 # ---------------------------------------------------------------------------- #
@@ -495,11 +542,23 @@ def main():
     ap.add_argument("--task", required=True, help="config name in configs/")
     ap.add_argument("--headless", action="store_true", help="no viewer, run --steps and exit")
     ap.add_argument("--steps", type=int, default=None, help="headless run length (control steps)")
+    ap.add_argument("--cmd_play", action="store_true", default=False,
+                    help="Scripted replay: resample (vx,vy,wz) from the training "
+                         "UniformVelocityCommand ranges every `resampling_time_range` s "
+                         "(needs cfg.command, e.g. free_gait3), so the robot moves in "
+                         "ALL directions exactly like the training play video instead of "
+                         "the fixed forward-only smoke test.")
+    ap.add_argument("--record_video", type=str, default=None,
+                    help="Offscreen-record the replay to an mp4 (uses mujoco.Renderer). "
+                         "Adds the foot-end trail like play.py --endpoint_trail.")
+    ap.add_argument("--cmd_seconds", type=float, default=None,
+                    help="--cmd_play / --record_video run length in seconds "
+                         "(default: cfg.ep_len_s).")
     # foot-trajectory overlay (mirrors play.py --endpoint_trail)
     ap.add_argument("--endpoint_trail", action="store_true", default=False,
                     help="Draw each endpoint body as a coloured marker with a trail.")
     ap.add_argument("--endpoint_bodies", type=str, nargs="+", default=None,
-                    help="Bodies to trail (default FL_2 FR_2 RL_2 RR_2).")
+                    help="Bodies to trail (default FL_foot FR_foot RL_foot RR_foot).")
     ap.add_argument("--endpoint_trail_points", type=int, default=600,
                     help="Maximum saved trail points per body.")
     ap.add_argument("--endpoint_trail_stride", type=int, default=None,
@@ -520,8 +579,10 @@ def main():
     cfg.task = args.task
     runner = MujocoRunner(cfg, headless=args.headless)
 
+    if args.record_video and not args.endpoint_trail:
+        args.endpoint_trail = True   # recorded replays get the foot-end trail by default
     if args.endpoint_trail:
-        bodies = args.endpoint_bodies or ["FL_2", "FR_2", "RL_2", "RR_2"]
+        bodies = args.endpoint_bodies or ["FL_foot", "FR_foot", "RL_foot", "RR_foot"]
         stride = args.endpoint_trail_stride
         if stride is None:
             stride = max(1, int(round(0.016 / cfg.step_dt)))
@@ -538,10 +599,22 @@ def main():
     # initial obs
     obs = runner._obs()
 
+    use_cmd_play = args.cmd_play or args.record_video is not None
+    sampler = (CommandReplaySampler(cfg.command, cfg.step_dt) if use_cmd_play else None)
+    if use_cmd_play and cfg.command is None:
+        raise SystemExit("--cmd_play/--record_video needs a `command` spec in the task config "
+                         "(e.g. quad_leg_free_gait3.py), which mirrors the training "
+                         "UniformVelocityCommandCfg ranges.")
+    run_s = (args.cmd_seconds or cfg.ep_len_s)
+
     if args.headless:
-        n = args.steps or int(cfg.ep_len_s / cfg.step_dt)
-        # fixed forward command during headless smoke test
-        run_headless(runner, policy, obs, n)
+        n = args.steps or int(run_s / cfg.step_dt)
+        if use_cmd_play:
+            run_cmd_replay(runner, policy, obs, n, sampler,
+                           record_path=args.record_video)
+        else:
+            # fixed forward command during headless smoke test
+            run_headless(runner, policy, obs, n)
         return
 
     # interactive viewer loop -------------------------------------------------
@@ -556,15 +629,19 @@ def main():
               f"obs={cfg.num_obs} act={cfg.num_actions}\n"
               "keys (hold): arrows move, 6/7 turn.  Ctrl+C quit.")
     kbd = Keyboard()
-    if not runner.is_trace:
+    if not runner.is_trace and not use_cmd_play:
         kbd.start()
     frame = 0
     try:
         while True:
             vx = vy = wz = 0.0
             if not runner.is_trace:
-                vx, vy, wz = kbd.read()
-                runner.set_command(vx, vy, wz)
+                if use_cmd_play:
+                    vx, vy, wz = sampler.step(frame)
+                    runner.set_command(vx, vy, wz)
+                else:
+                    vx, vy, wz = kbd.read()
+                    runner.set_command(vx, vy, wz)
 
             with torch.no_grad():
                 obs_t = torch.from_numpy(obs).float().reshape(1, -1)
@@ -603,6 +680,84 @@ def run_headless(runner, policy, obs, n):
         if k % 50 == 0:
             print(f"step {k}/{n}  {runner.info_report()}")
     print("[sim2sim] headless done. final:", runner.info_report())
+
+
+def _render_offscreen_scene(runner, renderer, cam):
+    """Update the offscreen scene for renderer and inject the endpoint (foot) trail.
+    Mirrors ``_draw_endpoint_trail`` but writing into ``renderer.scene`` (offscreen
+    Renderer has no ``user_scn`` like the GUI viewer).  Falls back to the plain scene
+    if the scene has no room for the extra geoms."""
+    import mujoco as mj
+    d = runner.data
+    cam.lookat = d.xpos[runner.base_id].astype(np.float64)   # keep the robot in frame
+    renderer.update_scene(d, camera=cam)
+    if runner._endpoint_ids:
+        scn = renderer.scene
+        avail = scn.maxgeom - scn.ngeom
+        if avail <= 0:
+            return renderer.render()
+        idx = scn.ngeom
+        added = 0
+        n_col = len(runner._endpoint_colours)
+        for k, body_id in enumerate(runner._endpoint_ids):
+            c = runner._endpoint_colours[k % n_col]
+            rgba = np.array((c[0], c[1], c[2], 1.0), dtype=float)
+            # oldest-first truncation if the scene cannot hold every trail point
+            tr = runner._endpoint_trails[k][-max(0, (avail - added) - 1):]
+            for p in tr:
+                if added >= avail:
+                    break
+                mj.mjv_initGeom(scn.geoms[idx], mj.mjtGeom.mjGEOM_SPHERE,
+                                runner._trail_size, p, runner._mat_id, rgba)
+                idx += 1
+                added += 1
+            if added < avail:   # current-body marker
+                mj.mjv_initGeom(scn.geoms[idx], mj.mjtGeom.mjGEOM_SPHERE,
+                                runner._marker_size, d.xpos[body_id], runner._mat_id, rgba)
+                idx += 1
+                added += 1
+            if added >= avail:
+                break
+        scn.ngeom = idx
+    return renderer.render()
+
+
+def run_cmd_replay(runner, policy, obs, n, sampler, record_path=None):
+    """Scripted training-matched replay: resample the velocity command like Isaac Lab
+    ``UniformVelocityCommandCfg`` every few seconds, so the robot moves in ALL
+    directions (incl. lateral vy) exactly like the training play video.  Optionally
+    records an offscreen mp4 with the foot-end trail (``record_path``)."""
+    import torch
+    cfg = runner.cfg
+    renderer, cam, writer = None, None, None
+    if record_path:
+        import mujoco as mj
+        import imageio
+        renderer = mj.Renderer(runner.model, width=640, height=480)
+        cam = mj.MjvCamera()
+        cam.type = mj.mjtCamera.mjCAMERA_FREE
+        cam.azimuth, cam.elevation, cam.distance = 135.0, -20.0, 1.7
+        writer = imageio.get_writer(record_path, fps=1.0 / cfg.step_dt,
+                                    macro_block_size=None, format="FFMPEG")
+    for k in range(n):
+        if not runner.is_trace:
+            vx, vy, wz = sampler.step(k)
+            runner.set_command(vx, vy, wz)
+        with torch.no_grad():
+            obs_t = torch.from_numpy(obs).float().reshape(1, -1)
+            raw = policy(obs_t).cpu().numpy().reshape(-1)
+        obs = runner.step_control(raw)
+        if record_path:
+            writer.append_data(_render_offscreen_scene(runner, renderer, cam))
+        if k % 50 == 0:
+            b = runner.data.xpos[runner.base_id]
+            print(f"step {k}/{n}  base=({b[0]:.3f},{b[1]:.3f},{b[2]:.3f})  {runner.info_report()}")
+    if writer is not None:
+        writer.close()
+    b = runner.data.xpos[runner.base_id]
+    print(f"[sim2sim] cmd replay done. final base=({b[0]:.3f},{b[1]:.3f},{b[2]:.3f})")
+    if record_path:
+        print(f"[sim2sim] video -> {record_path}")
 
 
 if __name__ == "__main__":
