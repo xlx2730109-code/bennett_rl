@@ -6,7 +6,7 @@ empirical_normalization: null
 obs_groups: {}
 clip_actions: 3.5
 save_interval: 50
-experiment_name: quad_leg_free_gait/quad_leg_free_gait1/flat
+experiment_name: quad_leg_free_gait/quad_leg_free_gait4/flat
 run_name: ''
 logger: tensorboard
 neptune_project: isaaclab

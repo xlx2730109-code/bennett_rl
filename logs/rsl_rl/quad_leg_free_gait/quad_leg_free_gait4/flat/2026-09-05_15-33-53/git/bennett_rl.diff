@@ -1,0 +1,250 @@
+--- git status ---
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   logs/rsl_rl/quad_leg_track/2026-06-29_15-16-03/exported/policy.pt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	SIM2REAL_PIPELINE.md
+	TROT1_CONTRACT_CHECKLIST.md
+	logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/
+	logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait4/
+	plan.md
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait3/
+	source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/README.md b/README.md
+index 43aaf1d..04a1414 100644
+--- a/README.md
++++ b/README.md
+@@ -1,135 +1,76 @@
+-# Template for Isaac Lab Projects
+-
+-## Overview
+-
+-This project/repository serves as a template for building projects or extensions based on Isaac Lab.
+-It allows you to develop in an isolated environment, outside of the core Isaac Lab repository.
+-
+-**Key Features:**
+-
+-- `Isolation` Work outside the core Isaac Lab repository, ensuring that your development efforts remain self-contained.
+-- `Flexibility` This template is set up to allow your code to be run as an extension in Omniverse.
+-
+-**Keywords:** extension, template, isaaclab
+-
+-## Installation
+-
+-- Install Isaac Lab by following the [installation guide](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html).
+-  We recommend using the conda or uv installation as it simplifies calling Python scripts from the terminal.
+-
+-- Clone or copy this project/repository separately from the Isaac Lab installation (i.e. outside the `IsaacLab` directory):
+-
+-- Using a python interpreter that has Isaac Lab installed, install the library in editable mode using:
+-
+-    ```bash
+-    # use 'PATH_TO_isaaclab.sh|bat -p' instead of 'python' if Isaac Lab is not installed in Python venv or conda
+-    python -m pip install -e source/bennett_rl
+-
+-- Verify that the extension is correctly installed by:
+-
+-    - Listing the available tasks:
+-
+-        Note: It the task name changes, it may be necessary to update the search pattern `"Template-"`
+-        (in the `scripts/list_envs.py` file) so that it can be listed.
+-
+-        ```bash
+-        # use 'FULL_PATH_TO_isaaclab.sh|bat -p' instead of 'python' if Isaac Lab is not installed in Python venv or conda
+-        python scripts/list_envs.py
+-        ```
+-
+-    - Running a task:
+-
+-        ```bash
+-        # use 'FULL_PATH_TO_isaaclab.sh|bat -p' instead of 'python' if Isaac Lab is not installed in Python venv or conda
+-        python scripts/<RL_LIBRARY>/train.py --task=<TASK_NAME>
+-        ```
+-
+-    - Running a task with dummy agents:
+-
+-        These include dummy agents that output zero or random agents. They are useful to ensure that the environments are configured correctly.
+-
+-        - Zero-action agent
+-
+-            ```bash
+-            # use 'FULL_PATH_TO_isaaclab.sh|bat -p' instead of 'python' if Isaac Lab is not installed in Python venv or conda
+-            python scripts/zero_agent.py --task=<TASK_NAME>
+-            ```
+-        - Random-action agent
+-
+-            ```bash
+-            # use 'FULL_PATH_TO_isaaclab.sh|bat -p' instead of 'python' if Isaac Lab is not installed in Python venv or conda
+-            python scripts/random_agent.py --task=<TASK_NAME>
+-            ```
+-
+-### Set up IDE (Optional)
+-
+-To setup the IDE, please follow these instructions:
+-
+-- Run VSCode Tasks, by pressing `Ctrl+Shift+P`, selecting `Tasks: Run Task` and running the `setup_python_env` in the drop down menu.
+-  When running this task, you will be prompted to add the absolute path to your Isaac Sim installation.
+-
+-If everything executes correctly, it should create a file .python.env in the `.vscode` directory.
+-The file contains the python paths to all the extensions provided by Isaac Sim and Omniverse.
+-This helps in indexing all the python modules for intelligent suggestions while writing code.
+-
+-### Setup as Omniverse Extension (Optional)
+-
+-We provide an example UI extension that will load upon enabling your extension defined in `source/bennett_rl/bennett_rl/ui_extension_example.py`.
+-
+-To enable your extension, follow these steps:
+-
+-1. **Add the search path of this project/repository** to the extension manager:
+-    - Navigate to the extension manager using `Window` -> `Extensions`.
+-    - Click on the **Hamburger Icon**, then go to `Settings`.
+-    - In the `Extension Search Paths`, enter the absolute path to the `source` directory of this project/repository.
+-    - If not already present, in the `Extension Search Paths`, enter the path that leads to Isaac Lab's extension directory directory (`IsaacLab/source`)
+-    - Click on the **Hamburger Icon**, then click `Refresh`.
+-
+-2. **Search and enable your extension**:
+-    - Find your extension under the `Third Party` category.
+-    - Toggle it to enable your extension.
+-
+-## Code formatting
+-
+-We have a pre-commit template to automatically format your code.
+-To install pre-commit:
+-
+-```bash
+-pip install pre-commit
+-```
+-
+-Then you can run pre-commit with:
+-
+-```bash
+-pre-commit run --all-files
+-```
+-
+-## Troubleshooting
+-
+-### Pylance Missing Indexing of Extensions
+-
+-In some VsCode versions, the indexing of part of the extensions is missing.
+-In this case, add the path to your extension in `.vscode/settings.json` under the key `"python.analysis.extraPaths"`.
+-
+-```json
+-{
+-    "python.analysis.extraPaths": [
+-        "<path-to-ext-repo>/source/bennett_rl"
+-    ]
+-}
+-```
+-
+-### Pylance Crash
+-
+-If you encounter a crash in `pylance`, it is probable that too many files are indexed and you run out of memory.
+-A possible solution is to exclude some of omniverse packages that are not used in your project.
+-To do so, modify `.vscode/settings.json` and comment out packages under the key `"python.analysis.extraPaths"`
+-Some examples of packages that can likely be excluded are:
+-
+-```json
+-"<path-to-isaac-sim>/extscache/omni.anim.*"         // Animation packages
+-"<path-to-isaac-sim>/extscache/omni.kit.*"          // Kit UI tools
+-"<path-to-isaac-sim>/extscache/omni.graph.*"        // Graph UI tools
+-"<path-to-isaac-sim>/extscache/omni.services.*"     // Services tools
+-...
+-```
+\ No newline at end of file
++单腿轨迹跟踪。
++
++运行命令：
++录制视频：
++python scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-V4-50Hz-Play-v0 --checkpoint "模型路径\model_80.pt" --video --endpoint_trail --headless
++注：--endpoint_trail 为单腿足端轨迹显示
++
++python .\scripts\rsl_rl\play.py --task Isaac-Bennett-QuadLeg-Track-Play-v0 --video --checkpoint logs\rsl_rl\quad_leg_track\2026-06-29_15-16-03\model_1499.pt --endpoint_trail --endpoint_bodies FL_2 FR_2 RL_2 RR_2
++单腿轨迹：
++--endpoint_trail --endpoint_body RR_2
++也可以省略 --endpoint_body RR_2，旧模型默认就是 RR_2：
++--endpoint_trail
++旧模型四腿轨迹：
++--endpoint_trail --endpoint_bodies FL_2 FR_2 RL_2 RR_2
++新模型四腿轨迹：
++--endpoint_trail --endpoint_bodies FL_foot FR_foot RL_foot RR_foot
++
++
++
++单腿轨迹生成与联调 → 单腿轨迹强化学习跟踪 → 四腿协调轨迹强化学习跟踪。
++
++| 对比项           | 单腿轨迹生成与联调`single_leg_rr_jct`                                  | 单腿轨迹跟踪`single_leg_rr_trace` | 四腿协调轨迹跟踪`quad_leg_track`     |
++| ---------------- | ------------------------------------------------------------------------ | ----------------------------------- | -------------------------------------- |
++| 研究目的         | 验证关节运动与Sim2Real映射<br />验证关节方向、零位、限幅、通信和真机跟随 | 学习单腿周期轨迹跟踪                | 将单腿方法扩展到四腿协调控制           |
++| 控制对象         | 一条腿的thigh、calf                                                      | 右后腿RR的2个关节                   | 四条腿共8个关节                        |
++| 控制方式         | 键盘或预设关键帧直接控制                                                 | PPO策略输出2维动作                  | PPO输出2维基础动作，再映射到8个关节    |
++| 是否使用强化学习 | 独立联调脚本不使用                                                       | 使用PPO                             | 使用PPO                                |
++| 轨迹形式         | 人工设定关节角序列                                                       | 两关节正弦轨迹，相位差90°          | 四腿共享周期轨迹，并加入对角腿相位协调 |
++| 动作维度         | 2维人工指令                                                              | 2维策略动作                         | 2维策略动作，展开为8维关节目标         |
++| 观测维度         | 无策略观测                                                               | 12维                                | 36维                                   |
++| 四腿协调关系     | 不涉及                                                                   | 不涉及                              | FL与RR同相，FR与RL同相，两组反相       |
++| 主要评价指标     | 方向、零位、限幅、通信和真机跟随                                         | 单腿轨迹误差、平滑性、速度和力矩    | 四条腿分别的跟踪误差及整体协调性       |
++| 控制频率         | UDP默认250 Hz                                                            | 仿真300 Hz，策略50 Hz               | 仿真300 Hz，策略50 Hz                  |
++| 在研究中的作用   | 建立可靠的底层控制链路                                                   | 验证强化学习能否完成基本跟踪        | 验证方法能否扩展到多关节协调控制       |
++
++| 对比维度 | 单腿轨迹联调     | 单腿轨迹跟踪     | 四腿轨迹跟踪     |
++| -------- | ---------------- | ---------------- | ---------------- |
++| 阶段目标 | 对齐仿真实机动作 | 学习单腿周期轨迹 | 学习四腿协同轨迹 |
++| 控制对象 | 单腿两个驱动关节 | 右后腿双驱动关节 | 四腿八个驱动关节 |
++| 动作方式 | 键盘控制同步动作 | 策略输出二维动作 | 策略映射八个关节 |
++| 轨迹组织 | 仿真实机同步运动 | 双关节相差九十度 | 对角腿同相组反相 |
++| 验证重点 | 验证映射是否一致 | 验证跟踪是否准确 | 验证协同是否有效 |
++
++Trace任务怎么讲
++Trace任务固定机器人基座，只训练右后腿的 RR_thigh 和 RR_calf 两个关节，其余关节保持默认位置。
++参考轨迹是两条相差90°的正弦曲线：
++
++- 幅值：±20°
++- 最大参考角速度：35°/s
++- 两个关节形成周期性的协调运动
++  策略输入共12维，包括轨迹相位、目标关节偏移、跟踪误差、实际关节位置、关节速度和上一时刻动作；输出为两个关节动作。动作幅值为±20°，目标变化速度限制为60°/s。
++  奖励以轨迹跟踪为主，同时惩罚关节速度过大、动作突变和力矩过大。因此目标不是单纯“让腿动起来”，而是在准确跟踪、运动平滑和能耗之间取得平衡。
++  仿真频率为300 Hz，策略频率为50 Hz，每回合8秒。
++  JCT任务怎么讲
++  JCT目录中的独立脚本主要用于实验前的关节控制验证：
++- 键盘控制或按关键帧自动运动；
++- 显示腿部末端运动轨迹；
++- 检查关节正负方向、零位和运动范围；
++- 通过UDP把仿真关节偏移发送给真实电机；
++- 比较仿真目标与真机实际响应。
++  虽然脚本名中带有 ik_trace，但当前实现并没有求解逆运动学，而是直接控制大腿和小腿关节角。
++
++本研究采用分层验证方法。首先通过JCT关节联调模块验证电机通信、关节方向、零位、限幅以及仿真到真机的映射关系，确保底层执行链路正确。随后在Trace任务中引入强化学习，使策略学习右后腿两个关节的周期轨迹跟踪。训练时以跟踪精度为主要目标，同时约束动作变化、关节速度和驱动力矩，从而获得兼顾精度和平滑性的控制策略。简单来说，JCT解决“控制链路是否正确”，Trace解决“策略能否学会准确、平滑地跟踪轨迹”。
++
++三阶段关系
++
++1. 单腿轨迹生成与联调
++   首先验证电机方向、零位、运动范围以及仿真到真机的映射，排除底层控制问题。
++2. 单腿轨迹强化学习跟踪
++   在底层链路可靠的基础上，让策略学习右后腿两个关节的周期轨迹，验证跟踪精度和平滑性。
++3. 四腿协调轨迹强化学习跟踪
++   将单腿策略扩展到四条腿。策略仍只学习一组大腿和小腿基础动作，再按照
++   FL/RR同相、FR/RL反相
++   映射到八个关节，降低学习难度并形成类似对角步态的协调关系。
++   答辩口述版
++   本研究采用由简单到复杂的递进路线。第一阶段通过单腿关节轨迹实验完成电机方向、零位、限幅和Sim2Real映射验证；第二阶段引入PPO算法，实现右后腿两个关节的周期轨迹跟踪；第三阶段将单腿跟踪方法扩展到四腿系统，通过对角腿相位映射实现八个关节的协调运动。该过程验证了控制方法从单关节链路、单腿学习到四腿协调控制的可扩展性。
+diff --git a/logs/rsl_rl/quad_leg_track/2026-06-29_15-16-03/exported/policy.pt b/logs/rsl_rl/quad_leg_track/2026-06-29_15-16-03/exported/policy.pt
+index b773a52..d4c6beb 100644
+--- a/logs/rsl_rl/quad_leg_track/2026-06-29_15-16-03/exported/policy.pt
++++ b/logs/rsl_rl/quad_leg_track/2026-06-29_15-16-03/exported/policy.pt
+@@ -1,3 +1,3 @@
+ version https://git-lfs.github.com/spec/v1
+-oid sha256:e7b49afb7f386c0da53321804405e6ca0aa67ea1e1eabe2bd8872869dc4a0f24
++oid sha256:0ec69a03cedcfc98526eddcd219daa2213282f5fe5005e6d3d19fa59be07d4b8
+ size 130514
