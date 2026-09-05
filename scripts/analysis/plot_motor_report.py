@@ -104,6 +104,7 @@ GRAVITY = 9.81
 DM_RATED_TORQUE = 8.0    # DM-J8006-2EC continuous rating
 DM_PEAK_TORQUE = 20.0    # peak
 CONTACT_FORCE_N = 5.0    # foot force threshold for stance detection
+LIMIT_RED = "#d03b3b"    # status-critical red for the torque limit lines
 
 
 # ------------------------------------------------------------------ style ---
@@ -323,32 +324,88 @@ def power_heatmap(df, out_dir, phase="command"):
 
 
 def torque_speed_scatter(df, out_dir, phase="command"):
-    fig, axes = new_fig(15.0, 7.2, 2, 4)
-    for ax, joint in zip(axes, JOINTS):
-        leg = leg_of(joint)
-        taus, omegas = [], []
+    """Motor-selection chart: all joint operating points vs the DM-J8006-2EC
+    usable torque envelope (the DC-motor model used in training), one panel."""
+    fig, axes = new_fig(11.8, 7.2, 1, 1)
+    ax = axes[0]
+
+    vlim = 19.896753  # rad/s, DCMotor velocity_limit used in training
+    rated, peak = DM_RATED_TORQUE, DM_PEAK_TORQUE
+    w = np.linspace(0.0, vlim, 400)
+    env = np.clip(peak * (1.0 - w / vlim), 0.0, rated)  # positive envelope
+    ax.plot(w, env, color=LIMIT_RED, lw=2.0, ls=(0, (6, 3)), zorder=3)
+    ax.plot(-w, -env, color=LIMIT_RED, lw=2.0, ls=(0, (6, 3)), zorder=3)
+    knee = vlim * (1.0 - rated / peak)
+
+    taus, omegas = [], []
+    for name in df["scenario"].unique():
+        sub = df[(df["scenario"] == name) & (df["scenario_phase"] == phase)]
+        if not len(sub):
+            continue
+        for joint in JOINTS:
+            taus.append(sub[f"joint_torque_nm_{joint}"].to_numpy())
+            omegas.append(sub[f"joint_vel_rad_s_{joint}"].to_numpy())
+    tau = np.concatenate(taus)
+    om = np.concatenate(omegas)
+    for leg in ("FL", "FR", "RL", "RR"):
+        pts_t, pts_o = [], []
         for name in df["scenario"].unique():
             sub = df[(df["scenario"] == name) & (df["scenario_phase"] == phase)]
             if not len(sub):
                 continue
-            taus.append(sub[f"joint_torque_nm_{joint}"].to_numpy())
-            omegas.append(sub[f"joint_vel_rad_s_{joint}"].to_numpy())
-        if not taus:
-            continue
-        tau = np.concatenate(taus)
-        om = np.concatenate(omegas)
-        ax.scatter(om, tau, s=6, color=LEG_COLORS[leg], alpha=0.25, linewidths=0,
-                   edgecolors="none")
-        for level, style, text in ((DM_RATED_TORQUE, "-", "rated 8"),
-                                   (DM_PEAK_TORQUE, "-", "peak 20")):
-            for sign in (1, -1):
-                ax.axhline(sign * level, color=AXIS, linewidth=1.0, linestyle=style, zorder=0)
-        ax.axhline(0.0, color=AXIS, linewidth=0.8, zorder=0)
-        style_axes(ax)
-        ax.set_title(joint, fontsize=9, color=INK2, pad=4)
-        ax.set_ylim(-DM_PEAK_TORQUE - 2, DM_PEAK_TORQUE + 2)
-    fig.suptitle("Torque-speed operating points vs DM-J8006-2EC limits "
-                 f"(gray lines = +-{DM_RATED_TORQUE:.0f} rated / +-{DM_PEAK_TORQUE:.0f} peak N-m)",
+            for joint in JOINTS:
+                if leg_of(joint) != leg:
+                    continue
+                pts_t.append(sub[f"joint_torque_nm_{joint}"].to_numpy())
+                pts_o.append(sub[f"joint_vel_rad_s_{joint}"].to_numpy())
+        ax.scatter(np.concatenate(pts_o), np.concatenate(pts_t), s=5,
+                   color=LEG_COLORS[leg], alpha=0.15, linewidths=0,
+                   edgecolors="none", rasterized=True, zorder=2)
+
+    style_axes(ax)
+    ax.set_xlabel("Joint speed (rad/s)", fontsize=11.5, color=INK)
+    ax.set_ylabel("Joint torque (N-m)", fontsize=11.5, color=INK)
+    ax.tick_params(colors=INK, labelsize=10, length=4, width=1.0)
+    xmax = float(np.percentile(np.abs(om), 99.9)) * 1.3
+    xmax = max(1.5, min(xmax, vlim))
+    ax.set_xlim(-xmax, xmax)
+    ax.set_ylim(-rated - 2.0, rated + 2.0)
+    ax.set_yticks([-10, -7.5, -5, -2.5, 0, 2.5, 5, 7.5, 10])
+    # The +10/-10 gridlines sit exactly on the plot frame and paint over the
+    # secondary axis's top spine (child-axes spine loses to parent grid), so
+    # hide the edge gridlines -- they are redundant under the frame anyway.
+    ylim = ax.get_ylim()
+    for gl, ypos in zip(ax.yaxis.get_gridlines(), ax.get_yticks()):
+        if ypos >= ylim[1] - 1e-9 or ypos <= ylim[0] + 1e-9:
+            gl.set_visible(False)
+
+    # rpm secondary axis (matches the vendor datasheet's rpm reading)
+    sec = ax.secondary_xaxis(
+        "top",
+        functions=(lambda v: v * 60.0 / (2.0 * np.pi), lambda r: r * 2.0 * np.pi / 60.0),
+    )
+    sec.set_xlabel("Joint speed (rpm)", fontsize=11.5, color=INK)
+    sec.tick_params(labelcolor=INK, color=INK, labelsize=10, length=4, width=1.0)
+    sec.spines["top"].set_color(INK)
+    sec.spines["top"].set_linewidth(1.0)
+
+    ax.text(0.985, 0.975,
+            f"red dashed = limit: flat +-{rated:.0f} N-m up to {knee:.1f} rad/s,\n"
+            f"then linear to 0 at {vlim:.1f} rad/s (short-time peak +-{peak:.0f} N-m)",
+            transform=ax.transAxes, ha="right", va="top", fontsize=8.5,
+            color=INK, linespacing=1.4)
+
+    handles = [
+        Line2D([], [], color=LIMIT_RED, lw=2.0, ls=(0, (6, 3)),
+               label=f"DM-J8006-2EC continuous limit (+-{rated:.0f} N-m)"),
+        *[Line2D([], [], marker="o", ls="none", markersize=6, color=LEG_COLORS[leg],
+                 label=f"{leg} joints") for leg in ("FL", "FR", "RL", "RR")],
+    ]
+    ax.legend(handles=handles, loc="upper left", fontsize=8.5, frameon=True,
+              facecolor=SURFACE, edgecolor="none", framealpha=0.9,
+              labelcolor=INK, ncols=1, borderaxespad=0.6)
+
+    fig.suptitle("Torque-speed operating points vs DM-J8006-2EC envelope (all scenarios)",
                  color=INK, fontsize=13, fontweight="bold")
     save(fig, out_dir, "05_torque_speed_operating_points.png")
 

@@ -1,5 +1,3 @@
-# 单腿轨迹跟踪。
-
 # 运行命令：
 # 录制视频：
 python scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-V4-50Hz-Play-v0 --checkpoint "模型路径\model_80.pt" --video --endpoint_trail --headless

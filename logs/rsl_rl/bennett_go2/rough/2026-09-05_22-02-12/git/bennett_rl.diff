@@ -1,0 +1,61 @@
+--- git status ---
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   plan.md
+	modified:   source/bennett_rl/bennett_rl/assets/robots/bennett.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	image/
+	logs/rsl_rl/bennett_go2/
+	source/bennett_rl/bennett_rl/tasks/manager_based/bennett_go2/
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/plan.md b/plan.md
+index a120251..74d8484 100644
+--- a/plan.md
++++ b/plan.md
+@@ -23,6 +23,9 @@ source\bennett_rl\bennett_rl\tasks\manager_based\quad_leg_free_gait\quad_leg_fre
+ 你看没毛病吧。有问题直接问。
+ 
+ # step6
++![1788616345523](image/plan/1788616345523.png)
++扭矩转速曲线你出了么？
++
+ 
+ 
+ # step7
+diff --git a/source/bennett_rl/bennett_rl/assets/robots/bennett.py b/source/bennett_rl/bennett_rl/assets/robots/bennett.py
+index 95b5f3e..94c618e 100644
+--- a/source/bennett_rl/bennett_rl/assets/robots/bennett.py
++++ b/source/bennett_rl/bennett_rl/assets/robots/bennett.py
+@@ -143,14 +143,14 @@ BENNETT_CFG_V5 = _make_bennett_cfg(
+     # old: usd_path=BENNETT_USD_PATH,
+     usd_path=BENNETT_3_USD_PATH,
+     joint_pos={
+-        "FL_thigh": +0.1,
+-        "FR_thigh": -0.1,
+-        "RL_thigh": +0.1,
+-        "RR_thigh": -0.1,
+-        "FL_calf": -0.2,
+-        "FR_calf": -0.2,
+-        "RL_calf": -0.2,
+-        "RR_calf": -0.2,
++        "FL_thigh": +0.14,
++        "FR_thigh": -0.14,
++        "RL_thigh": +0.14,
++        "RR_thigh": -0.14,
++        "FL_calf": -0.28,
++        "FR_calf": -0.28,
++        "RL_calf": -0.28,
++        "RR_calf": -0.28,
+     },
+     actuator_cfg=dict(
+         effort_limit=17,
