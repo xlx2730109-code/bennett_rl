@@ -570,15 +570,43 @@ def velocity_tracking(df, out_dir, phase="command"):
 
 # -------------------------------------------------------------------- main ---
 def main():
+    global FEET, ROBOT_MASS_KG
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--csv", type=Path, required=True, help="diagnostics CSV from collect_bennett_policy_diagnostics.py")
     ap.add_argument("--out_dir", type=Path, default=None, help="default: the CSV's own directory")
+    ap.add_argument(
+        "--cmd_range",
+        type=float,
+        nargs=3,
+        default=(0.35, 0.25, 0.60),
+        metavar=("VX", "VY", "WZ"),
+        help="Training-range command envelope (m/s, m/s, rad/s) behind the slow/mid/fast fractions.",
+    )
+    ap.add_argument("--mass", type=float, default=None, help="Robot mass in kg for cost-of-transport. Default: Urdf_Bennett_3 total.")
+    ap.add_argument("--feet", type=str, nargs=4, default=None, help="Foot column suffixes. Default: auto-detected from the CSV (FL_1-style names for the V1 asset).")
     args = ap.parse_args()
+
+    vx, vy, wz = args.cmd_range
+    CMD_RANGE.update({
+        "forward": ("lin_x", vx), "backward": ("lin_x", vx),
+        "lateral_left": ("lin_y", vy), "lateral_right": ("lin_y", vy),
+        "yaw_left": ("ang_z", wz), "yaw_right": ("ang_z", wz),
+    })
+    if args.mass is not None:
+        ROBOT_MASS_KG = args.mass
 
     out_dir = args.out_dir or args.csv.parent
     out_dir.mkdir(parents=True, exist_ok=True)
     df = pd.read_csv(args.csv)
+    if args.feet is not None:
+        FEET = tuple(args.feet)
+    else:
+        contact_cols = [c for c in df.columns if c.startswith("foot_contact_force_n_")]
+        if not contact_cols:
+            raise SystemExit("[motor-report] no foot_contact_force_n_* columns in the CSV; pass --feet")
+        FEET = tuple(c.split("foot_contact_force_n_")[1] for c in contact_cols)
     print(f"[motor-report] csv={args.csv} rows={len(df)} scenarios={df['scenario'].nunique()}")
+    print(f"[motor-report] cmd_range={args.cmd_range} mass={ROBOT_MASS_KG:.2f} kg feet={FEET}")
     print(f"[motor-report] out_dir={out_dir}")
 
     torque_timeseries(df, out_dir)

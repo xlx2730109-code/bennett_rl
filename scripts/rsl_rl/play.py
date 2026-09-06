@@ -113,6 +113,16 @@ parser.add_argument(
     help="Fix base_velocity lin_vel_x command to this speed during play, if the task has that command.",
 )
 parser.add_argument(
+    "--easy_terrain",
+    action="store_true",
+    default=False,
+    help=(
+        "Shrink the terrain difficulty_range to its easiest 20% for demo recording "
+        "(pyramid stairs top out near 0.086 m step height, matching what the "
+        "curriculum actually trained on)."
+    ),
+)
+parser.add_argument(
     "--keyboard_x_sensitivity",
     type=float,
     default=None,
@@ -206,6 +216,22 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
             raise ValueError("--speed requires an environment config with commands.base_velocity.")
         env_cfg.commands.base_velocity.ranges.lin_vel_x = (args_cli.speed, args_cli.speed)
         print(f"[INFO] Fixed play command lin_vel_x to {args_cli.speed:.3f} m/s.")
+    if args_cli.easy_terrain:
+        terrain_cfg = getattr(getattr(env_cfg, "scene", None), "terrain", None)
+        if terrain_cfg is None or getattr(terrain_cfg, "terrain_generator", None) is None:
+            raise ValueError("--easy_terrain requires a task whose scene.terrain uses a terrain generator.")
+        # Play samples every patch's difficulty uniformly from difficulty_range
+        # (curriculum is off), so the full (0, 1) range regularly draws
+        # 0.23 m pyramid-stair steps the policy never trained on.  Clamp to
+        # the easiest band; with the shared preset that caps stairs at
+        # 0.05 + 0.20*(0.23-0.05) ~= 0.086 m and slopes/boxes proportionally.
+        gen = terrain_cfg.terrain_generator
+        gen.difficulty_range = (0.0, 0.2)
+        print(
+            "[INFO] Easy terrain: difficulty_range=(0.0, 0.2) -- stairs "
+            f"{gen.sub_terrains['pyramid_stairs'].step_height_range} -> capped near "
+            "0.086 m step height."
+        )
 
     keyboard_controller = None
     if args_cli.keyboard:
