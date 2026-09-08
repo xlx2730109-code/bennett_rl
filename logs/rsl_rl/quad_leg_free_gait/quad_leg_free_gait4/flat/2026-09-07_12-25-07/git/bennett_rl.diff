@@ -1,0 +1,325 @@
+--- git status ---
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.png
+	modified:   logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.svg
+	modified:   sim2sim/README.md
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/flat_env_cfg.py
+	modified:   source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/mdp/rewards.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	1.md
+	image/1/
+	logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait4/flat/2026-09-07_12-25-07/
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/README.md b/README.md
+index cc705ec..59ca980 100644
+--- a/README.md
++++ b/README.md
+@@ -3,7 +3,11 @@ python scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-V4-50Hz-Pl
+ 注：--endpoint_trail 为单腿足端轨迹显示
+ --easy_terrain 为简单地形
+ 
++...
+ 
++cscs
++csc
++...
+ # 单腿轨迹：
+ --endpoint_trail --endpoint_body RR_2
+ # 也可以省略 --endpoint_body RR_2，旧模型默认就是 RR_2：
+diff --git a/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.png b/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.png
+index 375a0bf..cdf2438 100644
+Binary files a/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.png and b/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.png differ
+diff --git a/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.svg b/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.svg
+index 4b737a3..d5dd027 100644
+--- a/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.svg
++++ b/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/motor_report/05_torque_speed_operating_points.svg
+@@ -373,8 +373,8 @@ L -1 439.942629
+ " clip-path="url(#p1207d1635f)" style="fill: none; stroke-dasharray: 12,6; stroke-dashoffset: 0; stroke: #d03b3b; stroke-width: 2"/>
+    </g>
+    <g id="text_27">
+-    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(624.541223 68.846135)">red dashed = limit: flat +-8 N-m up to 11.9 rad/s,</text>
+-    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(591.339426 79.65601)">then linear to 0 at 19.9 rad/s (short-time peak +-20 N-m)</text>
++    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(624.541223 68.846135)"></text>
++    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(591.339426 79.65601)"></text>
+    </g>
+    <g id="legend_1">
+     <g id="patch_7">
+diff --git a/sim2sim/README.md b/sim2sim/README.md
+index fcefd2f..3e086d8 100644
+--- a/sim2sim/README.md
++++ b/sim2sim/README.md
+@@ -1,15 +1,21 @@
+ # 带可视化,键盘控制  6、7控制转向  箭头键控制前进后退
++
+ python sim2sim\sim2sim.py --task 策略 --endpoint_trail --endpoint_bodies
+ 
+ # 足端轨迹
++
+ ## 单腿只要 RR 的轨迹
++
+ python sim2sim\sim2sim.py --task single_leg_rr_trace --endpoint_trail --endpoint_bodies RR_2
+ 
+ ## 四腿参考轨迹(和你截图对应,4 条椭圆)
++
+ python sim2sim\sim2sim.py --task quad_leg_track --endpoint_trail --endpoint_trail_points 1000
+ 
+ ## quad_leg_trot1
++
+ python sim2sim\sim2sim.py --task quad_leg_trot1 --endpoint_trail
+ 
+ # quad_leg_free_gait3
+-python sim2sim\sim2sim.py --task quad_leg_free_gait3 --endpoint_trail
+\ No newline at end of file
++
++python sim2sim\sim2sim.py --task quad_leg_free_gait3 --endpoint_trail
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/flat_env_cfg.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/flat_env_cfg.py
+index 8f1995b..52fdf9d 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/flat_env_cfg.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/flat_env_cfg.py
+@@ -1,31 +1,37 @@
+ """Higher-clearance emergent-gait Bennett locomotion on flat ground.
+ 
+ Identical to ``QuadLegFreeGait3FlatEnvCfg`` (the canonical go2-flat reward /
+-command port) except for ONE addition: a one-sided saturating swing-foot
+-clearance penalty that nudges the policy to lift each swinging foot to a
+-deliberately generous height. The reason is sim2real: the previously-trained
+-sim lift (free_gait3's target) transferred to the real robot as a foot that
+-dragged / shuffled along the ground. Doubling the sim clearance gives the real
+-foot margin so it still clears the floor after the lift drop.
++command port) except for TWO gait-shaping additions, both motivated by the same
++sim2real symptom: the previously-trained sim lift (free_gait3) transferred to
++the real robot as a foot that dragged / shuffled along the ground.
+ 
+-  * ``min_clearance = 0.07`` ~= 2x the old sim-target 0.035. This is baseline A
+-    the user asked for (0.035 doubled), NOT trot1's value.
+-  * Shape = one-sided saturating ``(1 - exp(-k * shortfall))`` (arXiv:2403.10723),
+-    not free_gait1's narrow Gaussian -- a small change in *height* here changes
+-    the reward smoothly and never saturates to zero gradient, which is exactly
+-    what the old Gaussian got wrong.
++  * ``swing_foot_clearance`` -- nudges each swinging foot to a deliberately
++    generous, speed-scaled apex height. The FIRST version of this task charged
++    the shortfall through the whole airborne arc and trained badly (3x jerk,
++    6x below-height terminations, penalty stuck at 47% of max): a parabolic
++    swing spends most of its arc below any apex target, so even ideal behavior
++    could not zero the penalty and it permanently fought the smoothness terms.
++    The redesigned term weights the shortfall by the foot's horizontal speed
++    (the phase-free analogue of arXiv:2403.10723's mid-swing weight w(s)),
++    scales the target with the commanded speed (0.03 -> 0.07 m over
++    0 -> 0.30 m/s), and gates at the canonical 0.1 m/s like the official
++    ``feet_air_time``.
++  * ``feet_slide`` -- the official Isaac Lab stance-foot slide penalty
++    (weight -0.10), the standard anti-drag companion: the hardware failure was
++    a foot sliding along the ground, which is a STANCE fault no swing-height
++    term can reach.
+ 
+-Note: the swing-clearance reward is a PURE sim-terrain construct (it reads foot
+-world-Z and contact); it does NOT add anything to the frozen 33-dim observation
+-(no gait clock, no phase, no swing flags), so the obs contract is unchanged and
+-deployable via the same free-gait bridge.
++Neither term adds anything to the frozen 33-dim observation (no gait clock, no
++phase, no swing flags), so the obs contract is unchanged and deployable via the
++same free-gait bridge.
+ """
+ 
++import isaaclab_tasks.manager_based.locomotion.velocity.mdp.rewards as velocity_mdp
+ from isaaclab.managers import RewardTermCfg as RewTerm
+ from isaaclab.managers import SceneEntityCfg
+ from isaaclab.utils import configclass
+ 
+-from ...quad_leg_trot.quad_leg_trot1.flat_env_cfg import COMMAND_DEADBAND, FOOT_BODIES
++from ...quad_leg_trot.quad_leg_trot1.flat_env_cfg import FOOT_BODIES
+ from ...quad_leg_free_gait.quad_leg_free_gait3.flat_env_cfg import QuadLegFreeGait3FlatEnvCfg
+ 
+ from . import mdp
+@@ -33,7 +39,7 @@ from . import mdp
+ 
+ @configclass
+ class QuadLegFreeGait4FlatEnvCfg(QuadLegFreeGait3FlatEnvCfg):
+-    """free_gait3 + higher swing clearance for sim2real transfer margin."""
++    """free_gait3 + speed-scaled swing clearance + stance anti-drag."""
+ 
+     def __post_init__(self):
+         super().__post_init__()
+@@ -41,9 +47,9 @@ class QuadLegFreeGait4FlatEnvCfg(QuadLegFreeGait3FlatEnvCfg):
+         contact_cfg = SceneEntityCfg("contact_forces", body_names=FOOT_BODIES, preserve_order=True)
+         foot_cfg = SceneEntityCfg("robot", body_names=FOOT_BODIES, preserve_order=True)
+ 
+-        # Anti-drag clearance (arXiv:2403.10723 form). The policy is penalised for
+-        # any swinging foot below min_clearance, and the penalty saturates at the
+-        # weight via `1 - exp(-k*shortfall)` so it never pushes an over-lift kick.
++        # Speed-scaled, mid-swing-weighted clearance (see mdp/rewards.py for the
++        # design rationale). Bounded penalty via 1 - exp(-k * shortfall): a low
++        # foot always costs some reward, a high foot costs nothing extra.
+         self.rewards.swing_foot_clearance = RewTerm(
+             func=mdp.swing_foot_clearance,
+             weight=-0.15,
+@@ -51,10 +57,24 @@ class QuadLegFreeGait4FlatEnvCfg(QuadLegFreeGait3FlatEnvCfg):
+                 "sensor_cfg": contact_cfg,
+                 "asset_cfg": foot_cfg,
+                 "threshold": 1.0,
+-                "min_clearance": 0.07,
++                "clearance_low": 0.03,
++                "clearance_high": 0.07,
++                "speed_ref": 0.30,
++                "v_foot_ref": 0.5,
+                 "saturating_k": 40.0,
+                 "command_name": "base_velocity",
+-                "command_deadband": COMMAND_DEADBAND,
++            },
++        )
++
++        # Official stance-foot slide penalty: punishes the dragging/shuffling
++        # foot exactly where it happens (in contact), complementing the
++        # swing-only clearance term.
++        self.rewards.feet_slide = RewTerm(
++            func=velocity_mdp.feet_slide,
++            weight=-0.10,
++            params={
++                "sensor_cfg": contact_cfg,
++                "asset_cfg": foot_cfg,
+             },
+         )
+ 
+diff --git a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/mdp/rewards.py b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/mdp/rewards.py
+index c03d97e..5ccd9da 100644
+--- a/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/mdp/rewards.py
++++ b/source/bennett_rl/bennett_rl/tasks/manager_based/quad_leg_free_gait/quad_leg_free_gait4/mdp/rewards.py
+@@ -1,24 +1,38 @@
+ """Gait-agnostic foot-clearance reward for the higher-clearance free-gait task.
+ 
+-free_gait1's ``swing_clearance`` was a *narrow Gaussian* (target 0.035, sigma
+-0.012): a peaked reward that gave ~zero gradient once the foot sat far from the
+-target, which is exactly why that term trained poorly. This is a different,
+-research-backed shape -- the one-sided saturating swing-phase clearance shortfall
+-
+-    penalty = I_swing * (1 - exp{-k * max(0, h_min - h_foot)})
+-
+-modelled on arXiv:2403.10723 (Towards Dynamic Quadrupedal Gaits). It is:
+-
+-  * one-sided   -- only a foot that the policy elects to swing AND that sits below
+-                   the clearance threshold costs reward; a high foot costs nothing;
+-  * saturating  -- the penalty is bounded at ``weight`` and never grows unbounded,
+-                   so the policy is not pushed into a violent over-lift kick;
+-  * never sparse-- every bit of insufficient lift costs some reward, so the policy
+-                   always has gradient to lift the foot higher.
+-
+-The target is deliberately generous (~2x the sim lift that transferred as a
+-dragging foot on hardware), which is the point: after the sim->real lift drop,
+-the real robot still clears the ground.
++Why the first version trained badly: the original ``swing_foot_clearance``
++charged the saturating shortfall through the ENTIRE airborne time below the
++threshold. A swing foot is a parabola -- even a perfect swing whose apex
++exactly meets the target spends most of the arc below it, so an ideal gait
++still ate ~60% of the max penalty. That permanent floor locked the policy in a
++tug-of-war against the smoothness terms (action rate / dof acc), which showed
++up in the logs as 3x jerk, 6x below-height terminations and a clearance penalty
++stuck at 47% of max.
++
++The redesign is the phase-free analogue of the cited paper's actual form
++(arXiv:2403.10723, Table II: ``-0.15 I_swing w(s) (1 - exp{-20 c_foot})`` with
++``w(s) = (1 + sin(pi s)) / 2`` -- ZERO at lift-off/touchdown, peaking mid-swing;
++the first version had dropped that weight entirely):
++
++  * mid-swing weighting without a clock -- during swing the foot's horizontal
++    speed follows a half-sine (zero at lift-off/touchdown, max mid-swing), so
++    ``w = clamp(|v_foot_xy| / v_ref, 0, 1)`` reproduces the paper's w(s) shape.
++    It is also exactly the failure mode that matters on hardware: a LOW foot
++    that is TRANSLATING is the one that scuffs;
++  * speed-scaled target -- ``h_target = h_low + (h_high - h_low) *
++    clip(|v_cmd| / speed_ref, 0, 1)``: creeping commands get a small target, so
++    the robot is never forced into high-step marching at near-zero speed;
++  * canonical gate -- active only when ``|v_cmd_xy| > 0.1`` like the official
++    ``feet_air_time`` (the old gate at the 0.025 deadband taxed the crawl band
++    where it was the ONLY gait-shaping term);
++  * one-sided saturating -- ``1 - exp(-k * shortfall)`` keeps the bounded,
++    never-zero-gradient property (a foot below target always costs some
++    reward, an over-lifting foot costs nothing extra).
++
++The term reads foot world-Z, contact forces and body velocities only -- pure
++sim-terrain constructs. It adds nothing to the frozen 33-dim observation (no
++clock, no phase, no swing flags), so the obs contract and the deployment bridge
++are unchanged.
+ """
+ 
+ from __future__ import annotations
+@@ -34,10 +48,13 @@ from isaaclab.sensors import ContactSensor
+ if TYPE_CHECKING:
+     from isaaclab.envs import ManagerBasedRLEnv
+ 
++CANONICAL_VELOCITY_GATE = 0.1  # official feet_air_time's no-reward-for-zero-command gate
+ 
+-def _moving_mask(env: ManagerBasedRLEnv, command_name: str, command_deadband: float) -> torch.Tensor:
++
++def _command_planar_speed(env: ManagerBasedRLEnv, command_name: str) -> torch.Tensor:
++    """Planar commanded speed |(vx, vy)| per env (m/s)."""
+     command = env.command_manager.get_command(command_name)
+-    return torch.linalg.vector_norm(command[:, :3], dim=1) >= float(command_deadband)
++    return torch.linalg.vector_norm(command[:, :2], dim=1)
+ 
+ 
+ def _foot_contacts(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg, threshold: float) -> torch.Tensor:
+@@ -51,17 +68,21 @@ def swing_foot_clearance(
+     sensor_cfg: SceneEntityCfg,
+     asset_cfg: SceneEntityCfg,
+     threshold: float,
+-    min_clearance: float,
++    clearance_low: float,
++    clearance_high: float,
++    speed_ref: float,
++    v_foot_ref: float,
+     saturating_k: float,
+     command_name: str,
+-    command_deadband: float,
+ ) -> torch.Tensor:
+-    """One-sided saturating penalty for feet in swing that stay too low.
++    """Mid-swing-weighted penalty for swinging feet that stay too low.
+ 
+     Returns a *positive* penalty magnitude in [0, 1] per env (averaged over the
+-    feet in swing); a foot hovering below ``min_clearance`` scores toward 1 as
+-    ``shortfall`` grows. Attach it to the reward-set with a NEGATIVE weight so it
+-    becomes a penalty (e.g. ``weight=-0.15``).
++    feet in swing); attach it with a NEGATIVE weight (e.g. ``weight=-0.15``).
++    A foot is penalised only while it is airborne, below the speed-scaled
++    target AND translating (``|v_foot_xy| -> v_foot_ref``), i.e. in the
++    scuffing-prone middle of the swing; the vertical lift-off/landing ramps,
++    where the foot is nearly stationary, cost nothing.
+     """
+     contact = _foot_contacts(env, sensor_cfg, threshold)
+     contact_float = contact.to(torch.float32)
+@@ -73,10 +94,21 @@ def swing_foot_clearance(
+     stance_height = (foot_height * contact_float).sum(dim=1, keepdim=True) / stance_count
+     rel_height = torch.clamp(foot_height - stance_height, min=0.0)
+ 
+-    shortfall = torch.clamp(float(min_clearance) - rel_height, min=0.0)
+-    penalty = (1.0 - torch.exp(-float(saturating_k) * shortfall)) * in_swing
++    # target scales with the commanded planar speed: h_low at creep, h_high at nominal
++    cmd_speed = _command_planar_speed(env, command_name)
++    target = float(clearance_low) + (float(clearance_high) - float(clearance_low)) \
++        * torch.clamp(cmd_speed / float(speed_ref), 0.0, 1.0)[:, None]
++
++    shortfall = torch.clamp(target - rel_height, min=0.0)
++    saturating = 1.0 - torch.exp(-float(saturating_k) * shortfall)
++
++    # mid-swing weight: only a translating low foot scuffs (paper's w(s), no clock)
++    foot_vxy = torch.linalg.vector_norm(asset.data.body_lin_vel_w[:, asset_cfg.body_ids, :2], dim=-1)
++    translating = torch.clamp(foot_vxy / float(v_foot_ref), 0.0, 1.0)
++
++    penalty = saturating * in_swing * translating
+     swing_count = in_swing.sum(dim=1).clamp_min(1.0)
+ 
+     has_support = (contact_float.sum(dim=1) > 0.0).to(torch.float32)
+-    moving = _moving_mask(env, command_name, command_deadband).to(torch.float32)
++    moving = (cmd_speed > CANONICAL_VELOCITY_GATE).to(torch.float32)
+     return moving * has_support * penalty.sum(dim=1) / swing_count

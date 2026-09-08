@@ -3,7 +3,11 @@ python scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-V4-50Hz-Pl
 注：--endpoint_trail 为单腿足端轨迹显示
 --easy_terrain 为简单地形
 
+...
 
+cscs
+csc
+...
 # 单腿轨迹：
 --endpoint_trail --endpoint_body RR_2
 # 也可以省略 --endpoint_body RR_2，旧模型默认就是 RR_2：
