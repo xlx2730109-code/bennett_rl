@@ -19,3 +19,6 @@ python sim2sim\sim2sim.py --task quad_leg_trot1 --endpoint_trail
 # quad_leg_free_gait3
 
 python sim2sim\sim2sim.py --task quad_leg_free_gait3 --endpoint_trail
+
+# quad_leg_go2_10
+python sim2sim\sim2sim.py --task quad_leg_go2_10 --endpoint_trail

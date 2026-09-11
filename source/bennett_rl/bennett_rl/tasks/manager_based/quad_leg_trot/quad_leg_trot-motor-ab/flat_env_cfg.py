@@ -2,7 +2,7 @@
 
 A reproduces the older conservative actuator settings.
 B uses the DM-J8006-2EC V1.1 24 V datasheet candidate from:
-    assets/motor/dm_j8006_2ec_v1_1_24v.yaml
+    assets/motor/docs/dm_j8006_2ec_v1_1_24v.yaml
 
 No reward, observation, gait, command, action, PD, event, terrain, or
 termination setting is changed by this package.

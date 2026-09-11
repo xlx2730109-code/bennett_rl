@@ -65,7 +65,7 @@
 
 ## 阶段 2 · 系统辨识(未做 · 核心)
 
-> 依据:数据手册 `bennett_rl/assets/motor/dm_j8006_2ec_v1_1_24v.yaml` 第66行明确列出需要辨识的项。本文把它展开成一张"做什么 / 为什么 / 怎么测 / 优先级"表。
+> 依据:数据手册 `bennett_rl/assets/motor/docs/dm_j8006_2ec_v1_1_24v.yaml` 第66行明确列出需要辨识的项。本文把它展开成一张"做什么 / 为什么 / 怎么测 / 优先级"表。
 >
 > **原则**(网上实战经验):① 这是**回报最高**的一步,值得先投 2–3 天;② **只辨识几个高杠杆参数**;③ 理想**只用关节编码器**(PACE 做到无需力矩传感器);④ 激励要**动态**(chirp/摆/斜坡)。
 >
@@ -249,4 +249,4 @@
 - legged_gym / rsl_rl(ETH RSL,ANYmal 真机验证):`github.com/leggedrobotics/legged_gym`
 - MEVIUS 四足(目标 vs 实际角测延迟 + 步数平移):arXiv 2409.14721
 - 你的桥:`E:\HuanCun\Desktop\u2canfd\quad_leg_xu\bennett_deploy\`(runtime/policy/contract/dm_can/async_csv/imu)
-- 手册:`bennett_rl/assets/motor/dm_j8006_2ec_v1_1_24v.yaml`(第66行系统辨识硬性要求;额定8/峰值20)
+- 手册:`bennett_rl/assets/motor/docs/dm_j8006_2ec_v1_1_24v.yaml`(第66行系统辨识硬性要求;额定8/峰值20)

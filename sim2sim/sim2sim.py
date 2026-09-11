@@ -181,23 +181,37 @@ class MujocoRunner:
         moving = _norm(cmd[:3]) >= g["command_deadband"]
 
         if self.cfg.obs_mode == "crawl":
-            # Fixed low-speed crawl: no speed/duty blending.
+            # Fixed low-speed crawl: no speed/duty blending.  The training-side
+            # clock (mdp.crawl_global_phase) is a pure function of episode time
+            # -- it keeps running through stand-stills, and the commanded_* obs
+            # terms only gate the OUTPUT to the stand schedule.  Mirror that
+            # exactly: episode-time clock, then gate below (early return).
             freq = float(g["frequency_hz"])
             duty = float(g["duty_factor"])
             height = float(g["swing_height"])
-            start_phase = 0.0
             swing_frac = float(1.0 - duty)
-        else:
-            # Speed-conditioned trot: blend freq/duty toward the command.
-            equiv = _norm(cmd[:2]) + g["yaw_equivalent_radius"] * abs(cmd[2])
-            blend = float(np.clip(
-                (equiv - g["min_equivalent_speed"]) /
-                max(g["max_equivalent_speed"] - g["min_equivalent_speed"], 1.0e-6), 0.0, 1.0))
-            freq = g["min_frequency_hz"] + blend * (g["max_frequency_hz"] - g["min_frequency_hz"])
-            duty = g["low_speed_duty_factor"] + blend * (g["high_speed_duty_factor"] - g["low_speed_duty_factor"])
-            height = g["swing_height"]
-            start_phase = float(np.clip(1.0 - duty, 0.0, 0.5))
-            swing_frac = float(np.clip(1.0 - duty, 0.0, 0.5))
+            gp = float(np.mod(self.step * self.cfg.step_dt * freq, 1.0))
+            leg_phase = np.mod(
+                gp - np.asarray(g["phase_offsets"], dtype=np.float64), 1.0).astype(np.float32)
+            self.phase, self.last_step, self.was_moving = gp, self.step, moving
+            if not moving:
+                # stand schedule: zero phases, all four feet desired in contact,
+                # stopped gait params [0, 1, 0]
+                return (0.0, np.zeros(4, dtype=np.float32),
+                        np.ones(4, dtype=np.float32), 0.0, 1.0, 0.0)
+            desired_contact = (leg_phase >= swing_frac).astype(np.float32)
+            return gp, leg_phase, desired_contact, freq, duty, height
+
+        # Speed-conditioned trot: blend freq/duty toward the command.
+        equiv = _norm(cmd[:2]) + g["yaw_equivalent_radius"] * abs(cmd[2])
+        blend = float(np.clip(
+            (equiv - g["min_equivalent_speed"]) /
+            max(g["max_equivalent_speed"] - g["min_equivalent_speed"], 1.0e-6), 0.0, 1.0))
+        freq = g["min_frequency_hz"] + blend * (g["max_frequency_hz"] - g["min_frequency_hz"])
+        duty = g["low_speed_duty_factor"] + blend * (g["high_speed_duty_factor"] - g["low_speed_duty_factor"])
+        height = g["swing_height"]
+        start_phase = float(np.clip(1.0 - duty, 0.0, 0.5))
+        swing_frac = float(np.clip(1.0 - duty, 0.0, 0.5))
 
         if not moving:
             freq, duty, height = 0.0, 1.0, 0.0
@@ -273,8 +287,14 @@ class MujocoRunner:
         gp, lp, dc, freq, duty, height = self._advance_gait()
         phase_sin_cos = np.array(
             [np.sin(2 * np.pi * gp), np.cos(2 * np.pi * gp)], dtype=np.float32)
-        leg_phase_sin_cos = np.concatenate(
-            [np.sin(2 * np.pi * lp), np.cos(2 * np.pi * lp)]).astype(np.float32)
+        lp_sin = np.sin(2 * np.pi * lp).astype(np.float32)
+        lp_cos = np.cos(2 * np.pi * lp).astype(np.float32)
+        if self.cfg.obs_mode == "crawl":
+            # crawl obs side uses torch.stack((sin, cos), -1).reshape -> per-leg
+            # interleaved [sin_FL, cos_FL, sin_FR, cos_FR, ...]
+            leg_phase_sin_cos = np.stack([lp_sin, lp_cos], axis=1).reshape(-1)
+        else:
+            leg_phase_sin_cos = np.concatenate([lp_sin, lp_cos])
         gait_params = np.array([freq, duty, height], dtype=np.float32)
 
         return np.concatenate([
@@ -288,7 +308,8 @@ class MujocoRunner:
     def _apply_action(self, raw: np.ndarray):
         """Isaac JointPositionAction: target = clamp(raw*scale + default, clip)."""
         target = self.cfg.default_joint_pos + raw * self.cfg.action_scale
-        target = np.clip(target, self.cfg.clip_low, self.cfg.clip_high)
+        if self.cfg.clip_low is not None or self.cfg.clip_high is not None:
+            target = np.clip(target, self.cfg.clip_low, self.cfg.clip_high)
         self.data.ctrl[self._act_ids] = target
         self._last_action[:] = raw
 

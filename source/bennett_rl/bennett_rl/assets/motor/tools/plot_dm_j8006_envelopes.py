@@ -2,18 +2,21 @@
 
 """Compare the production DCMotor baseline with the DM-J8006-2EC envelope.
 
-Runs without the simulation app (numpy + torch only).  Renders the four-quadrant
-joint-side envelope of the training baseline (Isaac Lab DCMotor 8 / 20 / 19.8968)
-against the datasheet envelope built from the digitized 24 V performance sweep,
-plus every digitized sweep point and the manual anchor points.
+Runs without the simulation app (numpy + torch only).  Reads the digitized
+24 V sweep CSV and renders the manufacturer's chart -- torque on the
+horizontal axis, one performance metric per row (speed / efficiency /
+power) -- next to the max torque-speed envelope of the datasheet LUT
+against the training baseline (Isaac Lab DCMotor 8 / 20 / 19.8968).
 
-Output: generated/dm_j8006_envelope_model_comparison.png (+ .svg) next to this
-script.  ``--validate-only`` just prints the key numbers.
+Output: ``generated/`` next to this script (tools/), i.e.
+``dm_j8006_envelope_model_comparison.png`` (+ .svg).  ``--validate-only`` just
+prints the key numbers.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
 from pathlib import Path
 
 import matplotlib
@@ -35,14 +38,16 @@ try:
     )
 except ModuleNotFoundError:
     # standalone run without the simulation env: the ``bennett_rl`` package
-    # __init__ pulls in isaaclab (pxr), so load this sibling module by path.
+    # __init__ pulls in isaaclab (pxr), so load the envelope core by path --
+    # this script lives in tools/, one level below the motor package root.
     import importlib.util
 
     _spec = importlib.util.spec_from_file_location(
-        "dm8006_envelope", Path(__file__).resolve().parent / "dm8006_envelope.py"
+        "dm8006_envelope", Path(__file__).resolve().parent.parent / "dm8006_envelope.py"
     )
     _mod = importlib.util.module_from_spec(_spec)
     _spec.loader.exec_module(_mod)
+    CURVE_CSV = _mod.CURVE_CSV
     NO_LOAD_SPEED_RAD_S = _mod.NO_LOAD_SPEED_RAD_S
     PEAK_TORQUE_NM = _mod.PEAK_TORQUE_NM
     RATED_SPEED_RAD_S = _mod.RATED_SPEED_RAD_S
@@ -54,13 +59,18 @@ except ModuleNotFoundError:
 ROOT = Path(__file__).resolve().parent
 OUTPUT = ROOT / "generated" / "dm_j8006_envelope_model_comparison.png"
 
-# palette tokens shared with scripts/analysis/plot_motor_report.py
+# palette tokens shared with scripts/analysis/plot_motor_report.py; the left
+# column reuses the OFFICIAL datasheet curve colors so the reproduction can be
+# checked against docs/ "24V 120RPM 8006电机性能曲线图.png" line by line
 SURFACE = "#fcfcfb"
 INK = "#0b0b0b"
 INK2 = "#52514e"
 GRID = "#e1e0d9"
-BLUE = "#2a78d6"   # categorical slot 1: current training model
-RED = "#d03b3b"    # status-critical: datasheet envelope / warning color
+BLUE = "#2a78d6"   # training baseline: DCMotor (right panel only)
+RED = "#d03b3b"    # datasheet envelope + official Eff(%) curve color
+NAVY = "#1c4587"   # official Speed(rpm) curve color (deep blue)
+MOSS = "#aeb500"   # official Pout(W) curve color (yellow-leaning green)
+PURPLE = "#9a3fc2" # official Pin(W) curve color
 RPM = 60.0 / (2.0 * np.pi)
 
 
@@ -90,71 +100,94 @@ def report(w_grid, tau_dm) -> None:
 
 
 def plot(w_grid, tau_dm, sweep, output: Path):
-    tau_dc = dc_motor_envelope(w_grid)
-    w_max = NO_LOAD_SPEED_RAD_S * 1.08
-    t_max = PEAK_TORQUE_NM * 1.12
+    """Manufacturer's reading direction: TORQUE on the horizontal axis.
 
-    fig, ax = plt.subplots(figsize=(11.5, 7.0), dpi=300, constrained_layout=True)
+    Left column reproduces the official datasheet chart from the digitized
+    CSV (speed / efficiency / power vs torque, one metric per row).  The
+    right panel keeps the same torque axis and compares the max
+    torque-speed envelope with the training DCMotor baseline.
+    """
+    with Path(CURVE_CSV).open("r", encoding="utf-8-sig", newline="") as stream:
+        rows = list(csv.DictReader(stream))
+    tq = np.array([float(r["torque_nm"]) for r in rows])
+    rpm = np.array([float(r["speed_rpm"]) for r in rows])
+    eff = np.array([float(r["efficiency_pct"]) for r in rows])
+    pin = np.array([float(r["input_power_w"]) for r in rows])
+    pout = np.array([float(r["output_power_w"]) for r in rows])
+
+    fig = plt.figure(figsize=(14.0, 8.0), dpi=300, constrained_layout=True)
     fig.patch.set_facecolor(SURFACE)
+    gs = fig.add_gridspec(3, 2, width_ratios=[1.0, 1.15])
+    axes = [fig.add_subplot(gs[i, 0]) for i in range(3)]
+    ax_env = fig.add_subplot(gs[:, 1])
 
-    # datasheet envelope, four-quadrant symmetric (|tau| <= tau_max(|speed|))
-    for k, (sgn_w, sgn_t) in enumerate(((1, 1), (-1, 1), (-1, -1), (1, -1))):
-        ax.plot(sgn_w * w_grid, sgn_t * tau_dm, color=RED, lw=2.0, ls=(0, (6, 3)), zorder=3,
-                label="DM-J8006-2EC datasheet envelope (24 V sweep + manual anchors)" if k == 0 else None)
-    # production training model, categorical blue
-    for k, (sgn_w, sgn_t) in enumerate(((1, 1), (-1, 1), (-1, -1), (1, -1))):
-        ax.plot(sgn_w * w_grid, sgn_t * tau_dc, color=BLUE, lw=2.0, zorder=3,
-                label="Training baseline: Isaac Lab DCMotor 8 / 20 / 19.90" if k == 0 else None)
+    # -- left column: the datasheet chart, one metric per row -------------
+    # colors follow the official chart: Speed deep blue, Eff red,
+    # Pout yellow-green, Pin purple
+    metrics = [
+        (rpm, NAVY, "Speed (rpm)", None),
+        (eff, RED, "Efficiency (%)", None),
+        (pout, MOSS, "Output power (W)", (pin, PURPLE, "input power (W)")),
+    ]
+    for i, (ax, (y, color, ylab, extra)) in enumerate(zip(axes, metrics)):
+        ax.plot(tq, y, color=color, lw=1.6, zorder=3)
+        ax.scatter(tq, y, s=15, color=color, zorder=4)
+        if extra is not None:
+            ax.plot(tq, extra[0], color=extra[1], lw=1.1, ls=(0, (4, 2)), zorder=2)
+            ax.text(0.985, 0.92, extra[2], transform=ax.transAxes, ha="right", va="top",
+                    fontsize=8.0, color=extra[1])
+        ax.set_ylim(*{0: (0.0, 145.0), 1: (0.0, 80.0), 2: (0.0, 340.0)}[i])
+        ax.set_xlim(0.0, 13.8)
+        ax.set_xticks(np.arange(0.0, 13.1, 2.0))
+        ax.set_ylabel(ylab, fontsize=10.5, color=color)
+        style_axes(ax)
+        if i < 2:
+            ax.tick_params(labelbottom=False)
+    axes[-1].set_xlabel("Torque (N-m)", fontsize=11.0, color=INK)
 
-    # every digitized sweep point (plateau rows included: they re-measure the knee)
-    sw_w = sweep["speed_rpm"] * (2.0 * np.pi / 60.0)
-    sw_t = sweep["torque_nm"]
-    valid = sw_t > 0.0
-    for k, (sgn_w, sgn_t) in enumerate(((1, 1), (-1, 1), (-1, -1), (1, -1))):
-        ax.scatter(sgn_w * sw_w[valid], sgn_t * sw_t[valid], s=26, facecolors="none",
-                   edgecolors=INK2, linewidths=1.0, zorder=4,
-                   label="Digitized 24 V sweep points" if k == 0 else None)
+    # -- right panel: max envelope vs baseline, torque on X ---------------
+    # invert the (speed -> max torque) LUT: max speed available at each torque
+    tau_hi = np.linspace(0.0, PEAK_TORQUE_NM, 241)
+    omega_hi_rpm = np.interp(tau_hi, tau_dm[::-1], w_grid[::-1]) * RPM
+    ax_env.plot(tau_hi, omega_hi_rpm, color=RED, lw=2.4, zorder=3,
+                label="DM-J8006-2EC datasheet envelope")
+    falling = sweep["torque_nm"] >= RATED_TORQUE_NM + 1.0
+    ax_env.scatter(sweep["torque_nm"][falling], sweep["speed_rpm"][falling], s=30,
+                   facecolors="none", edgecolors=RED, linewidths=1.3, zorder=4,
+                   label="digitized sweep (falling branch)")
+    dc_edge_tau = [0.0, RATED_TORQUE_NM, RATED_TORQUE_NM]
+    dc_edge_rpm = [NO_LOAD_SPEED_RAD_S * RPM,
+                   NO_LOAD_SPEED_RAD_S * (1.0 - RATED_TORQUE_NM / PEAK_TORQUE_NM) * RPM,
+                   0.0]
+    ax_env.plot(dc_edge_tau, dc_edge_rpm, color=BLUE, lw=2.0, zorder=3,
+                label="training baseline: DCMotor 8 / 20 / 19.9")
 
-    # anchors
-    ax.scatter([RATED_SPEED_RAD_S], [RATED_TORQUE_NM], marker="*", s=200, color=INK,
-               zorder=5, label=f"Manual rated point: 8 N-m @ 120 rpm")
-    ax.scatter([NO_LOAD_SPEED_RAD_S], [0.0], marker="o", s=60, facecolor=SURFACE,
-               edgecolor=INK, zorder=5, label="Manual no-load: 190 rpm @ 24 V")
+    ax_env.scatter([RATED_TORQUE_NM], [RATED_SPEED_RAD_S * RPM], marker="*", s=210,
+                   color=INK, zorder=5)
+    ax_env.text(RATED_TORQUE_NM + 0.35, RATED_SPEED_RAD_S * RPM + 5.0,
+                "rated: 8 N-m @ 120 rpm", fontsize=8.5, color=INK, ha="left")
+    ax_env.scatter([0.0], [NO_LOAD_SPEED_RAD_S * RPM], s=46, facecolor=SURFACE,
+                   edgecolor=INK, zorder=5)
+    ax_env.text(0.4, NO_LOAD_SPEED_RAD_S * RPM + 5.0,
+                "no-load: 190 rpm (= 19.897 rad/s)", fontsize=8.5, color=INK, ha="left")
 
-    style_axes(ax)
-    ax.set_xlim(-w_max, w_max)
-    ax.set_ylim(-t_max, t_max)
-    ax.set_xticks(np.arange(-20.0, 20.1, 5.0))
-    ax.set_yticks(np.arange(-20.0, 20.1, 5.0))
-    ax.set_xlabel("Joint speed (rad/s)", fontsize=11.5, color=INK)
-    ax.set_ylabel("Joint torque (N-m)", fontsize=11.5, color=INK)
-    ax.axhline(0.0, color=GRID, linewidth=0.8, zorder=1)
+    ax_env.text(11.4, 150.0, "DM-J8006-2EC envelope", color=RED, fontsize=9.0, ha="left")
+    ax_env.text(8.55, 30.0, "training baseline:\nDCMotor 8 / 20 / 19.9\n(effort_limit clips at 8 N-m)",
+                color=BLUE, fontsize=8.5, va="bottom")
+    ax_env.text(0.018, 0.02, "four-quadrant symmetric (mirror on |torque|, |speed|); motoring quadrant shown",
+                transform=ax_env.transAxes, fontsize=8.0, color=INK2, ha="left", va="bottom")
 
-    sec = ax.secondary_xaxis("top", functions=(lambda v: v * RPM, lambda r: r / RPM))
-    sec.set_xlabel("Joint speed (rpm)", fontsize=11.5, color=INK)
-    sec.tick_params(labelcolor=INK, color=INK, labelsize=10, length=4, width=1.0)
-    sec.spines["top"].set_color(INK)
-    sec.spines["top"].set_linewidth(1.0)
-    # keep edge gridlines from painting over the secondary top spine (same fix
-    # as scripts/analysis/plot_motor_report.py chart 05)
-    ylim = ax.get_ylim()
-    for gl, ypos in zip(ax.yaxis.get_gridlines(), ax.get_yticks()):
-        if ypos >= ylim[1] - 1e-9 or ypos <= ylim[0] + 1e-9:
-            gl.set_visible(False)
+    ax_env.set_xlim(0.0, PEAK_TORQUE_NM * 1.05)
+    ax_env.set_ylim(0.0, 208.0)
+    ax_env.set_xticks(np.arange(0.0, 20.1, 4.0))
+    ax_env.set_yticks(np.arange(0.0, 201.0, 50.0))
+    ax_env.set_xlabel("Torque (N-m)", fontsize=11.0, color=INK)
+    ax_env.set_ylabel("Speed (rpm)", fontsize=11.0, color=INK)
+    style_axes(ax_env)
+    ax_env.legend(loc="upper right", fontsize=8.5, frameon=True, facecolor=SURFACE,
+                  edgecolor="none", framealpha=0.9, labelcolor=INK)
 
-    ax.annotate("peak 20 N-m (stall,\nunvalidated by the sweep)", xy=(0.0, PEAK_TORQUE_NM),
-                xytext=(1.6, 18.2), fontsize=8.5, color=INK,
-                arrowprops={"arrowstyle": "->", "color": INK, "lw": 0.9})
-    i_end = int(np.argmax(sw_t))
-    ax.annotate(f"sweep end: {sw_t[i_end]:.0f} N-m @ {sweep['speed_rpm'][i_end]:.0f} rpm",
-                xy=(sw_w[i_end], sw_t[i_end]), xytext=(2.6, 15.4),
-                fontsize=8.5, color=INK, arrowprops={"arrowstyle": "->", "color": INK, "lw": 0.9})
-    ax.annotate("current-limit clip (effort_limit)\nacts below this envelope", xy=(0.02, 0.03),
-                xycoords="axes fraction", ha="left", va="bottom", fontsize=8.5, color=INK2)
-
-    ax.legend(loc="upper left", fontsize=8.5, frameon=True, facecolor=SURFACE,
-              edgecolor="none", framealpha=0.9, labelcolor=INK)
-    fig.suptitle("DM-J8006-2EC envelope: datasheet LUT vs training DCMotor baseline (joint side, 4-quadrant)",
+    fig.suptitle("DM-J8006-2EC @ 24 V: digitized datasheet curves and max torque-speed envelope (joint side, after 6:1)",
                  color=INK, fontsize=13, fontweight="bold")
 
     output.parent.mkdir(parents=True, exist_ok=True)

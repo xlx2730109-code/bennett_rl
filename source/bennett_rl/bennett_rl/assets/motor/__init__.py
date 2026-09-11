@@ -2,6 +2,10 @@
 
 """Motor datasheets, digitized curves, and actuator models for Bennett.
 
+Layout: the code-plus-CSV core lives at this package root (``dm8006_envelope``,
+``damiao``, ``dm_j8006_24v_120rpm_curve.csv``), reference documents in
+``docs/``, and the one-off plotting tool with its outputs in ``tools/``.
+
 Deliberately light: only the numpy/torch envelope core is re-exported here so
 offline tools can ``from bennett_rl.assets.motor import build_envelope``
 without the simulation app.  The Isaac Lab actuator lives in
