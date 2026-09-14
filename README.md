@@ -2,7 +2,7 @@
 python scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-V4-50Hz-Play-v0 --checkpoint "模型路径" --video --endpoint_trail --endpoint_bodies FL_2 FR_2 RL_2 RR_2 --easy_terrain
 注：--endpoint_trail 为单腿足端轨迹显示
 --easy_terrain 为简单地形
-
+--enable_cameras 使用580.驱动
 ...
 
 cscs

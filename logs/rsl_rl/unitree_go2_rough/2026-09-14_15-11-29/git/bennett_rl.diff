@@ -1,0 +1,74 @@
+--- git status ---
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.png
+	modified:   logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.svg
+	modified:   logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/exported/policy.pt
+	modified:   logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait4/flat/2026-09-08_01-20-51/exported/policy.pt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	logs/rsl_rl/unitree_go2_rough/
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/README.md b/README.md
+index 59ca980..cc3d93e 100644
+--- a/README.md
++++ b/README.md
+@@ -2,7 +2,7 @@
+ python scripts\rsl_rl\play.py --task Isaac-Bennett-SingleLeg-RR-Trace-V4-50Hz-Play-v0 --checkpoint "模型路径" --video --endpoint_trail --endpoint_bodies FL_2 FR_2 RL_2 RR_2 --easy_terrain
+ 注：--endpoint_trail 为单腿足端轨迹显示
+ --easy_terrain 为简单地形
+-
++--enable_cameras 使用580.驱动
+ ...
+ 
+ cscs
+diff --git a/logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.png b/logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.png
+index e4b32a0..fb5be48 100644
+Binary files a/logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.png and b/logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.png differ
+diff --git a/logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.svg b/logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.svg
+index 611e7a2..2e7f23f 100644
+--- a/logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.svg
++++ b/logs/rsl_rl/bennett_go2/rough/2026-09-06_01-22-18/diagnostics/terrain_matrix/02_torque_speed_terrain.svg
+@@ -347,10 +347,10 @@ L -1 305.024244
+ " clip-path="url(#p429367dc85)" style="fill: none; stroke-dasharray: 12,6; stroke-dashoffset: 0; stroke: #d03b3b; stroke-width: 2"/>
+    </g>
+    <g id="text_23">
+-    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(624.398113 68.846135)">red dashed = limit: flat +-8 N-m up to 11.9 rad/s,</text>
+-    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(591.196316 79.65601)">then linear to 0 at 19.9 rad/s (short-time peak +-20 N-m)</text>
+-    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(639.386004 90.465885)">pale points = Level 0  ·  solid points = Level 2</text>
+-    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(600.736238 101.27576)">bands at +-20 N-m = joints saturated on the effort clip</text>
++    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(624.398113 68.846135)"></text>
++    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(591.196316 79.65601)"></text>
++    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(639.386004 90.465885)"></text>
++    <text style="font-size: 8.5px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; fill: #0b0b0b" transform="translate(600.736238 101.27576)"></text>
+    </g>
+    <g id="legend_1">
+     <g id="patch_7">
+diff --git a/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/exported/policy.pt b/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/exported/policy.pt
+index 68fcbc1..7b590d2 100644
+--- a/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/exported/policy.pt
++++ b/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait3/flat/2026-09-05_07-07-11/exported/policy.pt
+@@ -1,3 +1,3 @@
+ version https://git-lfs.github.com/spec/v1
+-oid sha256:5d0a15818a519fe2b6ac60168c12f823f9be21d53b155b92bab5d6c6b66ee489
++oid sha256:3fdb9962257805c6b8c7da3d60a58a950e8465b256b61fb208580b3a2ad7cb06
+ size 445714
+diff --git a/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait4/flat/2026-09-08_01-20-51/exported/policy.pt b/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait4/flat/2026-09-08_01-20-51/exported/policy.pt
+index b62c961..c153946 100644
+--- a/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait4/flat/2026-09-08_01-20-51/exported/policy.pt
++++ b/logs/rsl_rl/quad_leg_free_gait/quad_leg_free_gait4/flat/2026-09-08_01-20-51/exported/policy.pt
+@@ -1,3 +1,3 @@
+ version https://git-lfs.github.com/spec/v1
+-oid sha256:0437cbf3891d426361100626eb1aa901cf3b37806a272dc4acd900241d537048
++oid sha256:c650455770f3e9f657403a0cbfcb7b470a7707115a812ab792e4429170f6f29f
+ size 445714
