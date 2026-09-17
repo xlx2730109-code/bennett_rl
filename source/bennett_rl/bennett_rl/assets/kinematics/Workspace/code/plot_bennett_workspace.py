@@ -57,6 +57,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from bennett_leg_fk import rot_axis, solve_passive, U1  # noqa: E402
 
 OUT_DIR = Path(r"e:/Project/Isaaclab/bennett_rl/source/bennett_rl/bennett_rl/assets/kinematics")
+# organized home of the fig5/fig6 workspace line (code/ figures/ animation/
+# scan/ scratch/ all live under it)
+WS_DIR = OUT_DIR / "Workspace"
 SURFACE = "#fcfcfb"
 INK = "#0b0b0b"
 INK2 = "#52514e"
@@ -423,8 +426,9 @@ def main():
     parser.add_argument("--rescan", action="store_true")
     args = parser.parse_args()
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    cache = OUT_DIR / "workspace_generator.npz"
+    (WS_DIR / "scan").mkdir(parents=True, exist_ok=True)
+    (WS_DIR / "figures").mkdir(parents=True, exist_ok=True)
+    cache = WS_DIR / "scan" / "workspace_generator.npz"
     if cache.exists() and not args.rescan:
         d = np.load(cache)
         q2s, g_tips, g_pass, g_errs = d["q2s"], d["g_tips"], d["g_pass"], d["g_errs"]
@@ -445,9 +449,9 @@ def main():
           f"{np.linalg.norm(tips, axis=2).max():.0f}] mm, axis radius in "
           f"[{np.linalg.norm(d_ax, axis=2).min():.0f}, {np.linalg.norm(d_ax, axis=2).max():.0f}] mm")
 
-    plot_fig5(q1s, tips, g_tips, OUT_DIR, cut=True, fname="fig5_workspace")
-    plot_fig5(q1s, tips, g_tips, OUT_DIR, cut=False, fname="fig5_workspace_full")
-    plot_fig5b(q1s, tips, q2s, g_tips, g_pass, OUT_DIR)
+    plot_fig5(q1s, tips, g_tips, WS_DIR / "figures", cut=True, fname="fig5_workspace")
+    plot_fig5(q1s, tips, g_tips, WS_DIR / "figures", cut=False, fname="fig5_workspace_full")
+    plot_fig5b(q1s, tips, q2s, g_tips, g_pass, WS_DIR / "figures")
 
 
 if __name__ == "__main__":

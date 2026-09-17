@@ -45,7 +45,7 @@ from bennett_leg_fk import (  # noqa: E402
     solve_passive,
     tf,
 )
-from plot_bennett_workspace import INK, OUT_DIR, SURFACE, nice_lim, style3d  # noqa: E402
+from plot_bennett_workspace import INK, SURFACE, WS_DIR, nice_lim, style3d  # noqa: E402
 
 # --- pose of the drawn linkage (the paper puts the leg front-low, folded) ---
 Q1_DEG = 50.0      # hip revolution about the drive axis
@@ -313,7 +313,7 @@ def main():
                                  shrinkA=0, shrinkB=4))
 
     for name in ("fig6_manipulability.png", "fig6_manipulability.svg"):
-        fig.savefig(OUT_DIR / name, dpi=300, facecolor=SURFACE)
+        fig.savefig(WS_DIR / "figures" / name, dpi=300, facecolor=SURFACE)
         print(f"  wrote {name}")
     plt.close(fig)
 

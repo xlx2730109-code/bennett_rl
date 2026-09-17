@@ -40,7 +40,7 @@ from plot_bennett_workspace import (  # noqa: E402
     style3d, three_view_fig,
 )
 
-GEN = OUT_DIR / "workspace_generator_branch.npz"
+GEN = OUT_DIR / "Workspace" / "scan" / "workspace_generator_branch.npz"
 LIM = 450.0            # same as fig5_workspace for direct comparison
 N_ROT = 280            # revolution steps over the full q1 cycle
 

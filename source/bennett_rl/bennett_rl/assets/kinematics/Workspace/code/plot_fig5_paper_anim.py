@@ -22,20 +22,23 @@ What is drawn
 * the moving marker is the _1/_2 joint (p2 in ``bennett_leg_fk`` terms), i.e.
   the point where links _1 and _2 meet, at its true 3D position;
 * the NATIVE joint axes at the two crank ends (user instruction): short
-  segments through p1 along the thigh<->_1 hinge axis (U1B) and through p3
-  along the calf-end hinge axis (U3), carried through the FK chain each
-  frame.
+  DASH-DOT segments through p1 along the thigh<->_1 hinge axis (U1B) and
+  through p3 along the calf-end hinge axis (U3), carried through the FK
+  chain each frame -- black, the same gauge as the z1 reference line,
+  length set by --axis_half; the p1/p3 pin dots are black with the same
+  diameter as the links.
 
-Motion (user program: the marker traces a generator circle)
-------------------------------------------
-    q1 = 2 pi s                      (one full revolution about z1),  s in [0, 1)
-    q2 = q2_c + q2_amp sin(2 pi m s) (q2_amp = 0 by default, i.e. q2 fixed)
+Motion (user program)
+---------------------
+    --traj local (default): a CLOSED LOOP at the workspace bottom --
+        q1 = q1_bottom + A1 sin(2 pi s),  q2 = q2_c + A2 sin(2 pi s - pi/2)
+        q1 swings about the bottom direction of the marker circle while q2
+        flexes in quadrature, so the marker loops around the lower-flank
+        region the user circled.  One cycle = one loop, seamless.
 
-With q2 fixed the passive geometry is frozen, so the q1 revolution carries
-the whole leg about the drive axis as a RIGID body and p2 traces an EXACT
-circle about z1 -- one generator circle of the workspace surface.  The loop
-closes after one revolution.  q2_amp > 0 adds m gentle wobbles per
-revolution (the leg articulates; the circle becomes approximate).
+    --traj circle: ONE full revolution of q1 about z1 with q2 fixed --
+        the whole leg revolves as a rigid body and the marker traces an
+        exact generator circle about z1.  q2_amp > 0 superposes wobbles.
 
 The passive angles are solved per frame with warm starting, so the closure
 stays on one physical assembly branch (residual printed at run time).
@@ -49,10 +52,11 @@ closed chain cannot reach it (p2 stays ~100 mm away in the lower half; the
 real foot hugs it to ~9 mm only near q2 = +0.48).  The two backdrops differ
 in shape -- that difference is the real-vs-theory gap this figure documents.
 
-Usage:
-  python scripts/analysis/plot_fig5_paper_anim.py
-  python scripts/analysis/plot_fig5_paper_anim.py --surface paper
-  python scripts/analysis/plot_fig5_paper_anim.py --q2_amp 0.1 --frames 120
+Usage (from the repo root):
+  python source/bennett_rl/bennett_rl/assets/kinematics/Workspace/code/plot_fig5_paper_anim.py
+  ... --surface paper
+  ... --q2_amp 0.1 --frames 120
+  (the GIF lands in .../Workspace/animation/)
 """
 
 import argparse
@@ -74,7 +78,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bennett_leg_fk as fk  # noqa: E402
 import plot_bennett_workspace as pbw  # noqa: E402
 import plot_fig5_paper as paper  # noqa: E402
-from plot_bennett_workspace import INK, INK2, MUTED, OUT_DIR, SURFACE  # noqa: E402
+from plot_bennett_workspace import INK, INK2, MUTED, OUT_DIR, SURFACE, WS_DIR  # noqa: E402
 
 A, B, BETA = paper.A, paper.B, paper.BETA           # mm, mm, rad (from the URDF)
 Z1 = paper.U_DISP                                    # drive axis, body frame
@@ -92,7 +96,7 @@ BLUE = "#2a78d6"        # driven links (thigh, calf)
 GRAY = "#8a8880"        # passive links (_1, _2)
 RED = "#d03b3b"         # the moving marker (the _1/_2 joint) and its trail
 TRAIL_C = np.array([0.816, 0.231, 0.231])
-AXIS_C = "#e0862c"      # native joint-axis segments at p1 / p3
+AXIS_C = INK            # native joint-axis segments at p1 / p3 (black)
 
 # (from, to, colour, lw) -- the four links as a CLOSED spatial four-bar
 # (user instruction): the thigh and calf cranks root at the origin and lie
@@ -100,14 +104,17 @@ AXIS_C = "#e0862c"      # native joint-axis segments at p1 / p3
 # 3D position below that plane, and _2 closes directly onto the calf end
 # (the redundant closure link _3 is absorbed there and NOT drawn).
 LINKS = (
-    ("hip", "p1", BLUE, 6.6),        # thigh (q1 crank, radial, in-plane)
-    ("hip", "p3", BLUE, 6.6),        # calf  (q2 crank, radial, in-plane)
-    ("p1", "p2", GRAY, 5.6),         # _1 (spatial, dips below the plane)
-    ("p2", "p3", GRAY, 5.0),         # _2, closing onto the calf end
+    ("hip", "p1", BLUE, 2.0),        # thigh (q1 crank, radial, in-plane)
+    ("hip", "p3", BLUE, 2.0),        # calf  (q2 crank, radial, in-plane)
+    ("p1", "p2", GRAY, 2.0),         # _1 (spatial, dips below the plane)
+    ("p2", "p3", GRAY, 2.0),         # _2, closing onto the calf end
 )
-JOINTS = (("hip", 54, INK), ("p1", 54, GRAY),
-          ("p3", 48, GRAY),
-          ("p2", 165, RED))
+JOINTS = (("hip", 36, INK), ("p1", 4, INK),
+          ("p3", 4, INK),
+          ("m", 42, RED))   # "m" = tracked point: args.marker (p2 or foot)
+# p1/p3 pin dots: black, same diameter as the 2.0 pt links (user instruction
+# 2026-09-15) -- scatter s is AREA in pt^2, so diameter 2 pt -> s = 4
+# (bump these numbers if the pins read too small: s = diameter^2)
 
 
 # ------------------------------------------------------- real leg geometry ---
@@ -151,6 +158,16 @@ def dir_display(d, q1):
     return (R @ d) * MIRROR
 
 
+WDISP = np.array([0.0, abs(ZHAT[1]), abs(ZHAT[2])])   # in-plane unit, display
+
+
+def marker_phase(q2, mkey="p2"):
+    """Angle of the marker on its q2-circle (display frame) at q1 = 0."""
+    body, _dirs, _qp, _err = leg_body(float(q2))
+    p = body[mkey] * MIRROR
+    return float(np.arctan2(p @ WDISP, p[0]))
+
+
 def flatten(pts):
     """Drop each point's component along the drive axis (projection onto the
     plane through the origin that carries the workspace's largest circle).
@@ -163,17 +180,18 @@ def flatten(pts):
 U1HAT = fk.U1 / np.linalg.norm(fk.U1)     # drive axis, body frame (un-mirrored)
 
 
-def real_generator(n_gen):
-    """The marker's TRUE locus over the XML calf range, as (r, w) about z1.
+def real_generator(n_gen, mkey="p2"):
+    """The marker's TRUE locus over the XML calf range.
 
-    Revolving this curve about the drive axis is the REAL workspace of the
-    _1/_2 joint -- the surface the marker actually lives on.  The passive
-    solve is warm-started sequentially from q2_min upward (one physical
-    assembly branch) with the cold-start fallback for the spurious q=0
-    stationary point.
+    Returns the (r, w) coordinates about z1 (stats + gap check) AND the
+    body-frame 3D generator points at q1 = 0, which the backdrop revolves.
+    The passive solve is warm-started sequentially from q2_min upward (one
+    physical assembly branch) with the cold-start fallback for the spurious
+    q=0 stationary point.
     """
+    p_loc = fk.L2_POS if mkey == "p2" else fk.FOOT_POS
     q2s = np.linspace(-0.90, 0.55, n_gen)          # XML calf joint range
-    r_g, w_g, x0, worst = [], [], np.zeros(3), 0.0
+    r_g, w_g, g3d, x0, worst = [], [], [], np.zeros(3), 0.0
     for q2 in q2s:
         qp, err, _ = fk.solve_passive(0.0, float(q2), x0)
         if err > 1e-9:
@@ -183,27 +201,41 @@ def real_generator(n_gen):
         q3, q4, q5 = qp
         T1 = (fk.rot_axis(fk.U1, 0.0) @ fk.tf(fk.L1_POS)
               @ fk.rot_axis(fk.U1B, q4))
-        p = (T1 @ np.append(fk.L2_POS, 1.0))[:3] * 1000.0   # marker, body frame
+        p = (T1 @ np.append(p_loc, 1.0))[:3] * 1000.0   # marker, body frame
         w = float(p @ U1HAT)
         r_g.append(float(np.linalg.norm(p - w * U1HAT)))
         w_g.append(w)
-    return np.array(r_g), np.array(w_g), worst
+        g3d.append(p)
+    return np.array(r_g), np.array(w_g), np.array(g3d), worst
 
 
-def surface_grid(n_gen, n_rot, r_g=None, w_g=None):
-    """The backdrop as a surface of revolution about z1.
+def surface_grid(n_gen, n_rot, r_g=None, w_g=None, g3d=None, full=False):
+    """The backdrop surface.
 
-    Same construction as plot_fig5_paper.revolve; the generator is the
-    paper's analytic curve unless (r_g, w_g) are given (the REAL marker
-    locus from ``real_generator``).
+    REAL mode (g3d given): the generator curve (marker locus at q1 = 0,
+    body frame) revolved about the drive axis over the thigh's ACTUAL
+    swing q1 in [-0.8, +0.8] rad -- only the region the real leg can
+    reach (user instruction: the unreachable full-revolution bowl must
+    not be drawn).  ``full=True`` revolves the whole 2pi (theoretical
+    bowl).  Paper mode: the paper's analytic generator, full 2pi as in
+    the paper.
     """
-    if r_g is None:
+    if g3d is None:
         r_g, w_g, _ = paper.generator(n_gen)
-    th = np.linspace(0.0, 2.0 * np.pi, n_rot + 1)
-    c, s = np.cos(th)[:, None], np.sin(th)[:, None]
-    R, W = r_g[None, :], w_g[None, :]
-    return np.stack([R * c, -(R * s * E2[1] + W * Z1[1]),
-                     R * s * E2[2] + W * Z1[2]], axis=2)
+        th = np.linspace(0.0, 2.0 * np.pi, n_rot + 1)
+        c, s = np.cos(th)[:, None], np.sin(th)[:, None]
+        R, W = r_g[None, :], w_g[None, :]
+        return np.stack([R * c, -(R * s * E2[1] + W * Z1[1]),
+                         R * s * E2[2] + W * Z1[2]], axis=2)
+    if full:
+        qs = np.linspace(0.0, 2.0 * np.pi, n_rot + 1)
+    else:
+        qs = np.linspace(-pbw.THIGH_LIMIT, pbw.THIGH_LIMIT, n_rot + 1)
+    tips = np.empty((len(qs), len(g3d), 3))
+    for i, q1 in enumerate(qs):
+        Rq = fk.rot_axis(fk.U1, float(q1))[:3, :3]
+        tips[i] = (Rq @ g3d.T).T * MIRROR
+    return tips
 
 
 def gap_to_surface(points, r_an=None, w_an=None):
@@ -223,24 +255,41 @@ def gap_to_surface(points, r_an=None, w_an=None):
 # ---------------------------------------------------------------- canvas ----
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--q2_c", type=float, default=-0.20,
-                    help="rad, fixed calf angle -- places the marker circle "
-                         "(XML calf range [-0.9, +0.55])")
-    ap.add_argument("--q2_amp", type=float, default=0.0,
-                    help="rad, calf wobble amplitude (0 = exact circle)")
+    ap.add_argument("--q2_c", type=float, default=0.0,
+                    help="rad, calf centre (local: flex centre; circle: fixed "
+                         "angle; XML calf range [-0.9, +0.55])")
+    ap.add_argument("--q1_amp", type=float, default=0.30,
+                    help="rad, thigh swing about the bottom (local mode)")
+    ap.add_argument("--q2_amp", type=float, default=0.35,
+                    help="rad, calf flex amplitude (local mode); wobble "
+                         "amplitude in circle mode")
     ap.add_argument("--wobble", type=int, default=2,
-                    help="q2 wobbles per revolution (used if q2_amp > 0)")
-    ap.add_argument("--axis_half", type=float, default=35.0,
+                    help="q2 wobbles per revolution (circle mode only)")
+    ap.add_argument("--axis_half", type=float, default=55.0,
                     help="mm, half-length of the native joint-axis segments")
+    ap.add_argument("--traj", choices=("local", "circle"), default="local",
+                    help="marker path: closed loop at the workspace bottom "
+                         "(default) or full revolution circle about z1")
     ap.add_argument("--frames", type=int, default=120)
-    ap.add_argument("--fps", type=int, default=20)
-    ap.add_argument("--dpi", type=int, default=100)
+    ap.add_argument("--fps", type=int, default=30,
+                    help="GIF frame delay is stored in centiseconds, so "
+                         ">100 fps cannot play; 30 fps = 120 frames in 4 s")
+    ap.add_argument("--dpi", type=int, default=200,
+                    help="200 dpi = 2080x1260 px ~ 35 MB (PPT-safe); "
+                         "500 dpi would be ~200 MB and choke PowerPoint")
     ap.add_argument("--path", type=int, default=360, help="samples on the closed path")
     ap.add_argument("--trail_frac", type=float, default=0.20)
     ap.add_argument("--surface", choices=("real", "paper"), default="real",
                     help="backdrop: REAL marker-locus surface (default) or "
                          "the paper Fig. 5 analytic surface")
-    ap.add_argument("--n_rot", type=int, default=190, help="revolution steps for the surface")
+    ap.add_argument("--marker", choices=("p2", "foot"), default="p2",
+                    help="tracked point: p2 = the _1/_2 joint (default) or "
+                         "the true foot tip on _1, ~50 mm lower")
+    ap.add_argument("--full_revolve", action="store_true",
+                    help="revolve the backdrop the full 2 pi (theoretical "
+                         "bowl).  Default: the REAL thigh swing q1 in "
+                         "[+-0.8] rad only -- the reachable patch")
+    ap.add_argument("--n_rot", type=int, default=240, help="revolution steps for the surface")
     ap.add_argument("--n_gen", type=int, default=126, help="generator samples for the surface")
     ap.add_argument("--stride", type=int, default=2)
     ap.add_argument("--gif", default="fig5_workspace_real_anim.gif")
@@ -254,19 +303,28 @@ def main():
 
     # ---- backdrop generator (before the path: the gap check needs it) -----
     if args.surface == "real":
-        r_g, w_g, gen_err = real_generator(args.n_gen)
-        print(f"  REAL generator: q2 in [-0.90, +0.55] rad, "
+        r_g, w_g, g3d, gen_err = real_generator(args.n_gen, args.marker)
+        print(f"  REAL generator ({args.marker}): q2 in [-0.90, +0.55] rad, "
               f"residual {gen_err:.1e} m, r in [{r_g.min():.0f}, {r_g.max():.0f}] mm, "
               f"w in [{w_g.min():.0f}, {w_g.max():.0f}] mm")
 
-    # ---- the path p2 traces (user program: a generator circle) ------------
-    # q1 makes ONE full revolution about the drive axis while q2 stays put,
-    # so the leg sweeps around z1 as a rigid body and p2 traces an exact
-    # circle about z1 (a generator circle of the workspace).  q2_amp > 0
-    # superposes gentle wobbles; both programs close after one revolution.
+    # ---- the path p2 traces (user program) --------------------------------
+    # local: q1 swings about the bottom direction while q2 flexes 90 deg
+    # out of phase -- the marker runs a closed loop around the workspace
+    # bottom (the region the user circled on the bowl's lower flank).
+    # circle: q1 makes ONE full revolution about the drive axis while q2
+    # stays put -- the leg revolves rigidly and p2 traces an exact
+    # generator circle about z1.  Both programs close after one cycle.
     tau = np.linspace(0.0, 1.0, args.path, endpoint=False)
-    q1s = 2.0 * np.pi * tau
-    q2s = args.q2_c + args.q2_amp * np.sin(args.wobble * 2.0 * np.pi * tau)
+    if args.traj == "local":
+        q1_bot = -0.5 * np.pi - marker_phase(args.q2_c, args.marker)
+        q1s = q1_bot + args.q1_amp * np.sin(2.0 * np.pi * tau)
+        q2s = (args.q2_c + args.q2_amp
+               * np.sin(2.0 * np.pi * tau - 0.5 * np.pi))
+    else:
+        q1s = 2.0 * np.pi * tau
+        q2s = (args.q2_c + args.q2_amp
+               * np.sin(args.wobble * 2.0 * np.pi * tau))
 
     path, x0, worst_err = [], np.zeros(3), 0.0
     for q1, q2 in zip(q1s, q2s):
@@ -281,11 +339,13 @@ def main():
         flat = flatten({"p1": disp["p1"], "p3": disp["p3"]})
         path.append({"hip": disp["hip"], "p1": flat["p1"], "p3": flat["p3"],
                      "p2": disp["p2"],      # cranks in-plane, _1/_2 truly 3D
+                     "m": disp[args.marker],  # tracked point (p2 or foot)
                      "ax1": dir_display(dirs[0], float(q1)),
                      "ax3": dir_display(dirs[1], float(q1))})
-    tip_path = np.array([p["p2"] for p in path])
+    tip_path = np.array([p["m"] for p in path])
     circle_r = np.linalg.norm(tip_path - (tip_path @ ZHAT)[:, None] * ZHAT,
                               axis=1)
+    loop_size = float(np.ptp(tip_path[:, :2], axis=0).max())
     print(f"  q2 range [{q2s.min():+.3f}, {q2s.max():+.3f}] rad "
           f"(XML calf range [-0.9, +0.55])")
     print(f"  closure residual over the path: {worst_err:.1e} m")
@@ -304,10 +364,12 @@ def main():
 
     # ---- static backdrop --------------------------------------------------
     if args.surface == "real":
-        tips = surface_grid(args.n_gen, args.n_rot, r_g, w_g)
+        tips = surface_grid(args.n_gen, args.n_rot, r_g, w_g,
+                            g3d, full=args.full_revolve)
     else:
         tips = surface_grid(args.n_gen, args.n_rot)
     lim = pbw.nice_lim(tips)
+    lim = max(lim, 450.0)   # fig. 5 box size; keeps the +-400 ticks off the corner
     cmap = plt.get_cmap("turbo")
     norm = plt.Normalize(tips[:, :, 2].min(), tips[:, :, 2].max())
 
@@ -330,10 +392,10 @@ def main():
     Lz = 1.38 * lim
     uz = Z1_M
     ax3d.plot([-Lz * uz[0], Lz * uz[0]], [-Lz * uz[1], Lz * uz[1]],
-              [-Lz * uz[2], Lz * uz[2]], color=INK2, linewidth=0.9,
-              linestyle=(0, (5, 4)), alpha=0.95, zorder=1)
+              [-Lz * uz[2], Lz * uz[2]], color=INK, linewidth=0.9,
+              linestyle=(0, (5, 4)), alpha=0.95, zorder=3)
     ax3d.text(1.03 * Lz * uz[0], 1.03 * Lz * uz[1], 1.03 * Lz * uz[2], "$z_1$",
-              color=INK2, fontsize=8, ha="center", va="bottom", zorder=1)
+              color=INK, fontsize=8, ha="center", va="bottom", zorder=3)
     for d in np.eye(3):
         ax3d.quiver(0, 0, 0, *(d * 0.34 * lim), color=PURPLE, linewidth=1.4,
                     arrow_length_ratio=0.28, zorder=10)
@@ -355,10 +417,14 @@ def main():
     ax_side.collections[-1].set_alpha(0.82)
     paper.ortho_mesh(ax_side, tips, xy=(1, 2), d_th=8, d_t=8)
     pbw.add_axis_side(ax_side, lim)
+    z1_ln = ax_side.lines[-1]          # z1 on top + black in the side view too
+    z1_ln.set_color(INK)
+    z1_ln.set_zorder(3)
     z1_txt = ax_side.texts[-1]
     z1_txt.set_position((z1_txt.get_position()[0] + 8,
                          z1_txt.get_position()[1] - 5))
     z1_txt.set_va("top")
+    z1_txt.set_color(INK)
     pbw.finish_ortho(ax_side, "", lim)
     ax_side.text(0.0, 0.965, "Side view (y-z)", transform=ax_side.transAxes,
                  fontsize=10.5, color=INK, style="italic", va="top", zorder=10)
@@ -383,18 +449,30 @@ def main():
     ax_side.set_position([RIGHT_X, top - h, RIGHT_W, h])
     ax_front.set_position([RIGHT_X, RIGHT_BOT, RIGHT_W, h])
 
-    head = ("Bennett leg workspace: REAL surface = the _1/_2 locus revolved"
-            " about z1 -- the marker circle lies on it"
+    mname = "_1/_2 joint" if args.marker == "p2" else "foot tip"
+    head = ("Bennett leg workspace: REAL surface = the marker's locus revolved"
+            " about z1 over the actual thigh swing (q1 within $\\pm$0.8 rad)"
+            if args.surface == "real" and not args.full_revolve else
+            "Bennett leg workspace: REAL surface = the marker's locus revolved"
+            " about z1 (FULL revolution -- theoretical bowl)"
             if args.surface == "real" else
             "Bennett leg workspace, paper Fig. 5 surface + the REAL"
             " closed-chain leg")
+    if args.traj == "local":
+        tail3 = (f"marker = {mname} looping at the workspace bottom"
+                 " (q1 swing + q2 flex);"
+                 "   cranks in the rim plane, _2 closes on the calf;"
+                 "   native axes at p1 / p3")
+    else:
+        tail3 = (f"marker = {mname} on a q2-fixed, q1-revolution circle"
+                 " about z1;"
+                 "   cranks in the rim plane, loop closed on the calf end;"
+                 "   native axes at p1 / p3")
     fig.suptitle(
         head + "\n"
         f"four links thigh / calf / _1 / _2 from Urdf_Bennett_3 "
         f"(a = {A:.1f} mm, b = {B:.1f} mm, $\\beta$ = {np.degrees(BETA):.0f}$^\\circ$)\n"
-        "marker = _1/_2 joint on a q2-fixed, q1-revolution circle about z1;"
-        "   cranks in the rim plane, loop closed on the calf end;"
-        "   native axes at p1 / p3",
+        + tail3,
         fontsize=9.5, color=INK)
 
     # ---- animated artists -------------------------------------------------
@@ -424,9 +502,13 @@ def main():
 
     # native joint-axis segments through the crank ends (p1: thigh<->_1, U1B;
     # p3: calf-end hinge, U3) -- true directions, anchored on the drawn joints
-    axis3 = [ax3line(AXIS_C, 3.2, z=9.5) for _ in range(2)]
-    axis_s = [ax2line(ax_side, AXIS_C, 2.6, z=9.5) for _ in range(2)]
-    axis_f = [ax2line(ax_front, AXIS_C, 2.6, z=9.5) for _ in range(2)]
+    # native joint axes: DASH-DOT, the same gauge as the z1 reference line
+    # (user instruction: point-dash style, z1 thickness, length via --axis_half)
+    axis3 = [ax3line(AXIS_C, 0.9, ls=(0, (6, 3, 1, 3)), z=9.5) for _ in range(2)]
+    axis_s = [ax2line(ax_side, AXIS_C, 0.9, ls=(0, (6, 3, 1, 3)), z=9.5)
+              for _ in range(2)]
+    axis_f = [ax2line(ax_front, AXIS_C, 0.9, ls=(0, (6, 3, 1, 3)), z=9.5)
+              for _ in range(2)]
 
     # static faded guide of the whole orbit
     for ax, ix in ((ax3d, None), (ax_side, 1), (ax_front, 0)):
@@ -497,18 +579,30 @@ def main():
         comet_f.set_segments(segs[:, :, [0, 2]])
         comet_f.set_color(rgba)
 
-        tip = P["p2"]
-        hud.set_text(
-            f"generator circle about z1, radius ~{circle_r.mean():.0f} mm\n"
-            f"q1 (thigh, one revolution) = {np.degrees(q1) % 360:6.1f} deg\n"
-            f"q2 (calf)                  = {np.degrees(q2):+7.1f} deg\n"
-            f"_1/_2 joint                = ({tip[0]:+6.1f}, {tip[1]:+6.1f}, "
-            f"{tip[2]:+6.1f}) mm")
+        tip = P["m"]
+        mlab = "_1/_2 joint" if args.marker == "p2" else "foot tip"
+        if args.traj == "local":
+            hud.set_text(
+                f"closed loop at the workspace bottom, "
+                f"~{loop_size:.0f} mm across\n"
+                f"q1 (thigh swing about bottom) = {np.degrees(q1):+7.1f} deg\n"
+                f"q2 (calf flex)                = {np.degrees(q2):+7.1f} deg\n"
+                f"{mlab:<29s} = ({tip[0]:+6.1f}, "
+                f"{tip[1]:+6.1f}, {tip[2]:+6.1f}) mm")
+        else:
+            hud.set_text(
+                f"generator circle about z1, radius ~{circle_r.mean():.0f} mm\n"
+                f"q1 (thigh, one revolution) = {np.degrees(q1) % 360:6.1f} deg\n"
+                f"q2 (calf)                  = {np.degrees(q2):+7.1f} deg\n"
+                f"{mlab:<27s} = ({tip[0]:+6.1f}, {tip[1]:+6.1f}, "
+                f"{tip[2]:+6.1f}) mm")
         return ()
 
     anim = FuncAnimation(fig, update, frames=n, interval=1000.0 / args.fps,
                          blit=False, repeat=True)
-    out = OUT_DIR / args.gif
+    out_dir = WS_DIR / "animation"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / args.gif
     anim.save(out, writer=PillowWriter(fps=args.fps), dpi=args.dpi,
               savefig_kwargs={"facecolor": SURFACE})
     plt.close(fig)
