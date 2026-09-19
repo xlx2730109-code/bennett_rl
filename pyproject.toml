@@ -122,8 +122,12 @@ reportMissingImports = "none"
 reportMissingModuleSource = "none" # -> most common: prettytable in mdp managers
 
 reportGeneralTypeIssues = "none"       # -> raises 218 errors (usage of literal MISSING in dataclasses)
-reportOptionalMemberAccess = "warning" # -> raises 8 errors
-reportPrivateUsage = "warning"
+# The two rules below were "warning" in the upstream Isaac Lab template. They only
+# fire on Isaac Lab's own idioms (Optional `scene.terrain.terrain_generator`,
+# direct `sub_terrains[...]` patching, private-member access in manager cfgs), so
+# they are silenced here to keep source/ and scripts/ free of editor squiggles.
+reportOptionalMemberAccess = "none"    # upstream: "warning" (8 hits)
+reportPrivateUsage = "none"            # upstream: "warning"
 
 
 [tool.codespell]

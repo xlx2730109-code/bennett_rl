@@ -1,3 +1,6 @@
+# pyright: reportOptionalMemberAccess=false
+# ^ `scene.terrain.terrain_generator` is typed Optional in IsaacLab, but patching
+#   `sub_terrains` directly is the standard idiom. Silenced for this file only.
 # Go2-13: restored Go2-11 locomotion baseline with V6 and five-body contacts.
 
 
@@ -41,7 +44,6 @@ LOW_GAIT_FREQUENCY_HZ = 0.55
 LOW_GAIT_DUTY_FACTOR = 0.78
 LOW_GAIT_SWING_HEIGHT = 0.065
 CONTACT_TRANSITION_FRACTION = 0.04
-# stand, forward, backward, yaw, forward+yaw, backward+yaw, lateral, lateral+yaw
 COMMAND_MODE_PROBABILITIES = (0.15, 0.14, 0.14, 0.20, 0.15, 0.15, 0.035, 0.035)
 JOINT_TARGET_LIMITS = {
     ".*_thigh": (-0.80, 0.80),
